@@ -3,6 +3,7 @@
 
 #include "ReadyPlayerMeAvatarStorage.h"
 #include "GenericPlatform/GenericPlatformFile.h"
+#include "HAL/FileManagerGeneric.h"
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
 
@@ -11,6 +12,14 @@
 #else
 #include "HAL/PlatformFilemanager.h"
 #endif
+
+namespace
+{
+	FString GetAvatarCacheDir()
+	{
+		return FPaths::ProjectPersistentDownloadDir() + "/Avatars/";
+	}
+}
 
 FString FReadyPlayerMeAvatarStorage::LoadMetadata(const FString& Path)
 {
@@ -43,7 +52,7 @@ void FReadyPlayerMeAvatarStorage::DeleteDirectory(const FString& Path)
 		return;
 	}
 	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-	if (!PlatformFile.DirectoryExists(*Path) && !PlatformFile.DeleteDirectoryRecursively(*Path))
+	if (PlatformFile.DirectoryExists(*Path) && !PlatformFile.DeleteDirectoryRecursively(*Path))
 	{
 		UE_LOG(LogReadyPlayerMe, Warning, TEXT("Failed to delete directory"));
 	}
@@ -67,7 +76,7 @@ bool FReadyPlayerMeAvatarStorage::CheckAndRemoveExistingFile(const FString& File
 		return false;
 	}
 
-	if (FPaths::FileExists(*FilePath) && !IFileManager::Get().Delete(*FilePath))
+	if (PlatformFile.FileExists(*FilePath) && !PlatformFile.DeleteFile(*FilePath))
 	{
 		UE_LOG(LogReadyPlayerMe, Warning, TEXT("Failed to delete the existing file"));
 		return false;
@@ -99,8 +108,41 @@ void FReadyPlayerMeAvatarStorage::SaveMetadata(const FString& MetadataFilePath, 
 	}
 }
 
-void FReadyPlayerMeAvatarStorage::ClearAvatarCache()
+void FReadyPlayerMeAvatarStorage::ClearCache()
 {
-	const FString CompletePath = FPaths::ProjectPersistentDownloadDir() + "/Avatars/";
-	DeleteDirectory(CompletePath);
+	DeleteDirectory(GetAvatarCacheDir());
+}
+
+bool FReadyPlayerMeAvatarStorage::IsCacheEmpty()
+{
+	return GetAvatarCount() == 0;
+}
+
+void FReadyPlayerMeAvatarStorage::ClearAvatar(const FString& Guid)
+{
+	DeleteDirectory(GetAvatarCacheDir() + Guid);
+}
+
+int32 FReadyPlayerMeAvatarStorage::GetAvatarCount()
+{
+	const FString Path = GetAvatarCacheDir() + "*";
+	TArray<FString> FoundDirs;
+	IFileManager::Get().FindFiles(FoundDirs, *Path, false, true);
+	return FoundDirs.Num();
+}
+
+int64 FReadyPlayerMeAvatarStorage::GetCacheSize()
+{
+	int64 DirectorySize = 0;
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+	PlatformFile.IterateDirectoryRecursively(*GetAvatarCacheDir(),
+		[&DirectorySize, &PlatformFile](const TCHAR* Filename, bool bIsDirectory) -> bool
+		{
+			if (!bIsDirectory)
+			{
+				DirectorySize += PlatformFile.FileSize(Filename);
+			}
+			return true;
+		});
+	return DirectorySize;
 }

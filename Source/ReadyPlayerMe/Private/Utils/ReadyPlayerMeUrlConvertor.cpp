@@ -41,6 +41,20 @@ bool FReadyPlayerMeUrlConvertor::IsUrl(const FString& Url)
 	return RegexMatcher.FindNext();
 }
 
+FString FReadyPlayerMeUrlConvertor::GetAvatarGuid(const FString& UrlShortcode)
+{
+	if (UrlShortcode.IsEmpty())
+	{
+		return "";
+	}
+	if (IsShortcode(UrlShortcode))
+	{
+		return UrlShortcode;
+	}
+	const FAvatarUri Uri = CreateAvatarUri(UrlShortcode, nullptr);
+	return Uri.Guid;
+}
+
 FAvatarUri FReadyPlayerMeUrlConvertor::CreateAvatarUri(const FString& Url, UReadyPlayerMeAvatarConfig* AvatarConfig)
 {
 	FString UrlLink, UrlQueryString;

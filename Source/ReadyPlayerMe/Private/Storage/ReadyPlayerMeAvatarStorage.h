@@ -14,8 +14,12 @@ public:
 	static bool AvatarExists(const FAvatarUri& AvatarUri);
 	static bool FileExists(const FString& Path);
 	static FString LoadMetadata(const FString& Path);
-	static void ClearAvatarCache();
+	static void ClearCache();
 	static void DeleteDirectory(const FString& Path);
+	static bool IsCacheEmpty();
+	static void ClearAvatar(const FString& Guid);
+	static int32 GetAvatarCount();
+	static int64 GetCacheSize();
 
 private:
 	static bool CheckAndRemoveExistingFile(const FString& FilePath);

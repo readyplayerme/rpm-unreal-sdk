@@ -122,10 +122,20 @@ enum class EAvatarMorphTarget : uint8
 	MouthSmile UMETA(DisplayName = "MouthSmile"),
 	EyesClosed UMETA(DisplayName = "EyesClosed"),
 	EyesLookUp UMETA(DisplayName = "EyesLookUp"),
-	EyesLookDown UMETA(DisplayName = "EyesLookDown")
+	EyesLookDown UMETA(DisplayName = "EyesLookDown"),
+
+	EyeLookDownLeft UMETA(DisplayName = "EyeLookDownLeft"),
+	EyeLookInLeft UMETA(DisplayName = "EyeLookInLeft"),
+	EyeLookOutLeft UMETA(DisplayName = "EyeLookOutLeft"),
+	EyeLookUpLeft UMETA(DisplayName = "EyeLookUpLeft"),
+	EyeLookDownRight UMETA(DisplayName = "EyeLookDownRight"),
+	EyeLookInRight UMETA(DisplayName = "EyeLookInRight"),
+	EyeLookOutRight UMETA(DisplayName = "EyeLookOutRight"),
+	EyeLookUpRight UMETA(DisplayName = "EyeLookUpRight"),
+	TongueOut UMETA(DisplayName = "TongueOut"),
 };
 
-DECLARE_DYNAMIC_DELEGATE_TwoParams(FAvatarDownloadCompleted, class UglTFRuntimeAsset*, Asset, const FAvatarMetadata&, Metadata);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FAvatarDownloadCompleted, class USkeletalMesh*, Mesh, const FAvatarMetadata&, Metadata);
 
 DECLARE_DYNAMIC_DELEGATE(FAvatarLoadCompleted);
 
@@ -134,6 +144,8 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FAvatarLoadFailed, const FString&, ErrorMessag
 DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageCompleted, class UTexture*, Texture);
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageFailed, const FString&, ErrorMessage);
+
+DECLARE_DYNAMIC_DELEGATE_OneParam(FGlbLoadCompleted, class USkeletalMesh*, SkeletalMesh);
 
 UENUM(BlueprintType)
 enum class ERenderSceneType : uint8

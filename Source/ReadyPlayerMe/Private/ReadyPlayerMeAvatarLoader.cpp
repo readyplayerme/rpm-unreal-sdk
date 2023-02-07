@@ -3,45 +3,31 @@
 
 #include "ReadyPlayerMeAvatarLoader.h"
 
-#include "Utils/ReadyPlayerMeGlTFConfigCreator.h"
-#include "Utils/ReadyPlayerMeMetadataExtractor.h"
-#include "Utils/ReadyPlayerMeRequestCreator.h"
 #include "Utils/ReadyPlayerMeUrlConvertor.h"
-#include "Utils/ReadyPlayerMePluginInfo.h"
+#include "Storage/ReadyPlayerMeAvatarCacheHandler.h"
+#include "ReadyPlayerMeGlbLoader.h"
+#include "Request/ReadyPlayerMeBaseRequest.h"
+#include "Utils/ReadyPlayerMeMetadataExtractor.h"
+
+//TODO: Move the timout to the RPMSettings to make it configurable
+constexpr float AVATAR_REQUEST_TIMEOUT = 60.f;
+constexpr float METADATA_REQUEST_TIMEOUT = 20.f;
 
 static const FString HEADER_LAST_MODIFIED = "Last-Modified";
-constexpr float METADATA_REQUEST_TIMEOUT = 20.f;
-constexpr float AVATAR_REQUEST_TIMEOUT = 60.f;
-
-static const FString HEADER_RPM_SOURCE = "RPM-Source";
-static const FString HEADER_RPM_SDK_VERSION = "RPM-SDK-Version";
-#if WITH_EDITOR
-static const FString UNREAL_SOURCE = "unreal-editor";
-#else
-static const FString UNREAL_SOURCE = "unreal-runtime";
-#endif
-
-namespace
-{
-	template <typename RequestPtr>
-	void AddRPMHeaders(RequestPtr HttpRequest)
-	{
-		HttpRequest->SetHeader(HEADER_RPM_SOURCE, UNREAL_SOURCE);
-		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FReadyPlayerMePluginInfo::GetPluginVersion());
-	}
-}
 
 UReadyPlayerMeAvatarLoader::UReadyPlayerMeAvatarLoader()
-	: GlTFRuntimeAsset(nullptr)
+	: GlbLoader(nullptr)
+	, SkeletalMesh(nullptr)
 	, bIsTryingToUpdate(false)
 {
 }
 
 void UReadyPlayerMeAvatarLoader::LoadAvatar(const FString& UrlShortcode, UReadyPlayerMeAvatarConfig* AvatarConfig,
+	USkeleton* TargetSkeleton, const FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig,
 	const FAvatarDownloadCompleted& OnDownloadCompleted, const FAvatarLoadFailed& OnLoadFailed)
 {
 	const FString Url = FReadyPlayerMeUrlConvertor::GetValidatedUrlShortCode(UrlShortcode);
-	if (UrlShortcode.IsEmpty())
+	if (Url.IsEmpty())
 	{
 		(void)OnLoadFailed.ExecuteIfBound("Url invalid");
 		return;
@@ -50,71 +36,86 @@ void UReadyPlayerMeAvatarLoader::LoadAvatar(const FString& UrlShortcode, UReadyP
 	OnAvatarDownloadCompleted = OnDownloadCompleted;
 	OnAvatarLoadFailed = OnLoadFailed;
 	AvatarUri = FReadyPlayerMeUrlConvertor::CreateAvatarUri(Url, AvatarConfig);
-	CacheHandler = MakeUnique<FReadyPlayerMeAvatarCacheHandler>(*AvatarUri);
+	CacheHandler = MakeShared<FReadyPlayerMeAvatarCacheHandler>(*AvatarUri);
+
+	GlbLoader = NewObject<UReadyPlayerMeGlbLoader>(this,TEXT("GlbLoader"));
+	GlbLoader->SkeletalMeshConfig = SkeletalMeshConfig;
+	GlbLoader->TargetSkeleton = TargetSkeleton;
+
+	MetadataRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	MetadataRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnMetadataDownloaded);
+	MetadataRequest->Download(AvatarUri->MetadataUrl, METADATA_REQUEST_TIMEOUT);
 	if (CacheHandler->ShouldLoadFromCache())
 	{
 		bIsTryingToUpdate = true;
-		LoadAvatarMetadata();
 	}
 	else
 	{
-		LoadAvatarMetadata();
-		LoadAvatarModel();
+		DownloadAvatarModel();
 	}
 }
 
 void UReadyPlayerMeAvatarLoader::CancelAvatarLoad()
 {
-	if (!AvatarMetadataRequest.IsValid())
+	if (!MetadataRequest.IsValid())
 	{
 		return;
 	}
 
-	if (AvatarMetadataRequest->GetStatus() == EHttpRequestStatus::Type::Processing || AvatarMetadataRequest->GetStatus() == EHttpRequestStatus::Type::NotStarted)
-	{
-		AvatarMetadataRequest->CancelRequest();
-	}
-
-	if (AvatarModelRequest.IsValid() && (AvatarModelRequest->GetStatus() == EHttpRequestStatus::Type::Processing || AvatarModelRequest->GetStatus() == EHttpRequestStatus::Type::NotStarted))
-	{
-		AvatarModelRequest->CancelRequest();
-	}
+	MetadataRequest->CancelRequest();
+	ModelRequest->CancelRequest();
 	Reset();
 }
 
-void UReadyPlayerMeAvatarLoader::ProcessReceivedMetadata(const FString& ResponseContent)
+void UReadyPlayerMeAvatarLoader::ProcessReceivedMetadata()
 {
+	AvatarMetadata = FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(MetadataRequest->GetContentAsString());
+	AvatarMetadata->LastModifiedDate = MetadataRequest->GetHeader(HEADER_LAST_MODIFIED);
+	CacheHandler->SetUpdatedMetadataStr(MetadataRequest->GetContentAsString(), AvatarMetadata->LastModifiedDate);
+	// If we are not trying to update the avatar, the metadata and the model should be downloaded as the standard flow.
 	if (!bIsTryingToUpdate)
 	{
-		CacheHandler->SetUpdatedMetadataStr(ResponseContent, AvatarMetadata->LastModifiedDate, bIsTryingToUpdate);
 		ExecuteSuccessCallback();
 		return;
 	}
-	if (CacheHandler->IsMetadataChanged(AvatarMetadata->LastModifiedDate))
+	// If we are trying to update the avatar and the metadata is changed, we check if the metadata is changed, we update the model.
+	if (CacheHandler->ShouldSaveMetadata())
 	{
-		CacheHandler->SetUpdatedMetadataStr(ResponseContent, AvatarMetadata->LastModifiedDate, bIsTryingToUpdate);
-		LoadAvatarModel();
+		DownloadAvatarModel();
 		return;
 	}
-	GlTFRuntimeAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromFilename(AvatarUri->LocalModelPath, false, FReadyPlayerMeGlTFConfigCreator::GetGlTFRuntimeConfig());
-	if (GlTFRuntimeAsset != nullptr)
-	{
-		ExecuteSuccessCallback();
-	}
-	else
-	{
-		UE_LOG(LogReadyPlayerMe, Warning, TEXT("Failed to load the model from the local storage"));
-		LoadAvatarModel();
-	}
+	// If we are trying to update the avatar, but the metadata is not changed, we loaded the cached avatar.
+	OnGlbLoadCompleted.BindDynamic(this, &UReadyPlayerMeAvatarLoader::OnGlbLoaded);
+	GlbLoader->LoadFromFile(AvatarUri->LocalModelPath, AvatarMetadata->BodyType, OnGlbLoadCompleted);
 }
 
 void UReadyPlayerMeAvatarLoader::ExecuteSuccessCallback()
 {
-	if (GlTFRuntimeAsset != nullptr && AvatarMetadata.IsSet())
+	if (SkeletalMesh != nullptr && AvatarMetadata.IsSet())
 	{
-		(void)OnAvatarDownloadCompleted.ExecuteIfBound(GlTFRuntimeAsset, AvatarMetadata.GetValue());
+		(void)OnAvatarDownloadCompleted.ExecuteIfBound(SkeletalMesh, *AvatarMetadata);
 		CacheHandler->SaveAvatarInCache();
 		Reset();
+	}
+}
+
+void UReadyPlayerMeAvatarLoader::TryLoadFromCache()
+{
+	MetadataRequest->GetCompleteCallback().Unbind();
+	if (ModelRequest)
+	{
+		ModelRequest->GetCompleteCallback().Unbind();
+	}
+	CacheHandler = MakeShared<FReadyPlayerMeAvatarCacheHandler>(*AvatarUri);
+	AvatarMetadata = CacheHandler->GetLocalMetadata();
+	if (AvatarMetadata.IsSet())
+	{
+		OnGlbLoadCompleted.BindDynamic(this, &UReadyPlayerMeAvatarLoader::OnGlbLoaded);
+		GlbLoader->LoadFromFile(AvatarUri->LocalModelPath, AvatarMetadata->BodyType, OnGlbLoadCompleted);
+	}
+	else
+	{
+		ExecuteFailureCallback("Failed to load local metadata");
 	}
 }
 
@@ -124,17 +125,19 @@ void UReadyPlayerMeAvatarLoader::ExecuteFailureCallback(const FString& ErrorMess
 	Reset();
 }
 
-void UReadyPlayerMeAvatarLoader::OnMetadataReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
+void UReadyPlayerMeAvatarLoader::OnMetadataDownloaded(bool bSuccess)
 {
 	if (!OnAvatarDownloadCompleted.IsBound())
 	{
 		return;
 	}
-	if (bSuccess && Response.IsValid() && EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+	if (bSuccess)
 	{
-		AvatarMetadata = FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(Response->GetContentAsString());
-		AvatarMetadata->LastModifiedDate = Response->GetHeader(HEADER_LAST_MODIFIED);
-		ProcessReceivedMetadata(Response->GetContentAsString());
+		ProcessReceivedMetadata();
+	}
+	else if (bIsTryingToUpdate)
+	{
+		TryLoadFromCache();
 	}
 	else
 	{
@@ -142,22 +145,40 @@ void UReadyPlayerMeAvatarLoader::OnMetadataReceived(FHttpRequestPtr Request, FHt
 	}
 }
 
-void UReadyPlayerMeAvatarLoader::OnAvatarModelReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
+void UReadyPlayerMeAvatarLoader::OnGlbLoaded(USkeletalMesh* Mesh)
 {
 	if (!OnAvatarDownloadCompleted.IsBound())
 	{
 		return;
 	}
-	if (bSuccess && Response.IsValid() && EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+	if (Mesh != nullptr)
 	{
-		GlTFRuntimeAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromData(Response->GetContent(), FReadyPlayerMeGlTFConfigCreator::GetGlTFRuntimeConfig());
-		if (GlTFRuntimeAsset == nullptr)
-		{
-			ExecuteFailureCallback("Failed to load the avatar model");
-			return;
-		}
-		CacheHandler->SetAvatarResponse(Response);
+		SkeletalMesh = Mesh;
 		ExecuteSuccessCallback();
+	}
+	else
+	{
+		ExecuteFailureCallback("Failed to load the avatar model");
+	}
+	OnGlbLoadCompleted.Unbind();
+}
+
+void UReadyPlayerMeAvatarLoader::OnModelDownloaded(bool bSuccess)
+{
+	if (!OnAvatarDownloadCompleted.IsBound())
+	{
+		return;
+	}
+	if (bSuccess)
+	{
+		CacheHandler->SetModelData(&ModelRequest->GetContent());
+		const EAvatarBodyType BodyType = AvatarMetadata ? AvatarMetadata->BodyType : EAvatarBodyType::Undefined;
+		OnGlbLoadCompleted.BindDynamic(this, &UReadyPlayerMeAvatarLoader::OnGlbLoaded);
+		GlbLoader->LoadFromData(ModelRequest->GetContent(), BodyType, OnGlbLoadCompleted);
+	}
+	else if (bIsTryingToUpdate)
+	{
+		TryLoadFromCache();
 	}
 	else
 	{
@@ -165,33 +186,24 @@ void UReadyPlayerMeAvatarLoader::OnAvatarModelReceived(FHttpRequestPtr Request, 
 	}
 }
 
-void UReadyPlayerMeAvatarLoader::LoadAvatarMetadata()
+void UReadyPlayerMeAvatarLoader::DownloadAvatarModel()
 {
-	AvatarMetadataRequest = FReadyPlayerMeRequestCreator::MakeHttpRequest(AvatarUri->MetadataUrl, METADATA_REQUEST_TIMEOUT);
-	AddRPMHeaders(AvatarMetadataRequest);
-	AvatarMetadataRequest->OnProcessRequestComplete().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnMetadataReceived);
-	AvatarMetadataRequest->ProcessRequest();
-}
-
-void UReadyPlayerMeAvatarLoader::LoadAvatarModel()
-{
-	AvatarModelRequest = FReadyPlayerMeRequestCreator::MakeHttpRequest(AvatarUri->ModelUrl, AVATAR_REQUEST_TIMEOUT);
-	AvatarModelRequest->OnProcessRequestComplete().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnAvatarModelReceived);
-	AddRPMHeaders(AvatarModelRequest);
-	AvatarModelRequest->ProcessRequest();
+	ModelRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	ModelRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnModelDownloaded);
+	ModelRequest->Download(AvatarUri->ModelUrl, AVATAR_REQUEST_TIMEOUT);
 }
 
 void UReadyPlayerMeAvatarLoader::Reset()
 {
 	bIsTryingToUpdate = false;
-	GlTFRuntimeAsset = nullptr;
+	SkeletalMesh = nullptr;
+	GlbLoader = nullptr;
+	OnGlbLoadCompleted.Unbind();
 	CacheHandler.Reset();
 	AvatarMetadata.Reset();
 	AvatarUri.Reset();
-	OnAvatarDownloadCompleted.Unbind();
-	OnAvatarLoadFailed.Unbind();
-	AvatarModelRequest.Reset();
-	AvatarMetadataRequest.Reset();
+	MetadataRequest.Reset();
+	ModelRequest.Reset();
 }
 
 void UReadyPlayerMeAvatarLoader::BeginDestroy()

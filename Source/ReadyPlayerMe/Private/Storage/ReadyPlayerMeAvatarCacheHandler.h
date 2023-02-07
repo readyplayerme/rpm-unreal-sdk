@@ -4,27 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
-#include "Interfaces/IHttpRequest.h"
 
 class FReadyPlayerMeAvatarCacheHandler
 {
 public:
 	explicit FReadyPlayerMeAvatarCacheHandler(const FAvatarUri& AvatarUri);
-	bool IsMetadataChanged(const FString& LastModifiedDate) const;
 
-	void SetUpdatedMetadataStr(const FString& MetadataJson, const FString& LastModifiedDate, bool bIsTryingToUpdate);
-	void SetAvatarResponse(FHttpResponsePtr ResponsePtr);
+	void SetUpdatedMetadataStr(const FString& MetadataJson, const FString& LastModifiedDate);
+	void SetModelData(const TArray<uint8>* Data);
 
 	void SaveAvatarInCache() const;
 
 	bool ShouldLoadFromCache() const;
 
+	bool ShouldSaveMetadata() const;
+	
+	TOptional<FAvatarMetadata> GetLocalMetadata() const;
+
 	static bool IsCachingEnabled();
 
 private:
+	bool IsMetadataChanged(const FString& LastModifiedDate) const;
+	
 	const FAvatarUri AvatarUri;
 
 	FString UpdatedMetadataStr;
-	FHttpResponsePtr AvatarResponsePtr;
+	const TArray<uint8>* ModelData;
 	bool bMetadataNeedsUpdate;
 };

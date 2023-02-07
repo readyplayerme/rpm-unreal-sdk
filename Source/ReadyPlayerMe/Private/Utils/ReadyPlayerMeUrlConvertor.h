@@ -13,6 +13,8 @@ public:
 	static bool IsUrl(const FString& Url);
 
 	static bool IsShortcode(const FString& Shortcode);
+	
+	static FString GetAvatarGuid(const FString& UrlShortcode);
 
 	static FAvatarUri CreateAvatarUri(const FString& Url, class UReadyPlayerMeAvatarConfig* AvatarConfig);
 };

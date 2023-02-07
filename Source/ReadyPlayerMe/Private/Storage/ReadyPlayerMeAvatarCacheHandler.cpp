@@ -4,12 +4,12 @@
 #include "ReadyPlayerMeAvatarCacheHandler.h"
 #include "ReadyPlayerMeAvatarStorage.h"
 #include "ReadyPlayerMeSettings.h"
-#include "Interfaces/IHttpResponse.h"
 #include "Utils/ReadyPlayerMeMetadataExtractor.h"
 
 
 FReadyPlayerMeAvatarCacheHandler::FReadyPlayerMeAvatarCacheHandler(const FAvatarUri& AvatarUri)
 	: AvatarUri(AvatarUri)
+	, ModelData(nullptr)
 	, bMetadataNeedsUpdate(false)
 {
 }
@@ -31,19 +31,30 @@ bool FReadyPlayerMeAvatarCacheHandler::ShouldLoadFromCache() const
 
 bool FReadyPlayerMeAvatarCacheHandler::IsMetadataChanged(const FString& LastModifiedDate) const
 {
-	const FString MetadataStr = FReadyPlayerMeAvatarStorage::LoadMetadata(AvatarUri.LocalMetadataPath);
-	if (!MetadataStr.IsEmpty())
+	const auto Metadata = GetLocalMetadata();
+	if (Metadata.IsSet())
 	{
-		const FAvatarMetadata LocalMetadata = FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(MetadataStr);
-		if (LocalMetadata.LastModifiedDate == LastModifiedDate)
-		{
-			return false;
-		}
+		return Metadata->LastModifiedDate != LastModifiedDate;
 	}
 	return true;
 }
 
-void FReadyPlayerMeAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, const FString& LastModifiedDate, bool bIsTryingToUpdate)
+TOptional<FAvatarMetadata> FReadyPlayerMeAvatarCacheHandler::GetLocalMetadata() const
+{
+	const FString MetadataStr = FReadyPlayerMeAvatarStorage::LoadMetadata(AvatarUri.LocalMetadataPath);
+	if (!MetadataStr.IsEmpty())
+	{
+		return FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(MetadataStr);
+	}
+	return {};
+}
+
+bool FReadyPlayerMeAvatarCacheHandler::ShouldSaveMetadata() const
+{
+	return bMetadataNeedsUpdate;
+}
+
+void FReadyPlayerMeAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, const FString& LastModifiedDate)
 {
 	if (!IsCachingEnabled())
 	{
@@ -51,30 +62,30 @@ void FReadyPlayerMeAvatarCacheHandler::SetUpdatedMetadataStr(const FString& Meta
 	}
 	bMetadataNeedsUpdate = IsMetadataChanged(LastModifiedDate);
 	UpdatedMetadataStr = FReadyPlayerMeMetadataExtractor::AddModifiedDateToMetadataJson(MetadataJson, LastModifiedDate);
-	if (bIsTryingToUpdate || (FReadyPlayerMeAvatarStorage::FileExists(AvatarUri.LocalMetadataPath) && bMetadataNeedsUpdate))
+	if (FReadyPlayerMeAvatarStorage::FileExists(AvatarUri.LocalMetadataPath) && bMetadataNeedsUpdate)
 	{
 		FReadyPlayerMeAvatarStorage::DeleteDirectory(AvatarUri.LocalAvatarDirectory);
 	}
 }
 
-void FReadyPlayerMeAvatarCacheHandler::SetAvatarResponse(FHttpResponsePtr ResponsePtr)
+void FReadyPlayerMeAvatarCacheHandler::SetModelData(const TArray<uint8>* Data)
 {
 	if (!IsCachingEnabled())
 	{
 		return;
 	}
-	// We store the response pointer because we don't want to copy the response content(avatar data).
-	AvatarResponsePtr = ResponsePtr;
+	// We store the pointer because we don't want to copy the avatar data.
+	ModelData = Data;
 }
 
 void FReadyPlayerMeAvatarCacheHandler::SaveAvatarInCache() const
 {
-	if (IsCachingEnabled() && !UpdatedMetadataStr.IsEmpty() && AvatarResponsePtr.IsValid())
+	if (IsCachingEnabled() && ModelData != nullptr)
 	{
 		if (bMetadataNeedsUpdate)
 		{
 			FReadyPlayerMeAvatarStorage::SaveMetadata(AvatarUri.LocalMetadataPath, UpdatedMetadataStr);
 		}
-		FReadyPlayerMeAvatarStorage::SaveAvatar(AvatarUri.LocalModelPath, AvatarResponsePtr->GetContent());
+		FReadyPlayerMeAvatarStorage::SaveAvatar(AvatarUri.LocalModelPath, *ModelData);
 	}
 }
