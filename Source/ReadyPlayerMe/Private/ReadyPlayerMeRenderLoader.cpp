@@ -2,34 +2,52 @@
 
 
 #include "ReadyPlayerMeRenderLoader.h"
-#include "Utils/ReadyPlayerMeRenderUrlConvertor.h"
-#include "Blueprint/AsyncTaskDownloadImage.h"
-#include "Engine/Texture2DDynamic.h"
 
-void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const ERenderSceneType& SceneType, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed)
+#include "Kismet/KismetRenderingLibrary.h"
+#include "Utils/ReadyPlayerMeRenderUrlConvertor.h"
+#include "Request/ReadyPlayerMeBaseRequest.h"
+
+//TODO: Move the timout to the RPMSettings to make it configurable
+constexpr float IMAGE_REQUEST_TIMEOUT = 60.f;
+
+void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed)
 {
 	OnDownloadImageCompleted = OnCompleted;
 	OnDownloadImageFailed = OnFailed;
-	const FString Url = FReadyPlayerMeRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType);
-	DownloadRenderedImage(Url);
+	const FString Url = FReadyPlayerMeRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType, BlendShapes);
+
+	ImageRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	ImageRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeRenderLoader::OnImageDownloaded);
+	ImageRequest->Download(Url, IMAGE_REQUEST_TIMEOUT);
 }
 
-void UReadyPlayerMeRenderLoader::DownloadRenderedImage(const FString& ImageUrl)
+void UReadyPlayerMeRenderLoader::OnImageDownloaded(bool bSuccess)
 {
-	DownloadImageTask = NewObject<UAsyncTaskDownloadImage>();
-	DownloadImageTask->OnSuccess.AddDynamic(this, &UReadyPlayerMeRenderLoader::OnTexture2DDownloaded);
-	DownloadImageTask->OnFail.AddDynamic(this, &UReadyPlayerMeRenderLoader::OnTexture2DDownloadFailed);
-	DownloadImageTask->Start(ImageUrl);
+	if (!OnDownloadImageCompleted.IsBound())
+	{
+		return;
+	}
+	if (bSuccess)
+	{
+		UTexture2D* Texture = UKismetRenderingLibrary::ImportBufferAsTexture2D(this, ImageRequest->GetContent());
+		(void)OnDownloadImageCompleted.ExecuteIfBound(Texture);
+	}
+	else
+	{
+		(void)OnDownloadImageFailed.ExecuteIfBound(TEXT("Failed to Download the image"));
+	}
+	ImageRequest.Reset();
 }
 
-void UReadyPlayerMeRenderLoader::OnTexture2DDownloaded(UTexture2DDynamic* Texture)
+void UReadyPlayerMeRenderLoader::BeginDestroy()
 {
-	DownloadImageTask = nullptr;
-	(void)OnDownloadImageCompleted.ExecuteIfBound(Texture);
-}
+	if (ImageRequest.IsValid())
+	{
+		OnDownloadImageCompleted.Unbind();
+		OnDownloadImageFailed.Unbind();
+		ImageRequest->CancelRequest();
+		ImageRequest.Reset();
+	}
 
-void UReadyPlayerMeRenderLoader::OnTexture2DDownloadFailed(UTexture2DDynamic*)
-{
-	DownloadImageTask = nullptr;
-	(void)OnDownloadImageFailed.ExecuteIfBound(TEXT("Failed to Download the image"));
+	Super::BeginDestroy();
 }

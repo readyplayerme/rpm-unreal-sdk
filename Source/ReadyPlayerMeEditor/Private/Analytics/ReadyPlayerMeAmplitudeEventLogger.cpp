@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
 #include "ReadyPlayerMeAmplitudeEventLogger.h"
-#include "ReadyPlayerMe/Private/Utils/ReadyPlayerMeRequestCreator.h"
+#include "ReadyPlayerMe/Private/Request/ReadyPlayerMeRequestCreator.h"
 
 #include "Templates/SharedPointer.h"
 #include "Serialization/JsonWriter.h"
