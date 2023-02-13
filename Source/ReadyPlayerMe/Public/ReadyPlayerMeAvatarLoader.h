@@ -40,6 +40,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Cancel Avatar Load"))
 	void CancelAvatarLoad();
 
+	/**
+	 * Skeletal Mesh of the loaded avatar.
+	 */
+	UPROPERTY()
+	USkeletalMesh* SkeletalMesh;
+
 private:
 	UFUNCTION()
 	void OnMetadataDownloaded(bool bSuccess);
@@ -66,9 +72,6 @@ private:
 
 	UPROPERTY()
 	class UReadyPlayerMeGlbLoader* GlbLoader;
-
-	UPROPERTY()
-	USkeletalMesh* SkeletalMesh;
 
 	TOptional<FAvatarMetadata> AvatarMetadata;
 	TOptional<FAvatarUri> AvatarUri;

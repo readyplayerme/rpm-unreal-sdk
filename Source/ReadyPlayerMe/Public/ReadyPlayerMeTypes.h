@@ -147,6 +147,8 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageFailed, const FString&, ErrorMes
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FGlbLoadCompleted, class USkeletalMesh*, SkeletalMesh);
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FAvatarPreloadCompleted, bool, bSuccess);
+
 UENUM(BlueprintType)
 enum class ERenderSceneType : uint8
 {
