@@ -38,6 +38,16 @@ enum class EAvatarTextureSizeLimit : uint8
 	Limit_256 UMETA(DisplayName = "256")
 };
 
+UENUM(BlueprintType)
+enum class EAvatarTextureChannel : uint8
+{
+	BaseColor UMETA(DisplayName = "Base Color"),
+	Normal UMETA(DisplayName = "Normal"),
+	MetallicRoughness UMETA(DisplayName = "Metallic Roughness"),
+	Emissive UMETA(DisplayName = "Emissive"),
+	Occlusion UMETA(DisplayName = "Occlusion")
+};
+
 /**
  * Base data asset class that provides configuration for the avatar loader.
  * For customization create a blueprint data asset subclass. 
@@ -64,6 +74,15 @@ public:
 	/** Provides ability to change the texture size. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
 	EAvatarTextureSizeLimit TextureSizeLimit = EAvatarTextureSizeLimit::Limit_1024;
+
+	/** Provides ability to select the texture channels that need to be included in the avatar */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
+	TSet<EAvatarTextureChannel> TextureChannels =
+		{ EAvatarTextureChannel::BaseColor,
+		EAvatarTextureChannel::Normal,
+		EAvatarTextureChannel::MetallicRoughness,
+		EAvatarTextureChannel::Emissive,
+		EAvatarTextureChannel::Occlusion };
 
 	/** If set to true the hands of the avatars will be included. This property applies only to the half-body avatars. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
