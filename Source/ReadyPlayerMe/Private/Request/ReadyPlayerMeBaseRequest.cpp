@@ -3,7 +3,7 @@
 
 #include "ReadyPlayerMeBaseRequest.h"
 
-#include "Utils/ReadyPlayerMeRequestCreator.h"
+#include "Request/ReadyPlayerMeRequestCreator.h"
 #include "Utils/ReadyPlayerMePluginInfo.h"
 
 static const FString HEADER_RPM_SOURCE = "RPM-Source";
