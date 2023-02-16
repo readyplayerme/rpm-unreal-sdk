@@ -3,7 +3,7 @@
 
 #include "Utils/ReadyPlayerMeMorphTargetUtils.h"
 
-static const TMap<EAvatarMorphTarget, FString> MORPH_TARGETS_TO_STRING =
+static const TMap<EAvatarMorphTarget, FString> ALL_MORPH_TARGETS_TO_STRING =
 {
 	{ EAvatarMorphTarget::Viseme_aa, "viseme_aa" },
 	{ EAvatarMorphTarget::Viseme_E, "viseme_E" },
@@ -82,7 +82,7 @@ static const TMap<EAvatarMorphTarget, FString> MORPH_TARGETS_TO_STRING =
 	{ EAvatarMorphTarget::TongueOut, "tongueOut" }
 };
 
-static const TMap<EStandardMorphTargetGroup, FString> MORPH_TARGETS_GROUP_TO_STRING =
+static const TMap<EStandardMorphTargetGroup, FString> ALL_GROUP_TO_STRING =
 {
 	{ EStandardMorphTargetGroup::None, "none" },
 	{ EStandardMorphTargetGroup::Oculus, "Oculus%20Visemes" },
@@ -91,10 +91,10 @@ static const TMap<EStandardMorphTargetGroup, FString> MORPH_TARGETS_GROUP_TO_STR
 
 FString FReadyPlayerMeMorphTargetUtils::MorphTargetToString(EAvatarMorphTarget MorphTarget)
 {
-	return  MORPH_TARGETS_TO_STRING[MorphTarget];
+	return  ALL_MORPH_TARGETS_TO_STRING[MorphTarget];
 }
 
 FString FReadyPlayerMeMorphTargetUtils::MorphTargetGroupToString(EStandardMorphTargetGroup Group)
 {
-	return  MORPH_TARGETS_GROUP_TO_STRING[Group];
+	return  ALL_GROUP_TO_STRING[Group];
 }
