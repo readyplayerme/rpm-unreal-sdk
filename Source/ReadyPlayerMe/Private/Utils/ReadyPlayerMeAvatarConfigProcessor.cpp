@@ -24,6 +24,15 @@ static const TMap<EAvatarTextureAtlas, FString> TEXTURE_ATLAS_TO_STRING =
 	{ EAvatarTextureAtlas::Low, "256" }
 };
 
+static const TMap<EAvatarTextureChannel, FString> TEXTURE_CHANNEL_TO_STRING =
+{
+	{ EAvatarTextureChannel::BaseColor, "baseColor" },
+	{ EAvatarTextureChannel::Normal, "normal" },
+	{ EAvatarTextureChannel::MetallicRoughness, "metallicRoughness" },
+	{ EAvatarTextureChannel::Emissive, "emissive" },
+	{ EAvatarTextureChannel::Occlusion, "occlusion" }
+};
+
 static const TMap<EAvatarTextureSizeLimit, FString> TEXTURE_SIZE_LIMIT_TO_STRING =
 {
 	{ EAvatarTextureSizeLimit::Limit_1024, "1024" },
@@ -33,15 +42,29 @@ static const TMap<EAvatarTextureSizeLimit, FString> TEXTURE_SIZE_LIMIT_TO_STRING
 
 namespace
 {
-	FString ProcessMorphTargets(const UReadyPlayerMeAvatarConfig* AvatarConfig)
+	FString ProcessTextureChannels(const TSet<EAvatarTextureChannel>& TextureChannels)
 	{
-		if (AvatarConfig->MorphTargetGroup == nullptr)
+		if (TextureChannels.Num() == 0)
+		{
+			return "none";
+		}
+		TArray<FString> ChannelStrList;
+		for (const auto& Channel : TextureChannels)
+		{
+			ChannelStrList.Add(TEXTURE_CHANNEL_TO_STRING[Channel]);
+		}
+		return FString::Join(ChannelStrList, TEXT(","));
+	}
+
+	FString ProcessMorphTargets(const UReadyPlayerMeMorphTargetGroup* MorphTargetGroup)
+	{
+		if (MorphTargetGroup == nullptr)
 		{
 			return "";
 		}
 		TSet<EAvatarMorphTarget> Targets;
 		TSet<EStandardMorphTargetGroup> Groups;
-		AvatarConfig->MorphTargetGroup->GetTargets(Groups, Targets);
+		MorphTargetGroup->GetTargets(Groups, Targets);
 		if (Targets.Num() == 0 && Groups.Num() == 0)
 		{
 			return "";
@@ -71,7 +94,8 @@ FString FReadyPlayerMeAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig*
 	Parameters.Add("meshLod=" + FString::FromInt(static_cast<int>(AvatarConfig->MeshLod)));
 	Parameters.Add("textureAtlas=" + TEXTURE_ATLAS_TO_STRING[AvatarConfig->TextureAtlas]);
 	Parameters.Add("textureSizeLimit=" + TEXTURE_SIZE_LIMIT_TO_STRING[AvatarConfig->TextureSizeLimit]);
-	Parameters.Add(ProcessMorphTargets(AvatarConfig));
+	Parameters.Add("textureChannels=" + ProcessTextureChannels(AvatarConfig->TextureChannels));
+	Parameters.Add(ProcessMorphTargets(AvatarConfig->MorphTargetGroup));
 	Parameters.Add("useHands=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseHands));
 	Parameters.Add("useDracoMeshCompression=" + UKismetStringLibrary::Conv_BoolToString(UseDraco));
 	return "?" + FString::Join(Parameters, TEXT("&"));
