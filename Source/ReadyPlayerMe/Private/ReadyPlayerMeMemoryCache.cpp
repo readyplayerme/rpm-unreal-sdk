@@ -14,11 +14,11 @@ namespace
 	}
 }
 
-void UReadyPlayerMeMemoryCache::Preload(const TArray<FAvatarPreloadData>& PreloadDataList, const FAvatarPreloadCompleted& PreloadCompleted)
+void UReadyPlayerMeMemoryCache::Preload(const TArray<FAvatarPreloadData>& PreloadDataList, const FAvatarPreloadCompleted& OnPreloadCompleted)
 {
 	OnAvatarDownloadCompleted.BindDynamic(this, &UReadyPlayerMeMemoryCache::OnAvatarDownloaded);
 	OnLoadFailed.BindDynamic(this, &UReadyPlayerMeMemoryCache::OnAvatarLoadFailed);
-	OnAvatarPreloadCompleted = PreloadCompleted;
+	OnAvatarPreloadCompleted = OnPreloadCompleted;
 
 	for (const auto& PreloadData : PreloadDataList)
 	{

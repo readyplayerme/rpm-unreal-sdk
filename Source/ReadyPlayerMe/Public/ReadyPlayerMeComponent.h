@@ -80,8 +80,7 @@ public:
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
 
 	/**
-	 * If set to true, the MemoryCache will be used when loading the avatar.
-	 * It will allow to use the preloaded avatars.
+	 * Allow to use the preloaded avatars. If set to true, the MemoryCache will be used when loading the avatar.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
 	bool bUseMemoryCache;
