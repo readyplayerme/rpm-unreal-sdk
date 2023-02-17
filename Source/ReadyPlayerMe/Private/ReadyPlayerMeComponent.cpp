@@ -2,10 +2,8 @@
 
 #include "ReadyPlayerMeComponent.h"
 #include "ReadyPlayerMeAvatarLoader.h"
-#include "ReadyPlayerMeRenderLoader.h"
 #include "ReadyPlayerMeMemoryCache.h"
 #include "ReadyPlayerMeGameSubsystem.h"
-#include "Utils/ReadyPlayerMeUrlConvertor.h"
 #include "glTFRuntimeAsset.h"
 #include "UObject/UObjectGlobals.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -103,16 +101,4 @@ void UReadyPlayerMeComponent::InitSkeletalMeshComponent()
 		SkeletalMeshComponent->SetupAttachment(ThisActor->GetRootComponent());
 		SkeletalMeshComponent->RegisterComponent();
 	}
-}
-
-void UReadyPlayerMeComponent::LoadRender(const ERenderSceneType& SceneType, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed)
-{
-	UrlShortcode = FReadyPlayerMeUrlConvertor::GetValidatedUrlShortCode(UrlShortcode);
-	if (UrlShortcode.IsEmpty())
-	{
-		(void)OnFailed.ExecuteIfBound("Url invalid");
-		return;
-	}
-	RenderLoader = NewObject<UReadyPlayerMeRenderLoader>(this,TEXT("RenderLoader"));
-	RenderLoader->Load(UrlShortcode, SceneType, OnCompleted, OnFailed);
 }
