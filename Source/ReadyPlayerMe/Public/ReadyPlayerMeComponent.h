@@ -80,6 +80,12 @@ public:
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
 
 	/**
+	 * Allow to use the preloaded avatars. If set to true, the MemoryCache will be used when loading the avatar.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
+	bool bUseMemoryCache;
+
+	/**
 	 * Immediately cancels the avatar loading.
 	 * When the garbage collector is removing the AvatarLoader, avatar loading gets automatically cancelled.
 	 */
@@ -95,6 +101,8 @@ private:
 
 	UFUNCTION()
 	void OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
+
+	void SetAvatarData(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
 
 	void InitSkeletalMeshComponent();
 

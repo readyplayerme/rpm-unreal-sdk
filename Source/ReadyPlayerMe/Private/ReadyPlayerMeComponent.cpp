@@ -2,6 +2,8 @@
 
 #include "ReadyPlayerMeComponent.h"
 #include "ReadyPlayerMeAvatarLoader.h"
+#include "ReadyPlayerMeMemoryCache.h"
+#include "ReadyPlayerMeGameSubsystem.h"
 #include "glTFRuntimeAsset.h"
 #include "UObject/UObjectGlobals.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -11,6 +13,7 @@ UReadyPlayerMeComponent::UReadyPlayerMeComponent()
 	: TargetSkeleton(nullptr)
 	, AvatarConfig(nullptr)
 	, SkeletalMeshComponent(nullptr)
+	, bUseMemoryCache(false)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	OnAvatarDownloadCompleted.BindDynamic(this, &UReadyPlayerMeComponent::OnAvatarDownloaded);
@@ -30,6 +33,21 @@ void UReadyPlayerMeComponent::LoadAvatar(const FAvatarLoadCompleted& OnLoadCompl
 	}
 
 	OnAvatarLoadCompleted = OnLoadCompleted;
+
+	if (bUseMemoryCache)
+	{
+		const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GetWorld()->GetGameInstance());
+		if (IsValid(GameSubsystem))
+		{
+			const FAvatarMemoryCacheData CacheData = GameSubsystem->MemoryCache->GetAvatarCacheData(UrlShortcode, AvatarConfig);
+			if (IsValid(CacheData.SkeletalMesh))
+			{
+				SetAvatarData(CacheData.SkeletalMesh, CacheData.Metadata);
+				return;
+			}
+		}
+	}
+
 	AvatarLoader = NewObject<UReadyPlayerMeAvatarLoader>(this,TEXT("AvatarLoader"));
 	AvatarLoader->LoadAvatar(UrlShortcode, AvatarConfig, TargetSkeleton, SkeletalMeshConfig, OnAvatarDownloadCompleted, OnLoadFailed);
 }
@@ -49,6 +67,19 @@ void UReadyPlayerMeComponent::CancelAvatarLoad()
 }
 
 void UReadyPlayerMeComponent::OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata)
+{
+	if (bUseMemoryCache)
+	{
+		const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GetWorld()->GetGameInstance());
+		if (IsValid(GameSubsystem))
+		{
+			GameSubsystem->MemoryCache->AddAvatar(UrlShortcode, AvatarConfig, SkeletalMesh, Metadata);
+		}
+	}
+	SetAvatarData(SkeletalMesh, Metadata);
+}
+
+void UReadyPlayerMeComponent::SetAvatarData(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata)
 {
 	AvatarMetadata = Metadata;
 	InitSkeletalMeshComponent();
