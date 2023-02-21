@@ -93,8 +93,8 @@ void UReadyPlayerMeAvatarLoader::ExecuteSuccessCallback()
 {
 	if (SkeletalMesh != nullptr && AvatarMetadata.IsSet())
 	{
-		(void)OnAvatarDownloadCompleted.ExecuteIfBound(SkeletalMesh, *AvatarMetadata);
 		CacheHandler->SaveAvatarInCache();
+		(void)OnAvatarDownloadCompleted.ExecuteIfBound(SkeletalMesh, *AvatarMetadata);
 		Reset();
 	}
 }

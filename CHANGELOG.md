@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.20.0] 2023-02-22
+
+## Added
+
+- Open source the sdk
+- Load the avatar from the cache if the avatar request fails
+- BlendShape support for the RenderLoader
+- Female avatar FBX file into the `RPM_Avatar_Reference.zip`
+- MemoryCache for preloading and saving the avatars in the runtime memory
+
+## Updated
+
+SDK setup should be done through the open-source GitHub repository.
+
+## Breaking Changes
+
+- `FAvatarDownloadCompleted` delegate now uses USkeletalMesh instead of UglTFRuntimeAsset.
+- `ReadyPlayerMeComponent::LoadRender` function was removed. Use `ReadyPlayerMeRenderLoader::Load` function instead.
+- `FDownloadImageCompleted` delegate now uses UTexture2D instead of UTexture.
+
 ## [0.19.0] 2022-11-30
 
 ## Added

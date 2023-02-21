@@ -54,7 +54,7 @@ class READYPLAYERME_API UReadyPlayerMeMemoryCache : public UObject
 
 public:
 	/**
-	 * Preloads the avatar data os the avatars would be instantiated instantly when when loading them from the ReadyPlayerMeComponent.
+	 * Preloads the avatar data so the avatars would be instantiated instantly when loading them from the ReadyPlayerMeComponent.
 	 * 
 	 * @param PreloadDataList List of avatar data needed for preloading.
 	 * @param OnPreloadCompleted Complete callback. Called when the avatars are preloaded.
@@ -72,7 +72,7 @@ public:
 	FAvatarMemoryCacheData GetAvatarCacheData(const FString& Url, UReadyPlayerMeAvatarConfig* AvatarConfig) const;
 
 	/**
-	 * Downloads the avatar asset from the Url and saves it in the local storage.
+	 * Adds an already loaded avatar to the memory cache.
 	 *
 	 * @param Url Avatar url.
 	 * @param AvatarConfig Avatar config.
