@@ -45,16 +45,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Load New Avatar", AutoCreateRefTerm = "OnLoadCompleted,OnLoadFailed"))
 	void LoadNewAvatar(const FString& Url, const FAvatarLoadCompleted& OnLoadCompleted, const FAvatarLoadFailed& OnLoadFailed);
 
-	/**
-	 * Loads the rendered image of the avatar from the server. By setting the SceneType the avatar can be rendered in different scenes.
-	 * 
-	 * @param SceneType The type of the scene where the avatar should be rendered.
-	 * @param OnCompleted Success callback. Called when the render is loaded and provides the avatar texture as an argument.
-	 * @param OnFailed Failure callback. If the render operation fails, the failure callback will be called.
-	 */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Load Render", AutoCreateRefTerm = "OnCompleted, OnFailed"))
-	void LoadRender(const ERenderSceneType& SceneType, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed);
-
 	/** The avatar url or shortcode. It's used to load the avatar from the web. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
 	FString UrlShortcode;
@@ -90,6 +80,12 @@ public:
 	FglTFRuntimeSkeletalMeshConfig SkeletalMeshConfig;
 
 	/**
+	 * Allow to use the preloaded avatars. If set to true, the MemoryCache will be used when loading the avatar.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
+	bool bUseMemoryCache;
+
+	/**
 	 * Immediately cancels the avatar loading.
 	 * When the garbage collector is removing the AvatarLoader, avatar loading gets automatically cancelled.
 	 */
@@ -105,6 +101,8 @@ private:
 
 	UFUNCTION()
 	void OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
+
+	void SetAvatarData(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
 
 	void InitSkeletalMeshComponent();
 

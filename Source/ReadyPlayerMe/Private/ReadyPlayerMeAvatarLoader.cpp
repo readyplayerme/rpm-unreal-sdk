@@ -16,8 +16,8 @@ constexpr float METADATA_REQUEST_TIMEOUT = 20.f;
 static const FString HEADER_LAST_MODIFIED = "Last-Modified";
 
 UReadyPlayerMeAvatarLoader::UReadyPlayerMeAvatarLoader()
-	: GlbLoader(nullptr)
-	, SkeletalMesh(nullptr)
+	: SkeletalMesh(nullptr)
+	, GlbLoader(nullptr)
 	, bIsTryingToUpdate(false)
 {
 }
@@ -93,8 +93,8 @@ void UReadyPlayerMeAvatarLoader::ExecuteSuccessCallback()
 {
 	if (SkeletalMesh != nullptr && AvatarMetadata.IsSet())
 	{
-		(void)OnAvatarDownloadCompleted.ExecuteIfBound(SkeletalMesh, *AvatarMetadata);
 		CacheHandler->SaveAvatarInCache();
+		(void)OnAvatarDownloadCompleted.ExecuteIfBound(SkeletalMesh, *AvatarMetadata);
 		Reset();
 	}
 }

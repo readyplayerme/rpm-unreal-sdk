@@ -141,11 +141,13 @@ DECLARE_DYNAMIC_DELEGATE(FAvatarLoadCompleted);
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FAvatarLoadFailed, const FString&, ErrorMessage);
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageCompleted, class UTexture*, Texture);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageCompleted, class UTexture2D*, Texture);
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FDownloadImageFailed, const FString&, ErrorMessage);
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FGlbLoadCompleted, class USkeletalMesh*, SkeletalMesh);
+
+DECLARE_DYNAMIC_DELEGATE_OneParam(FAvatarPreloadCompleted, bool, bSuccess);
 
 UENUM(BlueprintType)
 enum class ERenderSceneType : uint8
