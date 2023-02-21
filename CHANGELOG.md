@@ -8,14 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Added
 
 - Open source the sdk
-- Load avatar from the cache if avatar request fails
+- Load the avatar from the cache if the avatar request fails
 - BlendShape support for the RenderLoader
 - Female avatar FBX file into the `RPM_Avatar_Reference.zip`
 - MemoryCache for preloading and saving the avatars in the runtime memory
 
-## Fixed
+## Updated
 
-- Refactored avatar loader logic
+SDK setup should be done through the open-source GitHub repository.
 
 ## Breaking Changes
 

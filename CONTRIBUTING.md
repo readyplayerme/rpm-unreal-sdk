@@ -1,4 +1,4 @@
-# Welcome to the Ready Player Me Unity SDK (Core) contributing guide
+# Welcome to the Ready Player Me Unreal SDK contributing guide
 
 Thank you for investing your time in contributing to our project! Any contribution you make will be reflected on [https://github.com/readyplayerme/rpm-unreal-sdk](https://github.com/readyplayerme/rpm-unreal-sdk) :sparkles:. 
 
@@ -52,7 +52,7 @@ Changes that are cosmetic in nature and do not add anything substantial to the s
 
 #### **Do you have questions about the source code?**
 
-* Ask any question about how to use the Ready Player Me Unity SDK in the [Ready Player Me support email](mailto:support@readyplayer.me).
+* Ask any question about how to use the Ready Player Me Unreal SDK in the [Ready Player Me support email](mailto:support@readyplayer.me).
 
 ## Issues
 
@@ -62,24 +62,22 @@ If you spot a problem with the docs, [search if an issue already exists](https:/
 
 #### Solve an issue
 
-Scan through our [existing issues](https://github.com/github/docs/issues) to find one that interests you. You can narrow down the search using `labels` as filters. See [Labels](/contributing/how-to-use-labels.md) for more information. As a general rule, we don’t assign issues to anyone. If you find an issue to work on, you are welcome to open a PR with a fix.
+Scan through our [existing issues](https://github.com/github/docs/issues) to find one that interests you. As a general rule, we don’t assign issues to anyone. If you find an issue to work on, you are welcome to open a PR with a fix.
 
 ### Make Changes
 
 #### Make changes locally
 
 
-1. [Install Git LFS](https://docs.github.com/en/github/managing-large-files/versioning-large-files/installing-git-large-file-storage).
+1. Fork the repository.
+  - Using GitHub Desktop:
+    - [Getting started with GitHub Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/getting-started-with-github-desktop) will guide you through setting up Desktop.
+    - Once Desktop is set up, you can use it to [fork the repo](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)!
 
-2. Fork the repository.
-- Using GitHub Desktop:
-  - [Getting started with GitHub Desktop](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/getting-started-with-github-desktop) will guide you through setting up Desktop.
-  - Once Desktop is set up, you can use it to [fork the repo](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/cloning-and-forking-repositories-from-github-desktop)!
+  - Using the command line:
+    - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
 
-- Using the command line:
-  - [Fork the repo](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo#fork-an-example-repository) so that you can make your changes without affecting the original project until you're ready to merge them.
-
-4. Create a working branch and start with your changes!
+2. Create a working branch and start with your changes!
 
 ### Commit your update
 
@@ -94,7 +92,6 @@ For content changes, make sure that you:
 - [ ] Confirm that the changes meet the user experience and goals outlined in the content design plan (if there is one).
 - [ ] Compare your pull request's source changes to staging to confirm that the output matches the source and that everything is rendering as expected. This helps spot issues like typos, content that doesn't follow the style guide, or content that isn't rendering due to versioning problems. Remember that lists and tables can be tricky.
 - [ ] Review the content for technical accuracy.
-- [ ] Review the entire pull request using the [translations guide for writers](./translations/for-writers.md).
 - [ ] Copy-edit the changes for grammar, spelling, and adherence to the [style guide](#).
 - [ ] Check new or updated Liquid statements to confirm that versioning is correct.
 - [ ] If there are any failing checks in your PR, troubleshoot them until they're all passing.
@@ -115,10 +112,7 @@ Once you submit your PR, a team member will review your proposal. We may ask que
 
 Congratulations :tada::tada: The GitHub team thanks you :sparkles:. 
 
-Once your PR is merged, your contributions will be publicly visible on the [GitHub docs](https://docs.github.com/en). 
-
-Now that you are part of the GitHub docs community, see how else you can [contribute to the docs](/contributing/types-of-contributions.md).
-
+Once your PR is merged, your contributions will be publicly visible on the [GitHub docs](https://docs.github.com/en).
 
 
 Thanks! :heart: :heart: :heart:
