@@ -35,13 +35,10 @@ public class ReadyPlayerMeEditor : ModuleRules
 				"JsonUtilities",
 				"HTTP",
 				"Blutility",
-				"Projects"
+				"Projects",
+				"DeveloperSettings"
 			}
 		);
-
-#if UE_4_26_OR_LATER
-		PrivateDependencyModuleNames.Add("DeveloperSettings");
-#endif
 
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
