@@ -62,8 +62,3 @@ FString FReadyPlayerMeBaseRequest::GetContentAsString() const
 {
 	return DownloadRequest->GetResponse()->GetContentAsString();
 }
-
-FString FReadyPlayerMeBaseRequest::GetHeader(const FString& Header) const
-{
-	return DownloadRequest->GetResponse()->GetHeader(Header);
-}

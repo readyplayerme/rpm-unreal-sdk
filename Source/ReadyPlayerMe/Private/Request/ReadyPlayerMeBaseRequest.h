@@ -20,8 +20,6 @@ public:
 	
 	FString GetContentAsString() const;
 
-	FString GetHeader(const FString& Header) const;
-
 private:
 	void OnReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess);
 

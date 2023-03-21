@@ -13,8 +13,6 @@
 constexpr float AVATAR_REQUEST_TIMEOUT = 60.f;
 constexpr float METADATA_REQUEST_TIMEOUT = 20.f;
 
-static const FString HEADER_LAST_MODIFIED = "Last-Modified";
-
 UReadyPlayerMeAvatarLoader::UReadyPlayerMeAvatarLoader()
 	: SkeletalMesh(nullptr)
 	, GlbLoader(nullptr)
@@ -70,8 +68,7 @@ void UReadyPlayerMeAvatarLoader::CancelAvatarLoad()
 void UReadyPlayerMeAvatarLoader::ProcessReceivedMetadata()
 {
 	AvatarMetadata = FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(MetadataRequest->GetContentAsString());
-	AvatarMetadata->LastModifiedDate = MetadataRequest->GetHeader(HEADER_LAST_MODIFIED);
-	CacheHandler->SetUpdatedMetadataStr(MetadataRequest->GetContentAsString(), AvatarMetadata->LastModifiedDate);
+	CacheHandler->SetUpdatedMetadataStr(MetadataRequest->GetContentAsString(), AvatarMetadata->UpdatedAtDate);
 	// If we are not trying to update the avatar, the metadata and the model should be downloaded as the standard flow.
 	if (!bIsTryingToUpdate)
 	{
