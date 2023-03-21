@@ -29,7 +29,7 @@ bool FReadyPlayerMeAvatarCacheHandler::ShouldLoadFromCache() const
 	return IsCachingEnabled() && FReadyPlayerMeAvatarStorage::AvatarExists(AvatarUri);
 }
 
-bool FReadyPlayerMeAvatarCacheHandler::IsMetadataChanged(const FString& UpdatedDate) const
+bool FReadyPlayerMeAvatarCacheHandler::IsMedataUpdated(const FString& UpdatedDate) const
 {
 	const auto Metadata = GetLocalMetadata();
 	if (Metadata.IsSet())
@@ -60,7 +60,7 @@ void FReadyPlayerMeAvatarCacheHandler::SetUpdatedMetadataStr(const FString& Meta
 	{
 		return;
 	}
-	bMetadataNeedsUpdate = IsMetadataChanged(UpdatedDate);
+	bMetadataNeedsUpdate = IsMedataUpdated(UpdatedDate);
 	UpdatedMetadataStr = MetadataJson;
 	if (FReadyPlayerMeAvatarStorage::FileExists(AvatarUri.LocalMetadataPath) && bMetadataNeedsUpdate)
 	{

@@ -24,7 +24,7 @@ public:
 	static bool IsCachingEnabled();
 
 private:
-	bool IsMetadataChanged(const FString& UpdatedDate) const;
+	bool IsMedataUpdated(const FString& UpdatedDate) const;
 	
 	const FAvatarUri AvatarUri;
 
