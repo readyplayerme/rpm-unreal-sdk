@@ -7,6 +7,7 @@ public class ReadyPlayerMe : ModuleRules
 	public ReadyPlayerMe(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		bUseUnity = false;
 
 		PublicIncludePaths.AddRange(
 			new string[] {
