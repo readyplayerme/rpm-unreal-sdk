@@ -5,6 +5,7 @@
 
 #include "ReadyPlayerMeAvatarConfigProcessor.h"
 #include "Internationalization/Regex.h"
+#include "Misc/Paths.h"
 
 static const FString SHORTCODE_URL_PREFIX = "https://models.readyplayer.me/";
 static const FString URL_PATTERN = "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";

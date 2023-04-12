@@ -3,6 +3,7 @@
 
 #include "Utils/ReadyPlayerMeRenderUrlConvertor.h"
 #include "Utils/ReadyPlayerMeMorphTargetUtils.h"
+#include "Misc/Paths.h"
 
 static const TMap<ERenderSceneType,FString> SCENE_TYPE_TO_STRING_MAP =
 {
