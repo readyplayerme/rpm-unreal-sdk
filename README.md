@@ -23,25 +23,21 @@ The plugin can be found on GitHub [here](https://github.com/rdeioris/glTFRuntime
 
 ### Add ReadyPlayerMe and glTFRuntime plugins
 
-There are three ways you can add the **ReadyPlayerMe** and the **glTFRuntime** plugins to your project. Add them as submodules, clone the repos, or paste the plugins inside of the **Plugins** folder.
+There are three ways you can add the **ReadyPlayerMe** and the **glTFRuntime** plugins to your project. Add them as submodules, paste the plugins inside of the **Plugins** folder, or add the blueprint version of the plugins to the Engine.
 
-- To add the plugins to your project as a submodules, run the following command in the terminal from your project folder. This is preferred way of setting up the plugins.
-
-```
-git submodule add --name glTFRuntime -- https://github.com/rdeioris/glTFRuntime.git Plugins/glTFRuntime ; cd Plugins/glTFRuntime ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; git submodule add --name ReadyPlayerMe -- https://github.com/readyplayerme/rpm-unreal-sdk.git Plugins/ReadyPlayerMe ; cd Plugins/ReadyPlayerMe ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
-```
-
-- To clone the plugins into your project, run the following command in the terminal from your project folder.
+- To add the plugins to your project as a submodules, run the following command in the terminal from your project folder. This case applies if you already have your project in a git repository. This is preferred way of setting up the plugins.
 
 ```
-git clone https://github.com/rdeioris/glTFRuntime.git Plugins/glTFRuntime ; cd Plugins/glTFRuntime ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; git clone https://github.com/readyplayerme/rpm-unreal-sdk.git Plugins/ReadyPlayerMe ; cd Plugins/ReadyPlayerMe ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
+git submodule add --name Plugins/glTFRuntime -- https://github.com/rdeioris/glTFRuntime.git Plugins/glTFRuntime ; cd Plugins/glTFRuntime ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; git submodule add --name Plugins/ReadyPlayerMe -- https://github.com/readyplayerme/rpm-unreal-sdk.git Plugins/ReadyPlayerMe ; cd Plugins/ReadyPlayerMe ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
 ```
 
 - To paste the plugins inside of the Plugins folder, create a **Plugins** folder from the root of your project, download the latest tags of the [glTFRuntime](https://github.com/rdeioris/glTFRuntime.git) and [ReadyPlayerMe](https://github.com/readyplayerme/rpm-unreal-sdk.git) plugins into it. Rename the **rpm-unreal-sdk** plugin folder to the **ReadyPlayerMe**.
 
-### Update ReadyPlayerMe and glTFRuntime plugins
+- To add the blueprint version of the plugins, find the **ReadyPlayerMe** and **glTFRuntime** plugins attached in the [Latest Release](https://github.com/readyplayerme/rpm-unreal-sdk/releases/latest), copy the plugin folders ReadyPlayerMe and glTFRuntime into the `ENGINE_VERSION/Engine/Plugins` folder.
 
-To update the plugins paste the following command in the terminal from your project folder. This will fetch and switch the plugin repositories to the latest stable release.
+### Update ReadyPlayerMe and glTFRuntime plugin submodules
+
+To update the submodules of the plugins, paste the following command in the terminal from your project folder. This will fetch and switch the plugin repositories to the latest stable release.
 
 ```
 cd Plugins/glTFRuntime ; git fetch --tags ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; cd Plugins/ReadyPlayerMe ; git fetch --tags ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
