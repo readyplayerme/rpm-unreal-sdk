@@ -1,19 +1,19 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0.0",
+	"VersionName": "1.1.0",
 	"FriendlyName": "Ready Player Me",
 	"Description": "Ready Player Me SDK",
 	"Category": "Runtime",
 	"CreatedBy": "Ready Player Me",
 	"CreatedByURL": "https://readyplayer.me/",
-	"DocsURL": "https://docs.readyplayer.me/integration-guides/unreal-engine-4",
+	"DocsURL": "https://docs.readyplayer.me/integration-guides/unreal-engine",
 	"MarketplaceURL": "",
-	"SupportURL": "https://docs.readyplayer.me/integration-guides/unreal-engine-4",
+	"SupportURL": "https://docs.readyplayer.me/integration-guides/unreal-engine",
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
-	"Installed": false,
+	"Installed": true,
 	"Modules": [
 		{
 			"Name": "ReadyPlayerMe",
