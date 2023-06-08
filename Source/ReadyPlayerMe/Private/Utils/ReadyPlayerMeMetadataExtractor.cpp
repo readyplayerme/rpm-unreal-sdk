@@ -15,7 +15,7 @@ static const FString GENDER_FEMININE = "Feminine";
 static const FString GENDER_MASCULINE = "Masculine";
 static const FString TYPE_FULLBODY = "Fullbody";
 static const FString TYPE_HALFBODY = "Halfbody";
-static const FString JSON_FIELD_OUTFIT = "outfitVersion";
+static const FString JSON_FIELD_SKIN_TONE = "skinTone";
 static const FString JSON_FIELD_BODY = "bodyType";
 static const FString JSON_FIELD_GENDER = "outfitGender";
 static const FString JSON_FIELD_UPDATED_AT = "updatedAt";
@@ -68,9 +68,9 @@ FAvatarMetadata FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(const FSt
 				Metadata.BodyType = EAvatarBodyType::FullBody;
 			}
 		}
-		if (JsonObject->HasField(JSON_FIELD_OUTFIT))
+		if (JsonObject->HasField(JSON_FIELD_SKIN_TONE))
 		{
-			Metadata.OutfitVersion = JsonObject->GetIntegerField(JSON_FIELD_OUTFIT);
+			Metadata.SkinTone = JsonObject->GetStringField(JSON_FIELD_SKIN_TONE);
 		}
 		if (JsonObject->HasField(JSON_FIELD_GENDER))
 		{
