@@ -7,6 +7,8 @@
 #include "glTFRuntimeAsset.h"
 #include "UObject/UObjectGlobals.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "Media/Public/IMediaTracks.h"
 
 UReadyPlayerMeComponent::UReadyPlayerMeComponent()
