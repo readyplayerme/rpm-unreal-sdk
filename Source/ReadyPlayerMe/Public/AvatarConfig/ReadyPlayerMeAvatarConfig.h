@@ -95,7 +95,7 @@ public:
 	 * @note Mesh-Opt compression should not be used along with the Draco compression.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
-	bool bMeshOptCompression = false;
+	bool bUseMeshOptCompression = false;
 
 	/**
 	 * If set to true the avatar will be compressed with the Draco mesh compression.

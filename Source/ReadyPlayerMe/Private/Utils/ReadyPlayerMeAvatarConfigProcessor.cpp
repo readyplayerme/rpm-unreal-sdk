@@ -97,7 +97,7 @@ FString FReadyPlayerMeAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig*
 	Parameters.Add("textureChannels=" + ProcessTextureChannels(AvatarConfig->TextureChannels));
 	Parameters.Add(ProcessMorphTargets(AvatarConfig->MorphTargetGroup));
 	Parameters.Add("useHands=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseHands));
-	Parameters.Add("meshOptCompression=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bMeshOptCompression));
+	Parameters.Add("useMeshOptCompression=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseMeshOptCompression));
 	Parameters.Add("useDracoMeshCompression=" + UKismetStringLibrary::Conv_BoolToString(UseDraco));
 	return "?" + FString::Join(Parameters, TEXT("&"));
 }
