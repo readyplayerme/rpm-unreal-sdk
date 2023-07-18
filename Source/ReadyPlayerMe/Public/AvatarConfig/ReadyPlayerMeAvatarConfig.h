@@ -89,18 +89,8 @@ public:
 	bool bUseHands = true;
 
 	/**
-	 * If set to true the avatar will be compressed with the Mesh-Opt compression.
-	 * Mesh-Opt compression will effectively reduce the size of the avatar by compressing the mesh geometry.
-	 *
-	 * @note Mesh-Opt compression should not be used along with the Draco compression.
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
-	bool bMeshOptCompression = false;
-
-	/**
 	 * If set to true the avatar will be compressed with the Draco mesh compression.
 	 *
-	 * @note prefer using Mesh-Opt compression instead.
 	 * @note If the glTFRuntimeDraco plugin is not listed as a project dependency, this property will be ignored.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
