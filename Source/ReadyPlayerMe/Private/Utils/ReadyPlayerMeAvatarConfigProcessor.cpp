@@ -89,13 +89,17 @@ FString FReadyPlayerMeAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig*
 		return "";
 	}
 	const bool UseDraco = FReadyPlayerMePluginInfo::IsDracoPluginIncluded() && AvatarConfig->bUseDracoMeshCompression;
+	const FString MorphTargetsParam = ProcessMorphTargets(AvatarConfig->MorphTargetGroup);
 	TArray<FString> Parameters;
 	Parameters.Add("pose=" + POSE_TO_STRING[AvatarConfig->Pose]);
 	Parameters.Add("meshLod=" + FString::FromInt(static_cast<int>(AvatarConfig->MeshLod)));
 	Parameters.Add("textureAtlas=" + TEXTURE_ATLAS_TO_STRING[AvatarConfig->TextureAtlas]);
 	Parameters.Add("textureSizeLimit=" + TEXTURE_SIZE_LIMIT_TO_STRING[AvatarConfig->TextureSizeLimit]);
 	Parameters.Add("textureChannels=" + ProcessTextureChannels(AvatarConfig->TextureChannels));
-	Parameters.Add(ProcessMorphTargets(AvatarConfig->MorphTargetGroup));
+	if (!MorphTargetsParam.IsEmpty())
+	{
+		Parameters.Add(MorphTargetsParam);
+	}
 	Parameters.Add("useHands=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseHands));
 	Parameters.Add("useDracoMeshCompression=" + UKismetStringLibrary::Conv_BoolToString(UseDraco));
 	return "?" + FString::Join(Parameters, TEXT("&"));
