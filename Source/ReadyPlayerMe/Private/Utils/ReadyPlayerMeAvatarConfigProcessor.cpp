@@ -101,6 +101,7 @@ FString FReadyPlayerMeAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig*
 		Parameters.Add(MorphTargetsParam);
 	}
 	Parameters.Add("useHands=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseHands));
+	Parameters.Add("useMeshOptCompression=" + UKismetStringLibrary::Conv_BoolToString(AvatarConfig->bUseMeshOptCompression));
 	Parameters.Add("useDracoMeshCompression=" + UKismetStringLibrary::Conv_BoolToString(UseDraco));
 	return "?" + FString::Join(Parameters, TEXT("&"));
 }
