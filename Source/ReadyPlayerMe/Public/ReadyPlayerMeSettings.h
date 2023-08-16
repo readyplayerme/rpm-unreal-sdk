@@ -19,7 +19,11 @@ class READYPLAYERME_API UReadyPlayerMeSettings : public UDeveloperSettings
 public:
 	UReadyPlayerMeSettings();
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Avatar Caching", meta = (DisplayName = "Enable Avatar Caching",
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (DisplayName = "App ID",
+	ToolTip = "The App ID is used to identify your application. You can find it in the Ready Player Me application dashboard in studio https://studio.readyplayer.me/applications."))
+	FString AppId;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (DisplayName = "Enable Avatar Caching",
 		ToolTip = "If checked, the loaded avatars will be saved in the local storage."))
 	bool bEnableAvatarCaching;
 

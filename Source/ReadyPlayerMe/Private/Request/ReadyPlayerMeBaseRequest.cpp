@@ -3,11 +3,13 @@
 
 #include "ReadyPlayerMeBaseRequest.h"
 
+#include "ReadyPlayerMeSettings.h"
 #include "Request/ReadyPlayerMeRequestCreator.h"
 #include "Utils/ReadyPlayerMePluginInfo.h"
 
 static const FString HEADER_RPM_SOURCE = "RPM-Source";
 static const FString HEADER_RPM_SDK_VERSION = "RPM-SDK-Version";
+static const FString HEADER_APP_ID = "X-APP-ID";
 #if WITH_EDITOR
 static const FString UNREAL_SOURCE = "unreal-editor";
 #else
@@ -19,6 +21,11 @@ namespace
 	template <typename RequestPtr>
 	void AddRPMHeaders(RequestPtr HttpRequest)
 	{
+		const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
+		if (Settings)
+		{
+			HttpRequest->SetHeader(HEADER_APP_ID, Settings->AppId);
+		}
 		HttpRequest->SetHeader(HEADER_RPM_SOURCE, UNREAL_SOURCE);
 		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FReadyPlayerMePluginInfo::GetPluginVersion());
 	}
