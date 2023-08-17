@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [1.2.0] 2023-08-17
+
+## Added
+
+- QuickStart map with character controller to showcase avatar usage
+- Added meshOpt param to the avatar config. Currently it only works when texture atlas is enabled
+- AppId in the project settings
+
+## Fixed
+
+- Replaced meshLod property with lod
+
+## Removed
+
+- Existing demo map
 
 ## [1.1.1] 2023-06-21
 
