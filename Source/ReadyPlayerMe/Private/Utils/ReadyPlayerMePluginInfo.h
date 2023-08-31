@@ -11,7 +11,7 @@ public:
 	static FString GetPluginVersion(const FString& Name)
 	{
 		// Implementation needs to be in the header, because the editor module needs to access it.
-		const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(GetRPMPluginName());
+		const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(Name);
 		if (Plugin)
 		{
 			return Plugin->GetDescriptor().VersionName;
@@ -21,12 +21,12 @@ public:
 
 	static FString GetRpmPluginVersion()
 	{
-		return GetRPMPluginName();
+		return GetPluginVersion(GetRPMPluginName());
 	}
 
 	static FString GetAvatarCreatorPluginVersion()
 	{
-		return GetAvatarCreatorPluginName();
+		return GetPluginVersion(GetAvatarCreatorPluginName());
 	}
 
 	static bool IsCppPlugin()
