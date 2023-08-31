@@ -1,6 +1,8 @@
 // Copyright © 2021++ Ready Player Me
 
 #include "ReadyPlayerMeAnalyticsData.h"
+
+#include "ReadyPlayerMeSettings.h"
 #include "ReadyPlayerMe/Private/Utils/ReadyPlayerMePluginInfo.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -18,15 +20,27 @@ namespace
 		const TArray<uint8> MacAddress = FPlatformMisc::GetMacAddress();
 		return FMD5::HashBytes(MacAddress.GetData(), MacAddress.Num());
 	}
+
+	FString GetAppId()
+	{
+		const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
+		if (IsValid(Settings))
+		{
+			return Settings->AppId;
+		}
+		return {};
+	}
 }
 
 FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
 {
 	const auto EngineVersion = FEngineVersion::Current();
 	AppName = FApp::GetProjectName();
-	SDKVersion = FReadyPlayerMePluginInfo::GetPluginVersion();
+	SDKVersion = FReadyPlayerMePluginInfo::GetRpmPluginVersion();
+	AvatarCreatorVersion = FReadyPlayerMePluginInfo::GetAvatarCreatorPluginVersion();
 	SdkTarget = SDK_TARGET;
 	Subdomain = SUBDOMAIN;
+	AppId = GetAppId();
 	UnrealVersion = FString::Printf(TEXT("%d.%d.%d"), EngineVersion.GetMajor(), EngineVersion.GetMinor(), EngineVersion.GetPatch());
 	Platform = UGameplayStatics::GetPlatformName();
 	DeviceId = GetDeviceId();

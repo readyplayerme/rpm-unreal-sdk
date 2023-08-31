@@ -27,7 +27,7 @@ namespace
 			HttpRequest->SetHeader(HEADER_APP_ID, Settings->AppId);
 		}
 		HttpRequest->SetHeader(HEADER_RPM_SOURCE, UNREAL_SOURCE);
-		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FReadyPlayerMePluginInfo::GetPluginVersion());
+		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FReadyPlayerMePluginInfo::GetRpmPluginVersion());
 	}
 }
 

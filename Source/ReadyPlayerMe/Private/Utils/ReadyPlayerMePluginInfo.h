@@ -8,7 +8,7 @@
 class FReadyPlayerMePluginInfo
 {
 public:
-	static FString GetPluginVersion()
+	static FString GetPluginVersion(const FString& Name)
 	{
 		// Implementation needs to be in the header, because the editor module needs to access it.
 		const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(GetRPMPluginName());
@@ -17,6 +17,16 @@ public:
 			return Plugin->GetDescriptor().VersionName;
 		}
 		return "";
+	}
+
+	static FString GetRpmPluginVersion()
+	{
+		return GetRPMPluginName();
+	}
+
+	static FString GetAvatarCreatorPluginVersion()
+	{
+		return GetAvatarCreatorPluginName();
 	}
 
 	static bool IsCppPlugin()
@@ -44,5 +54,10 @@ public:
 	static FString GetDracoPluginName()
 	{
 		return "glTFRuntimeDraco";
+	}
+
+	static FString GetAvatarCreatorPluginName()
+	{
+		return "RpmAvatarCreator";
 	}
 };
