@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] 2023-09-01
+
+## Breaking
+
+- Renamed meshLod property with Lod in avatar config
+
+## Fixed
+
+- Quickstart map rendering issue
+
+## Updated
+
+- Analytics for AppId and AvatarCreator version
 
 ## [1.2.0] 2023-08-17
 
