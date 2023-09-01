@@ -55,13 +55,14 @@ void UReadyPlayerMeAvatarLoader::LoadAvatar(const FString& UrlShortcode, UReadyP
 
 void UReadyPlayerMeAvatarLoader::CancelAvatarLoad()
 {
-	if (!MetadataRequest.IsValid())
+	if (MetadataRequest.IsValid())
 	{
-		return;
+		MetadataRequest->CancelRequest();
 	}
-
-	MetadataRequest->CancelRequest();
-	ModelRequest->CancelRequest();
+	if (ModelRequest.IsValid())
+	{
+		ModelRequest->CancelRequest();
+	}
 	Reset();
 }
 

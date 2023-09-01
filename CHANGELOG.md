@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Fixed
 
 - Quickstart map rendering issue
+- Fixed Request cancellation issue in UE5.2
 
 ## Updated
 
