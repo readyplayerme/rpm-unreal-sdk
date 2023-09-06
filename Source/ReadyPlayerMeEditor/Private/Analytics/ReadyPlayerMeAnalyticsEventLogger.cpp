@@ -2,6 +2,7 @@
 
 #include "ReadyPlayerMeAnalyticsEventLogger.h"
 #include "ReadyPlayerMeAmplitudeEventLogger.h"
+#include "Dom/JsonObject.h"
 #include "Kismet/KismetStringLibrary.h"
 
 static const FString EVENT_OPEN_PROJECT = "open project";

@@ -6,30 +6,8 @@
 
 UReadyPlayerMeEditorSettings::UReadyPlayerMeEditorSettings()
 	: bEnableAnalytics(false)
-	, bDontAskAgain(false)
+	, bWasSetupGuideShown(false)
 {
-}
-
-void UReadyPlayerMeEditorSettings::EnableAnalytics() {
-	UReadyPlayerMeEditorSettings* Settings = GetMutableDefault<UReadyPlayerMeEditorSettings>();
-	if (Settings)
-	{
-		Settings->bEnableAnalytics = true;
-		Settings->SaveConfig();
-		FReadyPlayerMeAnalyticsEventLogger::Get().EnableAnalytics();
-		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
-	}
-}
-
-void UReadyPlayerMeEditorSettings::SetDontAskAgain(bool bDontAsk)
-{
-	UReadyPlayerMeEditorSettings* Settings = GetMutableDefault<UReadyPlayerMeEditorSettings>();
-	if (Settings)
-	{
-		Settings->bDontAskAgain = bDontAsk;
-		Settings->SaveConfig();
-		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
-	}
 }
 
 #if WITH_EDITOR

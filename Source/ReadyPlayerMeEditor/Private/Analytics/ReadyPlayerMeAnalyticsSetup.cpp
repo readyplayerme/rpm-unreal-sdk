@@ -51,7 +51,7 @@ void FReadyPlayerMeAnalyticsSetup::SetupLogger()
 void FReadyPlayerMeAnalyticsSetup::SetupWidget()
 {
 	const auto EditorSettings = GetDefault<UReadyPlayerMeEditorSettings>();
-	if (EditorSettings->bDontAskAgain || EditorSettings->bEnableAnalytics)
+	if (EditorSettings->bWasSetupGuideShown)
 	{
 		RemoveWidget();
 	}

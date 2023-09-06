@@ -37,7 +37,8 @@ public class ReadyPlayerMeEditor : ModuleRules
 				"HTTP",
 				"Blutility",
 				"Projects",
-				"DeveloperSettings"
+				"DeveloperSettings",
+				"UnrealEd"
 			}
 		);
 
