@@ -37,10 +37,15 @@ public class ReadyPlayerMeEditor : ModuleRules
 				"HTTP",
 				"Blutility",
 				"Projects",
-				"DeveloperSettings",
-				"UnrealEd"
+				"DeveloperSettings"
 			}
 		);
+
+#if UE_5_0_OR_LATER
+		PrivateDependencyModuleNames.Add("DeveloperToolSettings");
+#else
+		PrivateDependencyModuleNames.Add("UnrealEd");
+#endif
 
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
