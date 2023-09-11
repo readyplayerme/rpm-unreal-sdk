@@ -40,3 +40,13 @@ void UReadyPlayerMeEditorFunctionLibrary::SetSetupGuideShown()
 		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
 	}
 }
+
+bool UReadyPlayerMeEditorFunctionLibrary::WasSetupGuideShown()
+{
+	const UReadyPlayerMeEditorSettings* Settings = GetMutableDefault<UReadyPlayerMeEditorSettings>();
+	if (Settings)
+	{
+		return Settings->bWasSetupGuideShown;
+	}
+	return false;
+}

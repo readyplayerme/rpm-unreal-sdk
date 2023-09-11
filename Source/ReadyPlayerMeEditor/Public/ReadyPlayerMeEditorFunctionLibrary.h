@@ -20,4 +20,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Set Setup Guide Shown"))
 	static void SetSetupGuideShown();
+
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Was Setup Guide Shown"))
+	static bool WasSetupGuideShown();
 };
