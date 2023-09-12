@@ -17,6 +17,7 @@ namespace
 		{
 			PackagingSetting->DirectoriesToAlwaysCook.Add(FDirectoryPath{"/glTFRuntime"});
 			PackagingSetting->SaveConfig();
+			PackagingSetting->UpdateDefaultConfigFile();
 		}
 	}
 }

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] 2023-09-12
+
+## Added
+
+- Setup guide, it will be show when the sdk is integrated
+- Subdomain in the project settings
+- UE5.3 support
+- Logic to automatically add glTFRuntime to the Additional assets to cook
+
+## Fixed
+
+- Fixed rendering issues in QuickStart map
+
 ## [1.3.0] 2023-09-01
 
 ## Breaking
