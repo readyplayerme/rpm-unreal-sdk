@@ -3,6 +3,7 @@
 
 #include "ReadyPlayerMeEditorFunctionLibrary.h"
 
+#include "EditorUtilitySubsystem.h"
 #include "ReadyPlayerMeEditorSettings.h"
 #include "ReadyPlayerMeSettings.h"
 #include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
@@ -49,4 +50,17 @@ bool UReadyPlayerMeEditorFunctionLibrary::WasSetupGuideShown()
 		return Settings->bWasSetupGuideShown;
 	}
 	return false;
+}
+
+void UReadyPlayerMeEditorFunctionLibrary::CloseEditorWidget(const FString& Name)
+{
+	UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
+	if (IsValid(EditorUtilitySubsystem))
+	{
+		auto Found = EditorUtilitySubsystem->RegisteredTabs.FilterByPredicate([Name](const auto& Pair){ return Pair.Key.ToString().Contains(Name);});
+		if (Found.Num() != 0)
+		{
+			EditorUtilitySubsystem->CloseTabByID(Found.begin()->Key);
+		}
+	}
 }

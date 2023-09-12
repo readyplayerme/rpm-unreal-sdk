@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Was Setup Guide Shown"))
 	static bool WasSetupGuideShown();
+
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Close Editor Widget"))
+	static void CloseEditorWidget(const FString& Name);
 };
