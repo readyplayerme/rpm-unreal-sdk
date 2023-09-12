@@ -19,16 +19,10 @@ public:
 	bool bEnableAnalytics;
 
 	UPROPERTY(Config)
-	bool bDontAskAgain;
+	bool bWasSetupGuideShown;
 
 	UPROPERTY(Config)
 	FString AnalyticsTarget;
-
-	UFUNCTION(BlueprintCallable, Category = "Analytics Privacy")
-	static void EnableAnalytics();
-
-	UFUNCTION(BlueprintCallable, Category = "Analytics Privacy")
-	static void SetDontAskAgain(bool bDontAsk);
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
