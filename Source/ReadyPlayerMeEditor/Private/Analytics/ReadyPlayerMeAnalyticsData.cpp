@@ -10,7 +10,6 @@
 #include "Misc/EngineVersion.h"
 
 static const FString SDK_TARGET = "Unreal";
-static const FString SUBDOMAIN = "Demo";
 
 namespace
 {
@@ -30,6 +29,16 @@ namespace
 		}
 		return {};
 	}
+
+	FString GetSubdomain()
+	{
+		const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
+		if (IsValid(Settings))
+		{
+			return Settings->Subdomain;
+		}
+		return {};
+	}
 }
 
 FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
@@ -39,7 +48,7 @@ FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
 	SDKVersion = FReadyPlayerMePluginInfo::GetRpmPluginVersion();
 	AvatarCreatorVersion = FReadyPlayerMePluginInfo::GetAvatarCreatorPluginVersion();
 	SdkTarget = SDK_TARGET;
-	Subdomain = SUBDOMAIN;
+	Subdomain = GetSubdomain();
 	AppId = GetAppId();
 	UnrealVersion = FString::Printf(TEXT("%d.%d.%d"), EngineVersion.GetMajor(), EngineVersion.GetMinor(), EngineVersion.GetPatch());
 	Platform = UGameplayStatics::GetPlatformName();
