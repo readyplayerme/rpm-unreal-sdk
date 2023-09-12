@@ -4,6 +4,7 @@
 #include "ReadyPlayerMeEditorFunctionLibrary.h"
 
 #include "EditorUtilitySubsystem.h"
+#include "Editor.h"
 #include "ReadyPlayerMeEditorSettings.h"
 #include "ReadyPlayerMeSettings.h"
 #include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
