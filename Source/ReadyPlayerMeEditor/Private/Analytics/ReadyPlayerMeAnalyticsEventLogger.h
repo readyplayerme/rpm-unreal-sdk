@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeAmplitudeEventLogger.h"
+#include "ReadyPlayerMeEditorTypes.h"
 
 class FReadyPlayerMeAnalyticsEventLogger
 {
 public:
 	static FReadyPlayerMeAnalyticsEventLogger& Get();
 
-	void LogOpenProject() const;
-	void LogCloseProject() const;
+	void LogProperties() const;
+	void LogEvent(ERpmAnalyticsEventType EventType) const;
 	void LogEnableAvatarCaching(bool bEnabled) const;
 	void SetEnabled(bool bEnabled);
 	void SetAnalyticsTarget(const FString& Target);

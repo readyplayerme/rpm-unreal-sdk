@@ -53,6 +53,11 @@ bool UReadyPlayerMeEditorFunctionLibrary::WasSetupGuideShown()
 	return false;
 }
 
+void UReadyPlayerMeEditorFunctionLibrary::LogRpmEvent(ERpmAnalyticsEventType EventType)
+{
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(EventType);
+}
+
 void UReadyPlayerMeEditorFunctionLibrary::CloseEditorWidget(const FString& Name)
 {
 	UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();

@@ -32,12 +32,13 @@ void FReadyPlayerMeEditorModule::StartupModule()
 {
 	AddGLTFRuntimeToCookingDirectories();
 	FReadyPlayerMeAnalyticsSetup::Startup();
-	FReadyPlayerMeAnalyticsEventLogger::Get().LogOpenProject();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogProperties();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(ERpmAnalyticsEventType::OpenProject);
 }
 
 void FReadyPlayerMeEditorModule::ShutdownModule()
 {
-	FReadyPlayerMeAnalyticsEventLogger::Get().LogCloseProject();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(ERpmAnalyticsEventType::CloseProject);
 }
 
 #undef LOCTEXT_NAMESPACE

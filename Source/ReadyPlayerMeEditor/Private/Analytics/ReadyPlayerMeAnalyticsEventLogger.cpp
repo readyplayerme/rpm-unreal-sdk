@@ -5,11 +5,22 @@
 #include "Dom/JsonObject.h"
 #include "Kismet/KismetStringLibrary.h"
 
-static const FString EVENT_OPEN_PROJECT = "open project";
-static const FString EVENT_CLOSE_PROJECT = "close project";
-static const FString EVENT_ENABLE_CACHING = "enable caching";
-static const FString EVENT_SET_USER_PROPERTIES = "set user properties";
-static const FString EVENT_ALLOW_LOGGING = "allow tracking";
+static const TMap<ERpmAnalyticsEventType, FString> EVENT_TO_STRING_MAP =
+	{
+		{ ERpmAnalyticsEventType::OpenProject, "open project"},
+		{ ERpmAnalyticsEventType::CloseProject, "close project"},
+		{ ERpmAnalyticsEventType::EnableCaching, "enable caching"},
+		{ ERpmAnalyticsEventType::SetUserProperties, "set user properties"},
+		{ ERpmAnalyticsEventType::AllowLogging, "allow tracking"},
+		{ ERpmAnalyticsEventType::OpenSetupGuide, "open setup guide"},
+		{ ERpmAnalyticsEventType::OpenIntegrationGuide, "open integration guide"},
+		{ ERpmAnalyticsEventType::LoadQuickStartScene, "load quick start scene"},
+		{ ERpmAnalyticsEventType::OpenAvatarDocumentation, "open avatar documentation"},
+		{ ERpmAnalyticsEventType::OpenSamplesDocumentation, "open samples documentation"},
+		{ ERpmAnalyticsEventType::OpenAnimationDocumentation, "open animation documentation"},
+		{ ERpmAnalyticsEventType::OpenAvatarCreatorDocumentation, "open avatar creator documentation"},
+		{ ERpmAnalyticsEventType::ViewPrivacyPolicy, "view privacy policy"}
+	};
 
 static const FString JSON_CACHING_ENABLED = "caching enabled";
 
@@ -19,23 +30,22 @@ FReadyPlayerMeAnalyticsEventLogger& FReadyPlayerMeAnalyticsEventLogger::Get()
 	return EventLogger;
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::LogOpenProject() const
+void FReadyPlayerMeAnalyticsEventLogger::LogProperties() const
 {
 	if (!bIsEnabled)
 	{
 		return;
 	}
-	Logger.LogEvent(EVENT_SET_USER_PROPERTIES, Logger.MakeUserPropertiesJson());
-	Logger.LogEvent(EVENT_OPEN_PROJECT);
+	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::SetUserProperties], Logger.MakeUserPropertiesJson());
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::LogCloseProject() const
+void FReadyPlayerMeAnalyticsEventLogger::LogEvent(ERpmAnalyticsEventType EventType) const
 {
 	if (!bIsEnabled)
 	{
 		return;
 	}
-	Logger.LogEvent(EVENT_CLOSE_PROJECT);
+	Logger.LogEvent(EVENT_TO_STRING_MAP[EventType]);
 }
 
 void FReadyPlayerMeAnalyticsEventLogger::LogEnableAvatarCaching(bool bEnabled) const
@@ -46,7 +56,7 @@ void FReadyPlayerMeAnalyticsEventLogger::LogEnableAvatarCaching(bool bEnabled) c
 	}
 	const auto JsonObject = MakeShared<FJsonObject>();
 	JsonObject->SetStringField(JSON_CACHING_ENABLED, UKismetStringLibrary::Conv_BoolToString(bEnabled));
-	Logger.LogEvent(EVENT_ENABLE_CACHING, JsonObject);
+	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::EnableCaching], JsonObject);
 }
 
 void FReadyPlayerMeAnalyticsEventLogger::SetEnabled(bool bEnabled)
@@ -62,5 +72,5 @@ void FReadyPlayerMeAnalyticsEventLogger::SetAnalyticsTarget(const FString& Targe
 void FReadyPlayerMeAnalyticsEventLogger::EnableAnalytics()
 {
 	bIsEnabled = true;
-	Logger.LogEvent(EVENT_ALLOW_LOGGING, Logger.MakeUserPropertiesJson());
+	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::AllowLogging], Logger.MakeUserPropertiesJson());
 }
