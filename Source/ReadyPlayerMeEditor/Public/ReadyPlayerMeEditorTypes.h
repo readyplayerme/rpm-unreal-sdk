@@ -11,7 +11,6 @@ enum class ERpmAnalyticsEventType : uint8
 	EnableCaching UMETA(DisplayName = "Enable Caching"),
 	SetUserProperties UMETA(DisplayName = "Set User Properties"),
 	AllowLogging UMETA(DisplayName = "Allow Logging"),
-	OpenSetupGuide UMETA(DisplayName = "Open Setup Guide"),
 	OpenIntegrationGuide UMETA(DisplayName = "Open Integration Guide"),
 	LoadQuickStartScene UMETA(DisplayName = "Load Quick Start Scene"),
 	OpenAvatarDocumentation UMETA(DisplayName = "Open Avatar Documentation"),

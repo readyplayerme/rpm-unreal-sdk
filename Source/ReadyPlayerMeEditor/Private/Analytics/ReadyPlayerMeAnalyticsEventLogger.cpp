@@ -12,7 +12,6 @@ static const TMap<ERpmAnalyticsEventType, FString> EVENT_TO_STRING_MAP =
 		{ ERpmAnalyticsEventType::EnableCaching, "enable caching"},
 		{ ERpmAnalyticsEventType::SetUserProperties, "set user properties"},
 		{ ERpmAnalyticsEventType::AllowLogging, "allow tracking"},
-		{ ERpmAnalyticsEventType::OpenSetupGuide, "open setup guide"},
 		{ ERpmAnalyticsEventType::OpenIntegrationGuide, "open integration guide"},
 		{ ERpmAnalyticsEventType::LoadQuickStartScene, "load quick start scene"},
 		{ ERpmAnalyticsEventType::OpenAvatarDocumentation, "open avatar documentation"},
