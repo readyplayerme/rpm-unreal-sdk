@@ -4,6 +4,7 @@
 #include "ReadyPlayerMeEditorFunctionLibrary.h"
 
 #include "EditorUtilitySubsystem.h"
+#include "Editor.h"
 #include "ReadyPlayerMeEditorSettings.h"
 #include "ReadyPlayerMeSettings.h"
 #include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
@@ -50,6 +51,11 @@ bool UReadyPlayerMeEditorFunctionLibrary::WasSetupGuideShown()
 		return Settings->bWasSetupGuideShown;
 	}
 	return false;
+}
+
+void UReadyPlayerMeEditorFunctionLibrary::LogRpmEvent(ERpmAnalyticsEventType EventType)
+{
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(EventType);
 }
 
 void UReadyPlayerMeEditorFunctionLibrary::CloseEditorWidget(const FString& Name)

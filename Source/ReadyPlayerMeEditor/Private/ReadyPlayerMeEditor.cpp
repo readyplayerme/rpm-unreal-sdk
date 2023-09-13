@@ -5,6 +5,7 @@
 #include "Analytics/ReadyPlayerMeAnalyticsSetup.h"
 #include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
 #include "Settings/ProjectPackagingSettings.h"
+#include "Runtime/Launch/Resources/Version.h"
 
 #define LOCTEXT_NAMESPACE "FReadyPlayerMeEditorModule"
 
@@ -17,7 +18,12 @@ namespace
 		{
 			PackagingSetting->DirectoriesToAlwaysCook.Add(FDirectoryPath{"/glTFRuntime"});
 			PackagingSetting->SaveConfig();
+
+#if ENGINE_MAJOR_VERSION > 4
+			PackagingSetting->TryUpdateDefaultConfigFile();
+#else
 			PackagingSetting->UpdateDefaultConfigFile();
+#endif
 		}
 	}
 }
@@ -26,12 +32,13 @@ void FReadyPlayerMeEditorModule::StartupModule()
 {
 	AddGLTFRuntimeToCookingDirectories();
 	FReadyPlayerMeAnalyticsSetup::Startup();
-	FReadyPlayerMeAnalyticsEventLogger::Get().LogOpenProject();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogProperties();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(ERpmAnalyticsEventType::OpenProject);
 }
 
 void FReadyPlayerMeEditorModule::ShutdownModule()
 {
-	FReadyPlayerMeAnalyticsEventLogger::Get().LogCloseProject();
+	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(ERpmAnalyticsEventType::CloseProject);
 }
 
 #undef LOCTEXT_NAMESPACE
