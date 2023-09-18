@@ -50,14 +50,18 @@ void FReadyPlayerMeAnalyticsSetup::SetupLogger()
 
 void FReadyPlayerMeAnalyticsSetup::SetupWidget()
 {
-	const auto EditorSettings = GetDefault<UReadyPlayerMeEditorSettings>();
-	if (EditorSettings->bWasSetupGuideShown)
+	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
+	if (!Settings)
 	{
-		RemoveWidget();
+		return;
+	}
+	if (Settings->Subdomain.IsEmpty())
+	{
+		AddWidget();
 	}
 	else
 	{
-		AddWidget();
+		RemoveWidget();
 	}
 }
 

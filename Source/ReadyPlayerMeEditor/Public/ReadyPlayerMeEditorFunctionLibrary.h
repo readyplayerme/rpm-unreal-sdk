@@ -19,11 +19,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Enable Analytics"))
 	static void EnableAnalytics();
 
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Set Setup Guide Shown"))
-	static void SetSetupGuideShown();
-
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Was Setup Guide Shown"))
-	static bool WasSetupGuideShown();
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Subdomain"))
+	static FString GetSubdomain();
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Log Rpm Event"))
 	static void LogRpmEvent(ERpmAnalyticsEventType EventType);

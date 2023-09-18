@@ -6,7 +6,6 @@
 
 UReadyPlayerMeEditorSettings::UReadyPlayerMeEditorSettings()
 	: bEnableAnalytics(false)
-	, bWasSetupGuideShown(false)
 {
 }
 

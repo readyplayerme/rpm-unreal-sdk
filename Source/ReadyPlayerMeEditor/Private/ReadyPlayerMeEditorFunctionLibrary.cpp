@@ -9,6 +9,7 @@
 #include "ReadyPlayerMeSettings.h"
 #include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
 #include "Analytics/ReadyPlayerMeAnalyticsSetup.h"
+#include "Runtime/Launch/Resources/Version.h"
 
 void UReadyPlayerMeEditorFunctionLibrary::SetSubdomain(const FString& Subdomain)
 {
@@ -17,6 +18,12 @@ void UReadyPlayerMeEditorFunctionLibrary::SetSubdomain(const FString& Subdomain)
 	{
 		Settings->Subdomain = Subdomain;
 		Settings->SaveConfig();
+#if ENGINE_MAJOR_VERSION > 4
+		Settings->TryUpdateDefaultConfigFile();
+#else
+		Settings->UpdateDefaultConfigFile();
+#endif
+		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
 	}
 }
 
@@ -27,30 +34,24 @@ void UReadyPlayerMeEditorFunctionLibrary::EnableAnalytics()
 	{
 		Settings->bEnableAnalytics = true;
 		Settings->SaveConfig();
+#if ENGINE_MAJOR_VERSION > 4
+		Settings->TryUpdateDefaultConfigFile();
+#else
+		Settings->UpdateDefaultConfigFile();
+#endif
 		FReadyPlayerMeAnalyticsEventLogger::Get().EnableAnalytics();
 		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
 	}
 }
 
-void UReadyPlayerMeEditorFunctionLibrary::SetSetupGuideShown()
+FString UReadyPlayerMeEditorFunctionLibrary::GetSubdomain()
 {
-	UReadyPlayerMeEditorSettings* Settings = GetMutableDefault<UReadyPlayerMeEditorSettings>();
+	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
 	if (Settings)
 	{
-		Settings->bWasSetupGuideShown = true;
-		Settings->SaveConfig();
-		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
+		return Settings->Subdomain;
 	}
-}
-
-bool UReadyPlayerMeEditorFunctionLibrary::WasSetupGuideShown()
-{
-	const UReadyPlayerMeEditorSettings* Settings = GetMutableDefault<UReadyPlayerMeEditorSettings>();
-	if (Settings)
-	{
-		return Settings->bWasSetupGuideShown;
-	}
-	return false;
+	return {};
 }
 
 void UReadyPlayerMeEditorFunctionLibrary::LogRpmEvent(ERpmAnalyticsEventType EventType)
