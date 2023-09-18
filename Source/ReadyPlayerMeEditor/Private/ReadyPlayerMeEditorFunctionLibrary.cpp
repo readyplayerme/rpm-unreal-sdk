@@ -34,6 +34,11 @@ void UReadyPlayerMeEditorFunctionLibrary::EnableAnalytics()
 	{
 		Settings->bEnableAnalytics = true;
 		Settings->SaveConfig();
+#if ENGINE_MAJOR_VERSION > 4
+		Settings->TryUpdateDefaultConfigFile();
+#else
+		Settings->UpdateDefaultConfigFile();
+#endif
 		FReadyPlayerMeAnalyticsEventLogger::Get().EnableAnalytics();
 		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
 	}
