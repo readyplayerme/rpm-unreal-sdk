@@ -19,9 +19,6 @@ public:
 	bool bEnableAnalytics;
 
 	UPROPERTY(Config)
-	bool bWasSetupGuideShown;
-
-	UPROPERTY(Config)
 	FString AnalyticsTarget;
 	
 #if WITH_EDITOR
