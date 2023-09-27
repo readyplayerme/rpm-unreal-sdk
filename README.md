@@ -20,29 +20,6 @@ The plugin can be found on GitHub [here](https://github.com/rdeioris/glTFRuntime
 
 - Unreal Engine Version 4.27 or higher
 
-
-### Add ReadyPlayerMe and glTFRuntime plugins
-
-There are three ways you can add the **ReadyPlayerMe** and the **glTFRuntime** plugins to your project. Add them as submodules, paste the plugins inside of the **Plugins** folder, or add the blueprint version of the plugins to the Engine.
-
-- To add the plugins to your project as submodules, run the following command in the terminal from your project folder. This case applies if you already have your project in a git repository. This is the preferred way of setting up the plugins.
-
-```
-git submodule add --name Plugins/glTFRuntime -- https://github.com/rdeioris/glTFRuntime.git Plugins/glTFRuntime ; cd Plugins/glTFRuntime ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; git submodule add --name Plugins/ReadyPlayerMe -- https://github.com/readyplayerme/rpm-unreal-sdk.git Plugins/ReadyPlayerMe ; cd Plugins/ReadyPlayerMe ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
-```
-
-- To paste the plugins inside of the Plugins folder, create a **Plugins** folder from the root of your project, download the latest tags of the [glTFRuntime](https://github.com/rdeioris/glTFRuntime.git) and [ReadyPlayerMe](https://github.com/readyplayerme/rpm-unreal-sdk.git) plugins into it. Rename the **rpm-unreal-sdk** plugin folder to the **ReadyPlayerMe**.
-
-- To add the blueprint version of the plugins, find the **ReadyPlayerMe** and **glTFRuntime** plugins attached in the [Latest Release](https://github.com/readyplayerme/rpm-unreal-sdk/releases/latest), copy the plugin folders ReadyPlayerMe and glTFRuntime into the `ENGINE_VERSION/Engine/Plugins` folder.
-
-### Update ReadyPlayerMe and glTFRuntime plugin submodules
-
-To update the submodules of the plugins, paste the following command in the terminal from your project folder. This will fetch and switch the plugin repositories to the latest stable release.
-
-```
-cd Plugins/glTFRuntime ; git fetch --tags ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../.. ; cd Plugins/ReadyPlayerMe ; git fetch --tags ; git checkout $(git describe --tags $(git rev-list --tags --max-count=1)) ; cd ../..
-```
-
 ## Quick Start
 
-A demo map is included in the plugin for demonstrating how the **Ready Player Me** avatars are loaded at runtime.
+Follow the **[Documentation]( https://docs.readyplayer.me/ready-player-me/integration-guides/unreal-engine/quickstart )** to add the Ready Player Me SDK to your project.

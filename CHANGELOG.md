@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.2] 2023-09-27
+
+## Added
+
+- Added avatar rigs zip file to the resources. It contains IK rig, IK retargeter and basic foot IK control rig.
+
 ## [1.4.1] 2023-09-19
 
 ## Fixed
