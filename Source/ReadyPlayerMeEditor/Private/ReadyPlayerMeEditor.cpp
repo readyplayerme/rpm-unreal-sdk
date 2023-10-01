@@ -17,8 +17,6 @@ namespace
 		if (!PackagingSetting->DirectoriesToAlwaysCook.ContainsByPredicate([](const auto& Item){ return Item.Path == "/glTFRuntime";} ))
 		{
 			PackagingSetting->DirectoriesToAlwaysCook.Add(FDirectoryPath{"/glTFRuntime"});
-			PackagingSetting->SaveConfig();
-
 #if ENGINE_MAJOR_VERSION > 4
 			PackagingSetting->TryUpdateDefaultConfigFile();
 #else
