@@ -17,7 +17,6 @@ void UReadyPlayerMeEditorFunctionLibrary::SetSubdomain(const FString& Subdomain)
 	if (Settings)
 	{
 		Settings->Subdomain = Subdomain;
-		Settings->SaveConfig();
 #if ENGINE_MAJOR_VERSION > 4
 		Settings->TryUpdateDefaultConfigFile();
 #else
@@ -33,7 +32,6 @@ void UReadyPlayerMeEditorFunctionLibrary::EnableAnalytics()
 	if (Settings)
 	{
 		Settings->bEnableAnalytics = true;
-		Settings->SaveConfig();
 #if ENGINE_MAJOR_VERSION > 4
 		Settings->TryUpdateDefaultConfigFile();
 #else
@@ -46,7 +44,7 @@ void UReadyPlayerMeEditorFunctionLibrary::EnableAnalytics()
 
 FString UReadyPlayerMeEditorFunctionLibrary::GetSubdomain()
 {
-	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
+	const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
 	if (Settings)
 	{
 		return Settings->Subdomain;

@@ -50,7 +50,7 @@ void FReadyPlayerMeAnalyticsSetup::SetupLogger()
 
 void FReadyPlayerMeAnalyticsSetup::SetupWidget()
 {
-	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
+	const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
 	if (!Settings)
 	{
 		return;

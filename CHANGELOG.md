@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.3] 2023-10-02
+
+## Fixed
+
+- Default Config file saving issues in the editor module.
+
 ## [1.4.2] 2023-09-27
 
 ## Added
