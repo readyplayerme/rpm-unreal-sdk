@@ -8,7 +8,6 @@ void FReadyPlayerMeGlTFConfigCreator::OverrideConfig(FglTFRuntimeSkeletalMeshCon
 	SkeletalMeshConfig.MorphTargetsDuplicateStrategy = EglTFRuntimeMorphTargetsDuplicateStrategy::Merge;
 	SkeletalMeshConfig.bAddVirtualBones = true;
 	SkeletalMeshConfig.Skeleton = Skeleton;
-	SkeletalMeshConfig.MaterialsConfig.bMergeSectionsByMaterial = true;
 
 	SkeletalMeshConfig.SkeletonConfig.CopyRotationsFrom = Skeleton;
 	SkeletalMeshConfig.SkeletonConfig.bAddRootBone = true;

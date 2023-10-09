@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.4] 2023-10-09
+
+## Fixed
+
+- Fixed the finger glitching issue for the loaded avatars.
+
 ## [1.4.3] 2023-10-02
 
 ## Fixed
