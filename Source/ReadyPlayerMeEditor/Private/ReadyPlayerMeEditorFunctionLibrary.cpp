@@ -11,12 +11,13 @@
 #include "Analytics/ReadyPlayerMeAnalyticsSetup.h"
 #include "Runtime/Launch/Resources/Version.h"
 
-void UReadyPlayerMeEditorFunctionLibrary::SetSubdomain(const FString& Subdomain)
+void UReadyPlayerMeEditorFunctionLibrary::SetRpmSettings(const FString& Subdomain, const FString& AppId)
 {
 	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
 	if (Settings)
 	{
 		Settings->Subdomain = Subdomain;
+		Settings->AppId = AppId;
 #if ENGINE_MAJOR_VERSION > 4
 		Settings->TryUpdateDefaultConfigFile();
 #else
