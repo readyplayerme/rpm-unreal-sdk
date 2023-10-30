@@ -100,13 +100,9 @@ private:
 	void ExecuteEditorReadyCallback(bool bSuccess, ERpmAvatarCreatorError Error);
 
 	TSharedPtr<class FRequestFactory> RequestFactory;
-
 	TSharedPtr<class FRpmAuthManager> AuthManager;
-
 	TSharedPtr<class FRpmColorDownloader> ColorDownloader;
-
 	TSharedPtr<class FRpmPartnerAssetDownloader> AssetDownloader;
-
 	TSharedPtr<class FRpmUserAvatarDownloader> UserAvatarDownloader;
 
 	UPROPERTY()

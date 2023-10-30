@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "ReadyPlayerMeTypes.h"
 #include "ReadyPlayerMeAvatarConfig.generated.h"
 
 UENUM(BlueprintType)
