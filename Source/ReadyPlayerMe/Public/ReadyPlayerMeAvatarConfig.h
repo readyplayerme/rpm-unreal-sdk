@@ -106,7 +106,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
 	bool bUseDracoMeshCompression = false;
 
-	/** The selected morph target group (blend shapes) will be included in the avatar. */
+	/** The selected morph target groups (blend shapes) will be included in the avatar. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
-	class UReadyPlayerMeMorphTargetGroup* MorphTargetGroup;
+	TSet<EStandardMorphTargetGroup> MorphTargetGroups;
+
+	/** The selected morph targets (blend shapes) will be included in the avatar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
+	TSet<EAvatarMorphTarget> MorphTargets;
 };

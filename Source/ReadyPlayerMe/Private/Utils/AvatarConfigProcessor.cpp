@@ -6,8 +6,7 @@
 #include "MorphTargetUtils.h"
 #include "PluginInfo.h"
 #include "ReadyPlayerMeTypes.h"
-#include "AvatarConfig/ReadyPlayerMeAvatarConfig.h"
-#include "AvatarConfig/ReadyPlayerMeMorphTargetGroup.h"
+#include "ReadyPlayerMeAvatarConfig.h"
 #include "Kismet/KismetStringLibrary.h"
 
 static const TMap<EAvatarPose, FString> POSE_TO_STRING =
@@ -56,27 +55,20 @@ namespace
 		return FString::Join(ChannelStrList, TEXT(","));
 	}
 
-	FString ProcessMorphTargets(const UReadyPlayerMeMorphTargetGroup* MorphTargetGroup)
+	FString ProcessMorphTargets(const TSet<EStandardMorphTargetGroup>& MorphTargetGroups, const TSet<EAvatarMorphTarget>& MorphTargets)
 	{
-		if (MorphTargetGroup == nullptr)
-		{
-			return "";
-		}
-		TSet<EAvatarMorphTarget> Targets;
-		TSet<EStandardMorphTargetGroup> Groups;
-		MorphTargetGroup->GetTargets(Groups, Targets);
-		if (Targets.Num() == 0 && Groups.Num() == 0)
+		if (MorphTargetGroups.Num() == 0 && MorphTargets.Num() == 0)
 		{
 			return "";
 		}
 		TArray<FString> Morphs;
-		for (const auto& Target : Targets)
-		{
-			Morphs.Add(FMorphTargetUtils::MorphTargetToString(Target));
-		}
-		for (const auto& Group : Groups)
+		for (const auto& Group : MorphTargetGroups)
 		{
 			Morphs.Add(FMorphTargetUtils::MorphTargetGroupToString(Group));
+		}
+		for (const auto& Target : MorphTargets)
+		{
+			Morphs.Add(FMorphTargetUtils::MorphTargetToString(Target));
 		}
 		return "morphTargets=" + FString::Join(Morphs, TEXT(","));
 	}
@@ -89,7 +81,7 @@ FString FAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig* AvatarConfig
 		return "";
 	}
 	const bool UseDraco = FPluginInfo::IsDracoPluginIncluded() && AvatarConfig->bUseDracoMeshCompression;
-	const FString MorphTargetsParam = ProcessMorphTargets(AvatarConfig->MorphTargetGroup);
+	const FString MorphTargetsParam = ProcessMorphTargets(AvatarConfig->MorphTargetGroups, AvatarConfig->MorphTargets);
 	TArray<FString> Parameters;
 	Parameters.Add("pose=" + POSE_TO_STRING[AvatarConfig->Pose]);
 	Parameters.Add("lod=" + FString::FromInt(static_cast<int>(AvatarConfig->Lod)));
