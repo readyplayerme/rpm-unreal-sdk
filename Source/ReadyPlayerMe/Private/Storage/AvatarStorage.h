@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeAvatarStorage
+class FAvatarStorage
 {
 public:
 	static void SaveAvatar(const FString& GlbFilePath, const TArray<uint8>& Data);

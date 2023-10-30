@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeAvatarCacheHandler
+class FAvatarCacheHandler
 {
 public:
-	explicit FReadyPlayerMeAvatarCacheHandler(const FAvatarUri& AvatarUri);
+	explicit FAvatarCacheHandler(const FAvatarUri& AvatarUri);
 
 	void SetUpdatedMetadataStr(const FString& MetadataJson, const FString& UpdatedDate);
 	void SetModelData(const TArray<uint8>* Data);

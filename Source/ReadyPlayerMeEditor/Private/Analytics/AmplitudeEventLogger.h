@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ReadyPlayerMeAnalyticsData.h"
+#include "AnalyticsData.h"
 
 class FJsonObject;
 
-class FReadyPlayerMeAmplitudeEventLogger
+class FAmplitudeEventLogger
 {
 public:
-	FReadyPlayerMeAmplitudeEventLogger();
+	FAmplitudeEventLogger();
 
 	void LogEvent(const FString& EventName, const TSharedPtr<FJsonObject>& Params = nullptr) const;
 	TSharedRef<FJsonObject> MakeUserPropertiesJson() const;
@@ -26,5 +26,5 @@ private:
 
 	const int64 SessionId;
 	FString AnalyticsTarget;
-	const FReadyPlayerMeAnalyticsData AnalyticsData;
+	const FAnalyticsData AnalyticsData;
 };

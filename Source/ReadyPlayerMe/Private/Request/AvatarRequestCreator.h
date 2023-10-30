@@ -7,7 +7,7 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 
-class FReadyPlayerMeRequestCreator
+class FAvatarRequestCreator
 {
 public:
 	static auto MakeHttpRequest(const FString& Url, float Timeout = -1.f)

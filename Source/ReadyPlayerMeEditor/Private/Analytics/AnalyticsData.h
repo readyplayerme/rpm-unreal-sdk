@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-struct FReadyPlayerMeAnalyticsData
+struct FAnalyticsData
 {
 	FString AppName;
 	FString SDKVersion;
@@ -17,5 +17,5 @@ struct FReadyPlayerMeAnalyticsData
 	FString AppIdentifier;
 	bool bIsCppPlugin;
 
-	FReadyPlayerMeAnalyticsData();
+	FAnalyticsData();
 };

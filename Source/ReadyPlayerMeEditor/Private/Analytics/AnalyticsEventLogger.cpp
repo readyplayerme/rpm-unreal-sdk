@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
-#include "ReadyPlayerMeAnalyticsEventLogger.h"
-#include "ReadyPlayerMeAmplitudeEventLogger.h"
+#include "AnalyticsEventLogger.h"
+#include "AmplitudeEventLogger.h"
 #include "Dom/JsonObject.h"
 #include "Kismet/KismetStringLibrary.h"
 
@@ -23,13 +23,13 @@ static const TMap<ERpmAnalyticsEventType, FString> EVENT_TO_STRING_MAP =
 
 static const FString JSON_CACHING_ENABLED = "caching enabled";
 
-FReadyPlayerMeAnalyticsEventLogger& FReadyPlayerMeAnalyticsEventLogger::Get()
+FAnalyticsEventLogger& FAnalyticsEventLogger::Get()
 {
-	static FReadyPlayerMeAnalyticsEventLogger EventLogger;
+	static FAnalyticsEventLogger EventLogger;
 	return EventLogger;
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::LogProperties() const
+void FAnalyticsEventLogger::LogProperties() const
 {
 	if (!bIsEnabled)
 	{
@@ -38,7 +38,7 @@ void FReadyPlayerMeAnalyticsEventLogger::LogProperties() const
 	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::SetUserProperties], Logger.MakeUserPropertiesJson());
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::LogEvent(ERpmAnalyticsEventType EventType) const
+void FAnalyticsEventLogger::LogEvent(ERpmAnalyticsEventType EventType) const
 {
 	if (!bIsEnabled)
 	{
@@ -47,7 +47,7 @@ void FReadyPlayerMeAnalyticsEventLogger::LogEvent(ERpmAnalyticsEventType EventTy
 	Logger.LogEvent(EVENT_TO_STRING_MAP[EventType]);
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::LogEnableAvatarCaching(bool bEnabled) const
+void FAnalyticsEventLogger::LogEnableAvatarCaching(bool bEnabled) const
 {
 	if (!bIsEnabled)
 	{
@@ -58,17 +58,17 @@ void FReadyPlayerMeAnalyticsEventLogger::LogEnableAvatarCaching(bool bEnabled) c
 	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::EnableCaching], JsonObject);
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::SetEnabled(bool bEnabled)
+void FAnalyticsEventLogger::SetEnabled(bool bEnabled)
 {
 	bIsEnabled = bEnabled;
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::SetAnalyticsTarget(const FString& Target)
+void FAnalyticsEventLogger::SetAnalyticsTarget(const FString& Target)
 {
 	Logger.SetAnalyticsTarget(Target);
 }
 
-void FReadyPlayerMeAnalyticsEventLogger::EnableAnalytics()
+void FAnalyticsEventLogger::EnableAnalytics()
 {
 	bIsEnabled = true;
 	Logger.LogEvent(EVENT_TO_STRING_MAP[ERpmAnalyticsEventType::AllowLogging], Logger.MakeUserPropertiesJson());

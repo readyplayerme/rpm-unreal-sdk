@@ -7,8 +7,8 @@
 #include "Editor.h"
 #include "ReadyPlayerMeEditorSettings.h"
 #include "ReadyPlayerMeSettings.h"
-#include "Analytics/ReadyPlayerMeAnalyticsEventLogger.h"
-#include "Analytics/ReadyPlayerMeAnalyticsSetup.h"
+#include "Analytics/AnalyticsEventLogger.h"
+#include "Analytics/AnalyticsSetup.h"
 #include "Runtime/Launch/Resources/Version.h"
 
 void UReadyPlayerMeEditorFunctionLibrary::SetRpmSettings(const FString& Subdomain, const FString& AppId)
@@ -23,7 +23,7 @@ void UReadyPlayerMeEditorFunctionLibrary::SetRpmSettings(const FString& Subdomai
 #else
 		Settings->UpdateDefaultConfigFile();
 #endif
-		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
+		FAnalyticsSetup::RemoveWidget();
 	}
 }
 
@@ -38,8 +38,8 @@ void UReadyPlayerMeEditorFunctionLibrary::EnableAnalytics()
 #else
 		Settings->UpdateDefaultConfigFile();
 #endif
-		FReadyPlayerMeAnalyticsEventLogger::Get().EnableAnalytics();
-		FReadyPlayerMeAnalyticsSetup::RemoveWidget();
+		FAnalyticsEventLogger::Get().EnableAnalytics();
+		FAnalyticsSetup::RemoveWidget();
 	}
 }
 
@@ -55,7 +55,7 @@ FString UReadyPlayerMeEditorFunctionLibrary::GetSubdomain()
 
 void UReadyPlayerMeEditorFunctionLibrary::LogRpmEvent(ERpmAnalyticsEventType EventType)
 {
-	FReadyPlayerMeAnalyticsEventLogger::Get().LogEvent(EventType);
+	FAnalyticsEventLogger::Get().LogEvent(EventType);
 }
 
 void UReadyPlayerMeEditorFunctionLibrary::CloseEditorWidget(const FString& Name)

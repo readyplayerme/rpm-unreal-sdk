@@ -1,9 +1,9 @@
 // Copyright © 2021++ Ready Player Me
 
-#include "ReadyPlayerMeAnalyticsSetup.h"
+#include "AnalyticsSetup.h"
 
 #include "ReadyPlayerMeEditorSettings.h"
-#include "ReadyPlayerMeAnalyticsEventLogger.h"
+#include "AnalyticsEventLogger.h"
 #include "EditorUtilitySubsystem.h"
 #include "ReadyPlayerMeSettings.h"
 
@@ -16,19 +16,19 @@ namespace
 	{
 		if (PropertyName == SETTINGS_ENABLE_CACHING)
 		{
-			FReadyPlayerMeAnalyticsEventLogger::Get().LogEnableAvatarCaching(Settings->bEnableAvatarCaching);
+			FAnalyticsEventLogger::Get().LogEnableAvatarCaching(Settings->bEnableAvatarCaching);
 		}
 	}
 }
 
-void FReadyPlayerMeAnalyticsSetup::Startup()
+void FAnalyticsSetup::Startup()
 {
 	SetupSettingsChangedDelegate();
 	SetupLogger();
 	SetupWidget();
 }
 
-void FReadyPlayerMeAnalyticsSetup::SetupSettingsChangedDelegate()
+void FAnalyticsSetup::SetupSettingsChangedDelegate()
 {
 	UReadyPlayerMeSettings* Settings = GetMutableDefault<UReadyPlayerMeSettings>();
 	if (Settings)
@@ -37,10 +37,10 @@ void FReadyPlayerMeAnalyticsSetup::SetupSettingsChangedDelegate()
 	}
 }
 
-void FReadyPlayerMeAnalyticsSetup::SetupLogger()
+void FAnalyticsSetup::SetupLogger()
 {
 	const auto EditorSettings = GetDefault<UReadyPlayerMeEditorSettings>();
-	auto& Logger = FReadyPlayerMeAnalyticsEventLogger::Get();
+	auto& Logger = FAnalyticsEventLogger::Get();
 	Logger.SetEnabled(EditorSettings->bEnableAnalytics);
 	if (!EditorSettings->AnalyticsTarget.IsEmpty())
 	{
@@ -48,7 +48,7 @@ void FReadyPlayerMeAnalyticsSetup::SetupLogger()
 	}
 }
 
-void FReadyPlayerMeAnalyticsSetup::SetupWidget()
+void FAnalyticsSetup::SetupWidget()
 {
 	const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
 	if (!Settings)
@@ -65,7 +65,7 @@ void FReadyPlayerMeAnalyticsSetup::SetupWidget()
 	}
 }
 
-void FReadyPlayerMeAnalyticsSetup::AddWidget()
+void FAnalyticsSetup::AddWidget()
 {
 	const auto EditorUtilitySubsystem = GetMutableDefault<UEditorUtilitySubsystem>();
 	if (!EditorUtilitySubsystem->StartupObjects.Contains(STARTUP_BLUEPRINT))
@@ -75,7 +75,7 @@ void FReadyPlayerMeAnalyticsSetup::AddWidget()
 	}
 }
 
-void FReadyPlayerMeAnalyticsSetup::RemoveWidget()
+void FAnalyticsSetup::RemoveWidget()
 {
 	const auto EditorUtilitySubsystem = GetMutableDefault<UEditorUtilitySubsystem>();
 	if (EditorUtilitySubsystem->StartupObjects.Contains(STARTUP_BLUEPRINT))

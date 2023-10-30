@@ -5,7 +5,7 @@
 
 #include "Kismet/KismetRenderingLibrary.h"
 #include "Utils/RenderUrlConvertor.h"
-#include "Request/ReadyPlayerMeBaseRequest.h"
+#include "Request/AvatarRequest.h"
 
 //TODO: Move the timout to the RPMSettings to make it configurable
 constexpr float IMAGE_REQUEST_TIMEOUT = 60.f;
@@ -16,7 +16,7 @@ void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const ERenderScen
 	OnDownloadImageFailed = OnFailed;
 	const FString Url = FRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType, BlendShapes);
 
-	ImageRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	ImageRequest = MakeShared<FAvatarRequest>();
 	ImageRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeRenderLoader::OnImageDownloaded);
 	ImageRequest->Download(Url, IMAGE_REQUEST_TIMEOUT);
 }

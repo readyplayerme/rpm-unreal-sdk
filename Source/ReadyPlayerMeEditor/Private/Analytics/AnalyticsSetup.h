@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-class FReadyPlayerMeAnalyticsSetup
+class FAnalyticsSetup
 {
 public:
 	static void Startup();

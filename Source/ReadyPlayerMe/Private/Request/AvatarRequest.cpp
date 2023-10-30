@@ -1,10 +1,10 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "ReadyPlayerMeBaseRequest.h"
+#include "AvatarRequest.h"
 
 #include "ReadyPlayerMeSettings.h"
-#include "Request/ReadyPlayerMeRequestCreator.h"
+#include "AvatarRequestCreator.h"
 #include "Utils/PluginInfo.h"
 
 static const FString HEADER_RPM_SOURCE = "RPM-Source";
@@ -31,20 +31,20 @@ namespace
 	}
 }
 
-void FReadyPlayerMeBaseRequest::Download(const FString& Url, float Timeout)
+void FAvatarRequest::Download(const FString& Url, float Timeout)
 {
-	DownloadRequest = FReadyPlayerMeRequestCreator::MakeHttpRequest(Url, Timeout);
-	DownloadRequest->OnProcessRequestComplete().BindSP(this, &FReadyPlayerMeBaseRequest::OnReceived);
+	DownloadRequest = FAvatarRequestCreator::MakeHttpRequest(Url, Timeout);
+	DownloadRequest->OnProcessRequestComplete().BindSP(this, &FAvatarRequest::OnReceived);
 	AddRPMHeaders(DownloadRequest);
 	DownloadRequest->ProcessRequest();
 }
 
-FFileDownloadCompleted& FReadyPlayerMeBaseRequest::GetCompleteCallback()
+FFileDownloadCompleted& FAvatarRequest::GetCompleteCallback()
 {
 	return OnDownloadCompleted;
 }
 
-void FReadyPlayerMeBaseRequest::CancelRequest()
+void FAvatarRequest::CancelRequest()
 {
 	if (DownloadRequest.IsValid() && (DownloadRequest->GetStatus() == EHttpRequestStatus::Type::Processing || DownloadRequest->GetStatus() == EHttpRequestStatus::Type::NotStarted))
 	{
@@ -53,19 +53,19 @@ void FReadyPlayerMeBaseRequest::CancelRequest()
 	OnDownloadCompleted.Unbind();
 }
 
-void FReadyPlayerMeBaseRequest::OnReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
+void FAvatarRequest::OnReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)
 {
 	const bool Success = bSuccess && Response.IsValid() && EHttpResponseCodes::IsOk(Response->GetResponseCode());
 	(void)OnDownloadCompleted.ExecuteIfBound(Success);
 	OnDownloadCompleted.Unbind();
 }
 
-const TArray<uint8>& FReadyPlayerMeBaseRequest::GetContent() const
+const TArray<uint8>& FAvatarRequest::GetContent() const
 {
 	return DownloadRequest->GetResponse()->GetContent();
 }
 
-FString FReadyPlayerMeBaseRequest::GetContentAsString() const
+FString FAvatarRequest::GetContentAsString() const
 {
 	return DownloadRequest->GetResponse()->GetContentAsString();
 }

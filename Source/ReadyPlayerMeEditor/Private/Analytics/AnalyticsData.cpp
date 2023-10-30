@@ -1,6 +1,6 @@
 // Copyright © 2021++ Ready Player Me
 
-#include "ReadyPlayerMeAnalyticsData.h"
+#include "AnalyticsData.h"
 
 #include "ReadyPlayerMeSettings.h"
 #include "ReadyPlayerMe/Private/Utils/PluginInfo.h"
@@ -41,7 +41,7 @@ namespace
 	}
 }
 
-FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
+FAnalyticsData::FAnalyticsData()
 {
 	const auto EngineVersion = FEngineVersion::Current();
 	AppName = FApp::GetProjectName();

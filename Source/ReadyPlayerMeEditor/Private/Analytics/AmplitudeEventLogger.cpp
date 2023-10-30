@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
-#include "ReadyPlayerMeAmplitudeEventLogger.h"
-#include "ReadyPlayerMe/Private/Request/ReadyPlayerMeRequestCreator.h"
+#include "AmplitudeEventLogger.h"
+#include "ReadyPlayerMe/Private/Request/AvatarRequestCreator.h"
 
 #include "Templates/SharedPointer.h"
 #include "Serialization/JsonWriter.h"
@@ -36,18 +36,18 @@ static const FString PLUGIN_TYPE_BLUEPRINT = "Blueprint";
 
 constexpr float REQUEST_TIMEOUT = 5.f;
 
-FReadyPlayerMeAmplitudeEventLogger::FReadyPlayerMeAmplitudeEventLogger()
+FAmplitudeEventLogger::FAmplitudeEventLogger()
 	: SessionId(FDateTime::Now().ToUnixTimestamp())
 	, AnalyticsTarget(ANALYTICS_TARGET)
 {
 }
 
-void FReadyPlayerMeAmplitudeEventLogger::SetAnalyticsTarget(const FString& Target)
+void FAmplitudeEventLogger::SetAnalyticsTarget(const FString& Target)
 {
 	AnalyticsTarget = Target;
 }
 
-TSharedRef<FJsonObject> FReadyPlayerMeAmplitudeEventLogger::MakeUserPropertiesJson() const
+TSharedRef<FJsonObject> FAmplitudeEventLogger::MakeUserPropertiesJson() const
 {
 	const auto JsonObject = MakeShared<FJsonObject>();
 	JsonObject->SetStringField(JSON_APP_NAME, AnalyticsData.AppName);
@@ -61,7 +61,7 @@ TSharedRef<FJsonObject> FReadyPlayerMeAmplitudeEventLogger::MakeUserPropertiesJs
 	return JsonObject;
 }
 
-TSharedRef<FJsonObject> FReadyPlayerMeAmplitudeEventLogger::MakeEventJson(const FString& EventName) const
+TSharedRef<FJsonObject> FAmplitudeEventLogger::MakeEventJson(const FString& EventName) const
 {
 	const auto JsonObject = MakeShared<FJsonObject>();
 	JsonObject->SetStringField(JSON_EVENT_TYPE, EventName);
@@ -73,7 +73,7 @@ TSharedRef<FJsonObject> FReadyPlayerMeAmplitudeEventLogger::MakeEventJson(const 
 	return JsonObject;
 }
 
-FString FReadyPlayerMeAmplitudeEventLogger::JsonToString(const TSharedRef<FJsonObject> JsonObject)
+FString FAmplitudeEventLogger::JsonToString(const TSharedRef<FJsonObject> JsonObject)
 {
 	FString JsonString;
 	const auto Writer = TJsonWriterFactory<TCHAR, TCondensedJsonPrintPolicy<TCHAR>>::Create(&JsonString);
@@ -84,7 +84,7 @@ FString FReadyPlayerMeAmplitudeEventLogger::JsonToString(const TSharedRef<FJsonO
 	return JsonString;
 }
 
-void FReadyPlayerMeAmplitudeEventLogger::LogEvent(const FString& EventName, const TSharedPtr<FJsonObject>& Params) const
+void FAmplitudeEventLogger::LogEvent(const FString& EventName, const TSharedPtr<FJsonObject>& Params) const
 {
 	const auto EventJson = MakeEventJson(EventName);
 	if (Params)
@@ -94,7 +94,7 @@ void FReadyPlayerMeAmplitudeEventLogger::LogEvent(const FString& EventName, cons
 	SendEvent(EventJson);
 }
 
-void FReadyPlayerMeAmplitudeEventLogger::SendEvent(TSharedRef<FJsonObject> EventJson) const
+void FAmplitudeEventLogger::SendEvent(TSharedRef<FJsonObject> EventJson) const
 {
 	const auto JsonObject = MakeShared<FJsonObject>();
 	const TArray<TSharedPtr<FJsonValue>> Events { MakeShared<FJsonValueObject>(EventJson) };
@@ -105,9 +105,9 @@ void FReadyPlayerMeAmplitudeEventLogger::SendEvent(TSharedRef<FJsonObject> Event
 	SendHttpRequest(ENDPOINT, Content);
 }
 
-void FReadyPlayerMeAmplitudeEventLogger::SendHttpRequest(const FString& Url, const FString& Content)
+void FAmplitudeEventLogger::SendHttpRequest(const FString& Url, const FString& Content)
 {
-	auto HttpRequest = FReadyPlayerMeRequestCreator::MakeHttpRequest(Url, REQUEST_TIMEOUT);
+	auto HttpRequest = FAvatarRequestCreator::MakeHttpRequest(Url, REQUEST_TIMEOUT);
 	HttpRequest->SetVerb(TEXT("POST"));
 	HttpRequest->SetHeader("Content-Type", "application/json");
 	HttpRequest->SetHeader("Accept", "*/*");

@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "ReadyPlayerMeAvatarStorage.h"
+#include "AvatarStorage.h"
 #include "GenericPlatform/GenericPlatformFile.h"
 #include "HAL/FileManagerGeneric.h"
 #include "Misc/Paths.h"
@@ -22,7 +22,7 @@ namespace
 	}
 }
 
-FString FReadyPlayerMeAvatarStorage::LoadMetadata(const FString& Path)
+FString FAvatarStorage::LoadMetadata(const FString& Path)
 {
 	if (!Path.IsEmpty() && FPaths::FileExists(*Path))
 	{
@@ -36,17 +36,17 @@ FString FReadyPlayerMeAvatarStorage::LoadMetadata(const FString& Path)
 	return "";
 }
 
-bool FReadyPlayerMeAvatarStorage::AvatarExists(const FAvatarUri& AvatarUri)
+bool FAvatarStorage::AvatarExists(const FAvatarUri& AvatarUri)
 {
 	return FileExists(AvatarUri.LocalMetadataPath) && FileExists(AvatarUri.LocalModelPath);
 }
 
-bool FReadyPlayerMeAvatarStorage::FileExists(const FString& Path)
+bool FAvatarStorage::FileExists(const FString& Path)
 {
 	return !Path.IsEmpty() && FPaths::FileExists(*Path);
 }
 
-void FReadyPlayerMeAvatarStorage::DeleteDirectory(const FString& Path)
+void FAvatarStorage::DeleteDirectory(const FString& Path)
 {
 	if (Path.IsEmpty())
 	{
@@ -59,7 +59,7 @@ void FReadyPlayerMeAvatarStorage::DeleteDirectory(const FString& Path)
 	}
 }
 
-bool FReadyPlayerMeAvatarStorage::CheckAndRemoveExistingFile(const FString& FilePath)
+bool FAvatarStorage::CheckAndRemoveExistingFile(const FString& FilePath)
 {
 	if (FilePath.IsEmpty())
 	{
@@ -85,7 +85,7 @@ bool FReadyPlayerMeAvatarStorage::CheckAndRemoveExistingFile(const FString& File
 	return true;
 }
 
-void FReadyPlayerMeAvatarStorage::SaveAvatar(const FString& GlbFilePath, const TArray<uint8>& Data)
+void FAvatarStorage::SaveAvatar(const FString& GlbFilePath, const TArray<uint8>& Data)
 {
 	if (!CheckAndRemoveExistingFile(GlbFilePath))
 	{
@@ -97,7 +97,7 @@ void FReadyPlayerMeAvatarStorage::SaveAvatar(const FString& GlbFilePath, const T
 	}
 }
 
-void FReadyPlayerMeAvatarStorage::SaveMetadata(const FString& MetadataFilePath, const FString& Content)
+void FAvatarStorage::SaveMetadata(const FString& MetadataFilePath, const FString& Content)
 {
 	if (!CheckAndRemoveExistingFile(MetadataFilePath))
 	{
@@ -109,22 +109,22 @@ void FReadyPlayerMeAvatarStorage::SaveMetadata(const FString& MetadataFilePath, 
 	}
 }
 
-void FReadyPlayerMeAvatarStorage::ClearCache()
+void FAvatarStorage::ClearCache()
 {
 	DeleteDirectory(GetAvatarCacheDir());
 }
 
-bool FReadyPlayerMeAvatarStorage::IsCacheEmpty()
+bool FAvatarStorage::IsCacheEmpty()
 {
 	return GetAvatarCount() == 0;
 }
 
-void FReadyPlayerMeAvatarStorage::ClearAvatar(const FString& Guid)
+void FAvatarStorage::ClearAvatar(const FString& Guid)
 {
 	DeleteDirectory(GetAvatarCacheDir() + Guid);
 }
 
-int32 FReadyPlayerMeAvatarStorage::GetAvatarCount()
+int32 FAvatarStorage::GetAvatarCount()
 {
 	const FString Path = GetAvatarCacheDir() + "*";
 	TArray<FString> FoundDirs;
@@ -132,7 +132,7 @@ int32 FReadyPlayerMeAvatarStorage::GetAvatarCount()
 	return FoundDirs.Num();
 }
 
-int64 FReadyPlayerMeAvatarStorage::GetCacheSize()
+int64 FAvatarStorage::GetCacheSize()
 {
 	int64 DirectorySize = 0;
 	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();

@@ -4,9 +4,9 @@
 #include "ReadyPlayerMeAvatarLoader.h"
 
 #include "Utils/AvatarUrlConvertor.h"
-#include "Storage/ReadyPlayerMeAvatarCacheHandler.h"
+#include "Storage/AvatarCacheHandler.h"
 #include "ReadyPlayerMeGlbLoader.h"
-#include "Request/ReadyPlayerMeBaseRequest.h"
+#include "Request/AvatarRequest.h"
 #include "Utils/MetadataExtractor.h"
 
 //TODO: Move the timout to the RPMSettings to make it configurable
@@ -34,13 +34,13 @@ void UReadyPlayerMeAvatarLoader::LoadAvatar(const FString& UrlShortcode, UReadyP
 	OnAvatarDownloadCompleted = OnDownloadCompleted;
 	OnAvatarLoadFailed = OnLoadFailed;
 	AvatarUri = FAvatarUrlConvertor::CreateAvatarUri(Url, AvatarConfig);
-	CacheHandler = MakeShared<FReadyPlayerMeAvatarCacheHandler>(*AvatarUri);
+	CacheHandler = MakeShared<FAvatarCacheHandler>(*AvatarUri);
 
 	GlbLoader = NewObject<UReadyPlayerMeGlbLoader>(this,TEXT("GlbLoader"));
 	GlbLoader->SkeletalMeshConfig = SkeletalMeshConfig;
 	GlbLoader->TargetSkeleton = TargetSkeleton;
 
-	MetadataRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	MetadataRequest = MakeShared<FAvatarRequest>();
 	MetadataRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnMetadataDownloaded);
 	MetadataRequest->Download(AvatarUri->MetadataUrl, METADATA_REQUEST_TIMEOUT);
 	if (CacheHandler->ShouldLoadFromCache())
@@ -104,7 +104,7 @@ void UReadyPlayerMeAvatarLoader::TryLoadFromCache()
 	{
 		ModelRequest->GetCompleteCallback().Unbind();
 	}
-	CacheHandler = MakeShared<FReadyPlayerMeAvatarCacheHandler>(*AvatarUri);
+	CacheHandler = MakeShared<FAvatarCacheHandler>(*AvatarUri);
 	AvatarMetadata = CacheHandler->GetLocalMetadata();
 	if (AvatarMetadata.IsSet())
 	{
@@ -186,7 +186,7 @@ void UReadyPlayerMeAvatarLoader::OnModelDownloaded(bool bSuccess)
 
 void UReadyPlayerMeAvatarLoader::DownloadAvatarModel()
 {
-	ModelRequest = MakeShared<FReadyPlayerMeBaseRequest>();
+	ModelRequest = MakeShared<FAvatarRequest>();
 	ModelRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeAvatarLoader::OnModelDownloaded);
 	ModelRequest->Download(AvatarUri->ModelUrl, AVATAR_REQUEST_TIMEOUT);
 }

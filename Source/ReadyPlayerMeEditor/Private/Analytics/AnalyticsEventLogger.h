@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ReadyPlayerMeAmplitudeEventLogger.h"
+#include "AmplitudeEventLogger.h"
 #include "ReadyPlayerMeEditorTypes.h"
 
-class FReadyPlayerMeAnalyticsEventLogger
+class FAnalyticsEventLogger
 {
 public:
-	static FReadyPlayerMeAnalyticsEventLogger& Get();
+	static FAnalyticsEventLogger& Get();
 
 	void LogProperties() const;
 	void LogEvent(ERpmAnalyticsEventType EventType) const;
@@ -19,6 +19,6 @@ public:
 	void EnableAnalytics();
 
 private:
-	FReadyPlayerMeAmplitudeEventLogger Logger;
+	FAmplitudeEventLogger Logger;
 	bool bIsEnabled = false;
 };

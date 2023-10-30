@@ -7,7 +7,7 @@
 
 DECLARE_DELEGATE_OneParam(FFileDownloadCompleted, bool /*bSuccess*/);
 
-class FReadyPlayerMeBaseRequest : public TSharedFromThis<FReadyPlayerMeBaseRequest>
+class FAvatarRequest : public TSharedFromThis<FAvatarRequest>
 {
 public:
 	void Download(const FString& Url, float Timeout = -1.f);
