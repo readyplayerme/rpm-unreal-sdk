@@ -7,11 +7,11 @@
 #include "Downloaders/RpmPartnerAssetDownloader.h"
 #include "Downloaders/RpmColorDownloader.h"
 #include "Downloaders/RpmAuthManager.h"
-#include "RpmAvatarRequestHandler.h"
+#include "Downloaders/RpmAvatarRequestHandler.h"
 #include "Requests/RequestFactory.h"
 #include "Downloaders/RpmUserAvatarDownloader.h"
-#include "RpmAvatarTemplateDownloader.h"
-#include "RpmImageDownloader.h"
+#include "Downloaders/RpmAvatarTemplateDownloader.h"
+#include "Downloaders/RpmImageDownloader.h"
 #include "Engine/SkeletalMesh.h"
 
 URpmAvatarCreatorApi::URpmAvatarCreatorApi()
