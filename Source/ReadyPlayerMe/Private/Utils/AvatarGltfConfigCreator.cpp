@@ -1,9 +1,9 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeGlTFConfigCreator.h"
+#include "AvatarGltfConfigCreator.h"
 
-void FReadyPlayerMeGlTFConfigCreator::OverrideConfig(FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig, const FString& RootBoneName, USkeleton* Skeleton)
+void FAvatarGltfConfigCreator::OverrideConfig(FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig, const FString& RootBoneName, USkeleton* Skeleton)
 {
 	SkeletalMeshConfig.MorphTargetsDuplicateStrategy = EglTFRuntimeMorphTargetsDuplicateStrategy::Merge;
 	SkeletalMeshConfig.bAddVirtualBones = true;
@@ -14,7 +14,7 @@ void FReadyPlayerMeGlTFConfigCreator::OverrideConfig(FglTFRuntimeSkeletalMeshCon
 	SkeletalMeshConfig.SkeletonConfig.RootBoneName = RootBoneName;
 }
 
-FglTFRuntimeConfig FReadyPlayerMeGlTFConfigCreator::GetGlTFRuntimeConfig()
+FglTFRuntimeConfig FAvatarGltfConfigCreator::GetGlTFRuntimeConfig()
 {
 	FglTFRuntimeConfig RuntimeConfig;
 	RuntimeConfig.TransformBaseType = EglTFRuntimeTransformBaseType::YForward;

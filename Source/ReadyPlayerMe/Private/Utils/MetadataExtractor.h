@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeMetadataExtractor
+class FMetadataExtractor
 {
 public:
 	static FString GetRootBoneName(const EAvatarBodyType& AvatarBodyType);

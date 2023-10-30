@@ -3,7 +3,7 @@
 #include "ReadyPlayerMeAnalyticsData.h"
 
 #include "ReadyPlayerMeSettings.h"
-#include "ReadyPlayerMe/Private/Utils/ReadyPlayerMePluginInfo.h"
+#include "ReadyPlayerMe/Private/Utils/PluginInfo.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -45,8 +45,7 @@ FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
 {
 	const auto EngineVersion = FEngineVersion::Current();
 	AppName = FApp::GetProjectName();
-	SDKVersion = FReadyPlayerMePluginInfo::GetRpmPluginVersion();
-	AvatarCreatorVersion = FReadyPlayerMePluginInfo::GetAvatarCreatorPluginVersion();
+	SDKVersion = FPluginInfo::GetRpmPluginVersion();
 	SdkTarget = SDK_TARGET;
 	Subdomain = GetSubdomain();
 	AppId = GetAppId();
@@ -54,5 +53,5 @@ FReadyPlayerMeAnalyticsData::FReadyPlayerMeAnalyticsData()
 	Platform = UGameplayStatics::GetPlatformName();
 	DeviceId = GetDeviceId();
 	AppIdentifier = UKismetSystemLibrary::GetGameBundleId();
-	bIsCppPlugin = FReadyPlayerMePluginInfo::IsCppPlugin();
+	bIsCppPlugin = FPluginInfo::IsCppPlugin();
 }

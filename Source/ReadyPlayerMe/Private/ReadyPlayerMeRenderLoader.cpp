@@ -4,7 +4,7 @@
 #include "ReadyPlayerMeRenderLoader.h"
 
 #include "Kismet/KismetRenderingLibrary.h"
-#include "Utils/ReadyPlayerMeRenderUrlConvertor.h"
+#include "Utils/RenderUrlConvertor.h"
 #include "Request/ReadyPlayerMeBaseRequest.h"
 
 //TODO: Move the timout to the RPMSettings to make it configurable
@@ -14,7 +14,7 @@ void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const ERenderScen
 {
 	OnDownloadImageCompleted = OnCompleted;
 	OnDownloadImageFailed = OnFailed;
-	const FString Url = FReadyPlayerMeRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType, BlendShapes);
+	const FString Url = FRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType, BlendShapes);
 
 	ImageRequest = MakeShared<FReadyPlayerMeBaseRequest>();
 	ImageRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeRenderLoader::OnImageDownloaded);

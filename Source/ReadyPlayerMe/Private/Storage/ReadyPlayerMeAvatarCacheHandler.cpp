@@ -4,7 +4,7 @@
 #include "ReadyPlayerMeAvatarCacheHandler.h"
 #include "ReadyPlayerMeAvatarStorage.h"
 #include "ReadyPlayerMeSettings.h"
-#include "Utils/ReadyPlayerMeMetadataExtractor.h"
+#include "Utils/MetadataExtractor.h"
 
 
 FReadyPlayerMeAvatarCacheHandler::FReadyPlayerMeAvatarCacheHandler(const FAvatarUri& AvatarUri)
@@ -44,7 +44,7 @@ TOptional<FAvatarMetadata> FReadyPlayerMeAvatarCacheHandler::GetLocalMetadata() 
 	const FString MetadataStr = FReadyPlayerMeAvatarStorage::LoadMetadata(AvatarUri.LocalMetadataPath);
 	if (!MetadataStr.IsEmpty())
 	{
-		return FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(MetadataStr);
+		return FMetadataExtractor::ExtractAvatarMetadata(MetadataStr);
 	}
 	return {};
 }

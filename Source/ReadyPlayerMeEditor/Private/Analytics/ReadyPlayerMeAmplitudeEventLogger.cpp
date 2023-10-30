@@ -21,7 +21,6 @@ static const FString JSON_ENGINE_VERSION = "engine version";
 static const FString JSON_SDK_TARGET = "sdk target";
 static const FString JSON_SUBDOMAIN = "subdomain";
 static const FString JSON_APP_ID = "app id";
-static const FString JSON_AVATAR_CREATOR_VERSION = "avatar creator version";
 static const FString JSON_APP_IDENTIFIER = "app identifier";
 static const FString JSON_PLUGIN_TYPE = "plugin type";
 
@@ -56,7 +55,6 @@ TSharedRef<FJsonObject> FReadyPlayerMeAmplitudeEventLogger::MakeUserPropertiesJs
 	JsonObject->SetStringField(JSON_SDK_TARGET, AnalyticsData.SdkTarget);
 	JsonObject->SetStringField(JSON_SUBDOMAIN, AnalyticsData.Subdomain);
 	JsonObject->SetStringField(JSON_APP_ID, AnalyticsData.AppId);
-	JsonObject->SetStringField(JSON_AVATAR_CREATOR_VERSION, AnalyticsData.AvatarCreatorVersion);
 	JsonObject->SetStringField(JSON_APP_IDENTIFIER, AnalyticsData.AppIdentifier);
 	const FString PluginType = AnalyticsData.bIsCppPlugin ? PLUGIN_TYPE_CPP : PLUGIN_TYPE_BLUEPRINT;
 	JsonObject->SetStringField(JSON_PLUGIN_TYPE, PluginType);

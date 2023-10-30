@@ -1,8 +1,8 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeRenderUrlConvertor.h"
-#include "Utils/ReadyPlayerMeMorphTargetUtils.h"
+#include "RenderUrlConvertor.h"
+#include "MorphTargetUtils.h"
 #include "Misc/Paths.h"
 
 static const TMap<ERenderSceneType,FString> SCENE_TYPE_TO_STRING_MAP =
@@ -14,7 +14,7 @@ static const TMap<ERenderSceneType,FString> SCENE_TYPE_TO_STRING_MAP =
 	{ERenderSceneType::FullBodyPostureTransparent, "fullbody-posture-v1-transparent"}
 };
 
-FString FReadyPlayerMeRenderUrlConvertor::SceneTypeToString(const ERenderSceneType& SceneType)
+FString FRenderUrlConvertor::SceneTypeToString(const ERenderSceneType& SceneType)
 {
 	if (SCENE_TYPE_TO_STRING_MAP.Contains(SceneType))
 	{
@@ -25,7 +25,7 @@ FString FReadyPlayerMeRenderUrlConvertor::SceneTypeToString(const ERenderSceneTy
 	return SCENE_TYPE_TO_STRING_MAP[ERenderSceneType::HalfBodyPortrait];
 }
 
-FString FReadyPlayerMeRenderUrlConvertor::CreateRenderUrl(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes)
+FString FRenderUrlConvertor::CreateRenderUrl(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes)
 {
 	FString UrlLink, UrlQueryString;
 	if (!ModelUrl.Split(TEXT("?"), &UrlLink, &UrlQueryString))
@@ -38,8 +38,8 @@ FString FReadyPlayerMeRenderUrlConvertor::CreateRenderUrl(const FString& ModelUr
 	FString BlendShapesStr;
 	for (const auto& BlendShape : BlendShapes)
 	{
-		const FString KeyStr = FReadyPlayerMeMorphTargetUtils::MorphTargetToString(BlendShape.Key);
-		BlendShapesStr += FString::Format(TEXT("&blendShapes[Wolf3D_Head][{0}]={1}"), {KeyStr, FString::SanitizeFloat(BlendShape.Value)});
+		const FString KeyStr = FMorphTargetUtils::MorphTargetToString(BlendShape.Key);
+		BlendShapesStr += FString::Format(TEXT("&blendShapes[{0}]={1}"), {KeyStr, FString::SanitizeFloat(BlendShape.Value)});
 	}
 
 	const FString RenderUrl = FString::Format(TEXT("{0}/{1}.png?scene={2}{3}"),

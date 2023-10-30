@@ -1,9 +1,9 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeUrlConvertor.h"
+#include "AvatarUrlConvertor.h"
 
-#include "ReadyPlayerMeAvatarConfigProcessor.h"
+#include "AvatarConfigProcessor.h"
 #include "Internationalization/Regex.h"
 #include "Misc/Paths.h"
 
@@ -15,7 +15,7 @@ static const TCHAR* SUFFIX_JSON = TEXT(".json");
 static const TCHAR* AVATARS_FOLDER = TEXT("Avatars");
 static const TCHAR* DEFAULT_FOLDER = TEXT("Default");
 
-FString FReadyPlayerMeUrlConvertor::GetValidatedUrlShortCode(const FString& UrlShortCode)
+FString FAvatarUrlConvertor::GetValidatedUrlShortCode(const FString& UrlShortCode)
 {
 	if (UrlShortCode.IsEmpty() || IsUrl(UrlShortCode))
 	{
@@ -28,21 +28,21 @@ FString FReadyPlayerMeUrlConvertor::GetValidatedUrlShortCode(const FString& UrlS
 	return "";
 }
 
-bool FReadyPlayerMeUrlConvertor::IsShortcode(const FString& Shortcode)
+bool FAvatarUrlConvertor::IsShortcode(const FString& Shortcode)
 {
 	const FRegexPattern RegexPattern(SHORTCODE_PATTERN);
 	FRegexMatcher RegexMatcher(RegexPattern, Shortcode);
 	return RegexMatcher.FindNext();
 }
 
-bool FReadyPlayerMeUrlConvertor::IsUrl(const FString& Url)
+bool FAvatarUrlConvertor::IsUrl(const FString& Url)
 {
 	const FRegexPattern RegexPattern(URL_PATTERN);
 	FRegexMatcher RegexMatcher(RegexPattern, Url);
 	return RegexMatcher.FindNext();
 }
 
-FString FReadyPlayerMeUrlConvertor::GetAvatarGuid(const FString& UrlShortcode)
+FString FAvatarUrlConvertor::GetAvatarGuid(const FString& UrlShortcode)
 {
 	if (UrlShortcode.IsEmpty())
 	{
@@ -56,14 +56,14 @@ FString FReadyPlayerMeUrlConvertor::GetAvatarGuid(const FString& UrlShortcode)
 	return Uri.Guid;
 }
 
-FAvatarUri FReadyPlayerMeUrlConvertor::CreateAvatarUri(const FString& Url, UReadyPlayerMeAvatarConfig* AvatarConfig)
+FAvatarUri FAvatarUrlConvertor::CreateAvatarUri(const FString& Url, UReadyPlayerMeAvatarConfig* AvatarConfig)
 {
 	FString UrlLink, UrlQueryString;
 	if (!Url.Split(TEXT("?"), &UrlLink, &UrlQueryString))
 	{
 		UrlLink = Url;
 	}
-	UrlQueryString = FReadyPlayerMeAvatarConfigProcessor::Process(AvatarConfig);
+	UrlQueryString = FAvatarConfigProcessor::Process(AvatarConfig);
 	FString Path, Guid, Extension;
 	FPaths::Split(UrlLink, Path, Guid, Extension);
 	const FString UrlPath = Path + "/" + Guid;

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeRenderUrlConvertor
+class FRenderUrlConvertor
 {
 public:
 	static FString CreateRenderUrl(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes);

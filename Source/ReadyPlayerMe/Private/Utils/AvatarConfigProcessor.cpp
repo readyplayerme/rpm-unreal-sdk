@@ -1,10 +1,10 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeAvatarConfigProcessor.h"
+#include "AvatarConfigProcessor.h"
 
-#include "Utils/ReadyPlayerMeMorphTargetUtils.h"
-#include "ReadyPlayerMePluginInfo.h"
+#include "MorphTargetUtils.h"
+#include "PluginInfo.h"
 #include "ReadyPlayerMeTypes.h"
 #include "AvatarConfig/ReadyPlayerMeAvatarConfig.h"
 #include "AvatarConfig/ReadyPlayerMeMorphTargetGroup.h"
@@ -72,23 +72,23 @@ namespace
 		TArray<FString> Morphs;
 		for (const auto& Target : Targets)
 		{
-			Morphs.Add(FReadyPlayerMeMorphTargetUtils::MorphTargetToString(Target));
+			Morphs.Add(FMorphTargetUtils::MorphTargetToString(Target));
 		}
 		for (const auto& Group : Groups)
 		{
-			Morphs.Add(FReadyPlayerMeMorphTargetUtils::MorphTargetGroupToString(Group));
+			Morphs.Add(FMorphTargetUtils::MorphTargetGroupToString(Group));
 		}
 		return "morphTargets=" + FString::Join(Morphs, TEXT(","));
 	}
 }
 
-FString FReadyPlayerMeAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig* AvatarConfig)
+FString FAvatarConfigProcessor::Process(UReadyPlayerMeAvatarConfig* AvatarConfig)
 {
 	if (!AvatarConfig)
 	{
 		return "";
 	}
-	const bool UseDraco = FReadyPlayerMePluginInfo::IsDracoPluginIncluded() && AvatarConfig->bUseDracoMeshCompression;
+	const bool UseDraco = FPluginInfo::IsDracoPluginIncluded() && AvatarConfig->bUseDracoMeshCompression;
 	const FString MorphTargetsParam = ProcessMorphTargets(AvatarConfig->MorphTargetGroup);
 	TArray<FString> Parameters;
 	Parameters.Add("pose=" + POSE_TO_STRING[AvatarConfig->Pose]);

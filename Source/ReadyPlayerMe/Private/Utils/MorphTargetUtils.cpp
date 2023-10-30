@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeMorphTargetUtils.h"
+#include "MorphTargetUtils.h"
 
 static const TMap<EAvatarMorphTarget, FString> ALL_MORPH_TARGETS_TO_STRING =
 {
@@ -89,12 +89,12 @@ static const TMap<EStandardMorphTargetGroup, FString> ALL_GROUP_TO_STRING =
 	{ EStandardMorphTargetGroup::ArKit, "ARKit" }
 };
 
-FString FReadyPlayerMeMorphTargetUtils::MorphTargetToString(EAvatarMorphTarget MorphTarget)
+FString FMorphTargetUtils::MorphTargetToString(EAvatarMorphTarget MorphTarget)
 {
 	return  ALL_MORPH_TARGETS_TO_STRING[MorphTarget];
 }
 
-FString FReadyPlayerMeMorphTargetUtils::MorphTargetGroupToString(EStandardMorphTargetGroup Group)
+FString FMorphTargetUtils::MorphTargetGroupToString(EStandardMorphTargetGroup Group)
 {
 	return  ALL_GROUP_TO_STRING[Group];
 }

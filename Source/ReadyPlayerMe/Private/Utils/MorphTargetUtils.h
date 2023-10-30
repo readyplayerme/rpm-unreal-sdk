@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeMorphTargetUtils
+class FMorphTargetUtils
 {
 public:
 	static FString MorphTargetToString(EAvatarMorphTarget MorphTarget);

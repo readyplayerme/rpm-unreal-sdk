@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-class FReadyPlayerMeAvatarConfigProcessor
+class FAvatarConfigProcessor
 {
 public:
 	static FString Process(class UReadyPlayerMeAvatarConfig* AvatarConfig);

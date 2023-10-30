@@ -8,7 +8,6 @@ struct FReadyPlayerMeAnalyticsData
 {
 	FString AppName;
 	FString SDKVersion;
-	FString AvatarCreatorVersion;
 	FString SdkTarget;
 	FString Subdomain;
 	FString AppId;

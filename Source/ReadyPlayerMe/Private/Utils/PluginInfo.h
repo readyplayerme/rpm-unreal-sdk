@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Interfaces/IPluginManager.h"
 
-class FReadyPlayerMePluginInfo
+class FPluginInfo
 {
 public:
 	static FString GetPluginVersion(const FString& Name)
@@ -22,11 +22,6 @@ public:
 	static FString GetRpmPluginVersion()
 	{
 		return GetPluginVersion(GetRPMPluginName());
-	}
-
-	static FString GetAvatarCreatorPluginVersion()
-	{
-		return GetPluginVersion(GetAvatarCreatorPluginName());
 	}
 
 	static bool IsCppPlugin()
@@ -54,10 +49,5 @@ public:
 	static FString GetDracoPluginName()
 	{
 		return "glTFRuntimeDraco";
-	}
-
-	static FString GetAvatarCreatorPluginName()
-	{
-		return "RpmAvatarCreator";
 	}
 };

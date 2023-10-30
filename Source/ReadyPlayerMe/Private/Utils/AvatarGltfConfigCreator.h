@@ -6,7 +6,7 @@
 
 #include "glTFRuntimeParser.h"
 
-class FReadyPlayerMeGlTFConfigCreator
+class FAvatarGltfConfigCreator
 {
 public:
 	static void OverrideConfig(FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig, const FString& RootBoneName, USkeleton* Skeleton);

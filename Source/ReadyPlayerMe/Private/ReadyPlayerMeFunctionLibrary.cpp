@@ -3,7 +3,7 @@
 
 #include "ReadyPlayerMeFunctionLibrary.h"
 #include "Storage/ReadyPlayerMeAvatarStorage.h"
-#include "Utils/ReadyPlayerMeUrlConvertor.h"
+#include "Utils/AvatarUrlConvertor.h"
 
 void UReadyPlayerMeFunctionLibrary::ClearAvatarCache()
 {
@@ -32,5 +32,5 @@ int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()
 
 FString UReadyPlayerMeFunctionLibrary::GetAvatarGuid(const FString& UrlShortcode)
 {
-    return FReadyPlayerMeUrlConvertor::GetAvatarGuid(UrlShortcode);
+    return FAvatarUrlConvertor::GetAvatarGuid(UrlShortcode);
 }

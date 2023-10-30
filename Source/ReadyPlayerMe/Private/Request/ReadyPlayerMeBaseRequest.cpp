@@ -5,7 +5,7 @@
 
 #include "ReadyPlayerMeSettings.h"
 #include "Request/ReadyPlayerMeRequestCreator.h"
-#include "Utils/ReadyPlayerMePluginInfo.h"
+#include "Utils/PluginInfo.h"
 
 static const FString HEADER_RPM_SOURCE = "RPM-Source";
 static const FString HEADER_RPM_SDK_VERSION = "RPM-SDK-Version";
@@ -27,7 +27,7 @@ namespace
 			HttpRequest->SetHeader(HEADER_APP_ID, Settings->AppId);
 		}
 		HttpRequest->SetHeader(HEADER_RPM_SOURCE, UNREAL_SOURCE);
-		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FReadyPlayerMePluginInfo::GetRpmPluginVersion());
+		HttpRequest->SetHeader(HEADER_RPM_SDK_VERSION, FPluginInfo::GetRpmPluginVersion());
 	}
 }
 

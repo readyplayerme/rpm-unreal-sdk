@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ReadyPlayerMeTypes.h"
 
-class FReadyPlayerMeUrlConvertor
+class FAvatarUrlConvertor
 {
 public:
 	static FString GetValidatedUrlShortCode(const FString& UrlShortCode);

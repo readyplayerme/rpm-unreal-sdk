@@ -1,7 +1,7 @@
 // Copyright © 2021++ Ready Player Me
 
 
-#include "Utils/ReadyPlayerMeMetadataExtractor.h"
+#include "MetadataExtractor.h"
 
 #include "glTFRuntimeAsset.h"
 #include "Templates/SharedPointer.h"
@@ -21,7 +21,7 @@ static const FString JSON_FIELD_GENDER = "outfitGender";
 static const FString JSON_FIELD_UPDATED_AT = "updatedAt";
 static const int MAX_HALFBODY_NODES=60;
 
-FString FReadyPlayerMeMetadataExtractor::GetRootBoneName(const EAvatarBodyType& AvatarBodyType)
+FString FMetadataExtractor::GetRootBoneName(const EAvatarBodyType& AvatarBodyType)
 {
 	if (AvatarBodyType == EAvatarBodyType::FullBody)
 	{
@@ -31,7 +31,7 @@ FString FReadyPlayerMeMetadataExtractor::GetRootBoneName(const EAvatarBodyType& 
 	return HALFBODY_BONE_NODE;
 }
 
-EAvatarBodyType FReadyPlayerMeMetadataExtractor::GetBodyTypeFromAsset(UglTFRuntimeAsset* GltfRuntimeAsset)
+EAvatarBodyType FMetadataExtractor::GetBodyTypeFromAsset(UglTFRuntimeAsset* GltfRuntimeAsset)
 {
 	// Temporary solution for checking if the body type, without having the metadata.
 	// This will also load all the nodes synchronously.
@@ -43,7 +43,7 @@ EAvatarBodyType FReadyPlayerMeMetadataExtractor::GetBodyTypeFromAsset(UglTFRunti
 	return EAvatarBodyType::HalfBody;
 }
 
-FAvatarMetadata FReadyPlayerMeMetadataExtractor::ExtractAvatarMetadata(const FString& JsonString)
+FAvatarMetadata FMetadataExtractor::ExtractAvatarMetadata(const FString& JsonString)
 {
 	TSharedPtr<FJsonObject> JsonObject;
 	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
