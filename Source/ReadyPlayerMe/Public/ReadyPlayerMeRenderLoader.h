@@ -19,13 +19,12 @@ public:
 	 * Loads the rendered image.
 	 * 
 	 * @param ModelUrl Model url.
-	 * @param SceneType The type of the scene where the avatar should be rendered.
-	 * @param BlendShapes A map of the MorphTargets and values for them. BlendShapes can be used for applying facial expressions to the avatar.
+	 * @param Properties The properties for defining the render environment.
 	 * @param OnCompleted Success callback. Called when the render is loaded and provides the avatar texture as an argument.
 	 * @param OnFailed Failure callback. If the render operation fails, the failure callback will be called.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Load", AutoCreateRefTerm = "BlendShapes, OnCompleted, OnFailed"))
-	void Load(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed);
+	void Load(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed);
 
 private:
 	virtual void BeginDestroy() override;

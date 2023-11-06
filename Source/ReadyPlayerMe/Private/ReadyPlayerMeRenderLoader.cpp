@@ -10,11 +10,11 @@
 //TODO: Move the timout to the RPMSettings to make it configurable
 constexpr float IMAGE_REQUEST_TIMEOUT = 60.f;
 
-void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const ERenderSceneType& SceneType, const TMap<EAvatarMorphTarget, float>& BlendShapes, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed)
+void UReadyPlayerMeRenderLoader::Load(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties, const FDownloadImageCompleted& OnCompleted, const FDownloadImageFailed& OnFailed)
 {
 	OnDownloadImageCompleted = OnCompleted;
 	OnDownloadImageFailed = OnFailed;
-	const FString Url = FRenderUrlConvertor::CreateRenderUrl(ModelUrl, SceneType, BlendShapes);
+	const FString Url = FRenderUrlConvertor::CreateRenderUrl(ModelUrl, Properties);
 
 	ImageRequest = MakeShared<FAvatarRequest>();
 	ImageRequest->GetCompleteCallback().BindUObject(this, &UReadyPlayerMeRenderLoader::OnImageDownloaded);
