@@ -96,9 +96,6 @@ private:
 	UPROPERTY()
 	class UReadyPlayerMeAvatarLoader* AvatarLoader;
 
-	UPROPERTY()
-	class UReadyPlayerMeRenderLoader* RenderLoader;
-
 	UFUNCTION()
 	void OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
 
