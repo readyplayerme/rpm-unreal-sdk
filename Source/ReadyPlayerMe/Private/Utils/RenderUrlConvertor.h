@@ -8,5 +8,5 @@
 class FRenderUrlConvertor
 {
 public:
-	static FString CreateRenderUrl(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties);
+	static FString CreateRenderUrl(const FString& Url, const FRpmAvatarRenderProperties& Properties);
 };

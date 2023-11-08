@@ -29,9 +29,9 @@ static const TMap<ERpmRenderCamera,FString> CAMERA_TO_STRING_MAP =
 	{ERpmRenderCamera::FullBody, "fullbody"}
 };
 
-FString FRenderUrlConvertor::CreateRenderUrl(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties)
+FString FRenderUrlConvertor::CreateRenderUrl(const FString& Url, const FRpmAvatarRenderProperties& Properties)
 {
-	const FString ValidUrl = FAvatarUrlConvertor::GetValidatedUrl(ModelUrl);
+	const FString ValidUrl = FAvatarUrlConvertor::GetValidatedUrl(Url);
 	FString UrlLink, UrlQueryString;
 	if (!ValidUrl.Split(TEXT("?"), &UrlLink, &UrlQueryString))
 	{

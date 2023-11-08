@@ -21,11 +21,11 @@ public:
 	/**
 	 * Creates load render async action.
 	 *
-	 * @param ModelUrl Model url.
+	 * @param Url Model url.
 	 * @param Properties The properties for defining the render environment.
 	 */
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", Category = "Ready Player Me", AutoCreateRefTerm = "Properties"))
-	static UReadyPlayerMeLoadRenderAction* LoadAvatarRenderAsync(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties);
+	static UReadyPlayerMeLoadRenderAction* LoadAvatarRenderAsync(const FString& Url, const FRpmAvatarRenderProperties& Properties);
 
 	/** Success callback. Called when the render is loaded and provides the avatar texture as an argument. */
 	UPROPERTY(BlueprintAssignable)
@@ -36,7 +36,7 @@ public:
 	FDownloadImageCompleted OnFailed;
 
 	/** Load the rendered image. */
-	void Load(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties);
+	void Load(const FString& Url, const FRpmAvatarRenderProperties& Properties);
 
 private:
 	virtual void BeginDestroy() override;
