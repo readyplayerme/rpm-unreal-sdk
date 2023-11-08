@@ -2,6 +2,7 @@
 
 
 #include "RenderUrlConvertor.h"
+#include "AvatarUrlConvertor.h"
 #include "MorphTargetUtils.h"
 #include "Misc/Paths.h"
 
@@ -30,10 +31,11 @@ static const TMap<ERpmRenderCamera,FString> CAMERA_TO_STRING_MAP =
 
 FString FRenderUrlConvertor::CreateRenderUrl(const FString& ModelUrl, const FRpmAvatarRenderProperties& Properties)
 {
+	const FString ValidUrl = FAvatarUrlConvertor::GetValidatedUrl(ModelUrl);
 	FString UrlLink, UrlQueryString;
-	if (!ModelUrl.Split(TEXT("?"), &UrlLink, &UrlQueryString))
+	if (!ValidUrl.Split(TEXT("?"), &UrlLink, &UrlQueryString))
 	{
-		UrlLink = ModelUrl;
+		UrlLink = ValidUrl;
 	}
 	FString Path, Guid, Extension;
 	FPaths::Split(UrlLink, Path, Guid, Extension);

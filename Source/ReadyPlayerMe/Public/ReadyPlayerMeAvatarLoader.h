@@ -32,7 +32,7 @@ public:
 	 * @param OnLoadFailed Failure callback. If the avatar fails to load, the failure callback will be called.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Load Avatar", AutoCreateRefTerm = "OnLoadFailed,SkeletalMeshConfig"))
-	void LoadAvatar(const FString& UrlShortcode, class UReadyPlayerMeAvatarConfig* AvatarConfig,
+	void LoadAvatar(UPARAM(DisplayName="Url") const FString& UrlShortcode, class UReadyPlayerMeAvatarConfig* AvatarConfig,
 		USkeleton* TargetSkeleton, const FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig,
 		const FAvatarDownloadCompleted& OnDownloadCompleted, const FAvatarLoadFailed& OnLoadFailed);
 
