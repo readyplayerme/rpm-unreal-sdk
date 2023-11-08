@@ -24,7 +24,7 @@ void UReadyPlayerMeAvatarLoader::LoadAvatar(const FString& UrlShortcode, UReadyP
 	USkeleton* TargetSkeleton, const FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig,
 	const FAvatarDownloadCompleted& OnDownloadCompleted, const FAvatarLoadFailed& OnLoadFailed)
 {
-	const FString Url = FAvatarUrlConvertor::GetValidatedUrlShortCode(UrlShortcode);
+	const FString Url = FAvatarUrlConvertor::GetValidatedUrl(UrlShortcode);
 	if (Url.IsEmpty())
 	{
 		(void)OnLoadFailed.ExecuteIfBound("Url invalid");

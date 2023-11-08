@@ -32,5 +32,5 @@ int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()
 
 FString UReadyPlayerMeFunctionLibrary::GetAvatarGuid(const FString& UrlShortcode)
 {
-    return FAvatarUrlConvertor::GetAvatarGuid(UrlShortcode);
+    return FAvatarUrlConvertor::GetAvatarId(UrlShortcode);
 }

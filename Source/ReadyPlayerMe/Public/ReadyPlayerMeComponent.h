@@ -46,7 +46,7 @@ public:
 	void LoadNewAvatar(const FString& Url, const FAvatarLoadCompleted& OnLoadCompleted, const FAvatarLoadFailed& OnLoadFailed);
 
 	/** The avatar url or shortcode. It's used to load the avatar from the web. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me", meta = (DisplayName = "Url"))
 	FString UrlShortcode;
 
 	/** Provides read-only information about the loaded avatar. Such as the type of the avatar, outfit and gender. */
@@ -95,9 +95,6 @@ public:
 private:
 	UPROPERTY()
 	class UReadyPlayerMeAvatarLoader* AvatarLoader;
-
-	UPROPERTY()
-	class UReadyPlayerMeRenderLoader* RenderLoader;
 
 	UFUNCTION()
 	void OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
