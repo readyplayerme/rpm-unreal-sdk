@@ -15,7 +15,8 @@ void FRpmAvatarTemplateDownloader::DownloadTemplates(const FAvatarTemplatesDownl
 {
 	if (AvatarTemplates.Num() != 0)
 	{
-		(void)OnDownloadCompleted.ExecuteIfBound(AvatarTemplates);
+		(void)DownloadCompleted.ExecuteIfBound(AvatarTemplates);
+		return;
 	}
 	OnDownloadCompleted = DownloadCompleted;
 	OnFailed = Failed;
