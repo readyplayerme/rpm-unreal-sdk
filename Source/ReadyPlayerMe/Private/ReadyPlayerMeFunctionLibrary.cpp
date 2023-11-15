@@ -2,17 +2,27 @@
 
 
 #include "ReadyPlayerMeFunctionLibrary.h"
+
+#include "ReadyPlayerMeGameSubsystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "Storage/AvatarManifest.h"
 #include "Storage/AvatarStorage.h"
 #include "Utils/AvatarUrlConvertor.h"
 
-void UReadyPlayerMeFunctionLibrary::ClearAvatarCache()
+void UReadyPlayerMeFunctionLibrary::ClearAvatarCache(const UObject* WorldContextObject)
 {
 	FAvatarStorage::ClearCache();
+    const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+    const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
+    GameSubsystem->AvatarManifest->Clear();
 }
 
-void UReadyPlayerMeFunctionLibrary::ClearAvatar(const FString& Guid)
+void UReadyPlayerMeFunctionLibrary::ClearAvatar(const UObject* WorldContextObject, const FString& AvatarId)
 {
-    FAvatarStorage::ClearAvatar(Guid);
+    FAvatarStorage::ClearAvatar(AvatarId);
+    const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+    const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
+    GameSubsystem->AvatarManifest->RemoveAvatar(AvatarId);
 }
 
 bool UReadyPlayerMeFunctionLibrary::IsAvatarCacheEmpty()
@@ -22,7 +32,7 @@ bool UReadyPlayerMeFunctionLibrary::IsAvatarCacheEmpty()
 
 int32 UReadyPlayerMeFunctionLibrary::GetAvatarCount()
 {
-    return FAvatarStorage::GetAvatarCount();
+    return FAvatarStorage::GetSavedAvatars().Num();
 }
 
 int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()

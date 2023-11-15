@@ -4,29 +4,47 @@
 #include "AvatarCacheHandler.h"
 #include "AvatarStorage.h"
 #include "ReadyPlayerMeSettings.h"
+#include "AvatarManifest.h"
 #include "Utils/MetadataExtractor.h"
 
+namespace
+{
+	bool IsCachingEnabled()
+	{
+		const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
+		if (Settings)
+		{
+			return Settings->bEnableAvatarCaching;
+		}
+		return false;
+	}
+}
 
-FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri)
+FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr<class FAvatarManifest> Manifest)
 	: AvatarUri(AvatarUri)
 	, ModelData(nullptr)
 	, bMetadataNeedsUpdate(false)
+	, AvatarManifest(MoveTemp(Manifest))
+	, bIsCachingEnabled(IsCachingEnabled() && AvatarManifest.IsValid())
 {
+	if (!bIsCachingEnabled)
+	{
+		AvatarManifest->BlockAvatar(AvatarUri.Guid);
+	}
 }
 
-bool FAvatarCacheHandler::IsCachingEnabled()
+FAvatarCacheHandler::~FAvatarCacheHandler()
 {
-	const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
-	if (Settings)
+	if (!bIsCachingEnabled)
 	{
-		return Settings->bEnableAvatarCaching;
+		AvatarManifest->UnblockAvatar(AvatarUri.Guid);
 	}
-	return false;
 }
+
 
 bool FAvatarCacheHandler::ShouldLoadFromCache() const
 {
-	return IsCachingEnabled() && FAvatarStorage::AvatarExists(AvatarUri);
+	return bIsCachingEnabled && FAvatarStorage::AvatarExists(AvatarUri);
 }
 
 bool FAvatarCacheHandler::IsMedataUpdated(const FString& UpdatedDate) const
@@ -41,7 +59,7 @@ bool FAvatarCacheHandler::IsMedataUpdated(const FString& UpdatedDate) const
 
 TOptional<FAvatarMetadata> FAvatarCacheHandler::GetLocalMetadata() const
 {
-	const FString MetadataStr = FAvatarStorage::LoadMetadata(AvatarUri.LocalMetadataPath);
+	const FString MetadataStr = FAvatarStorage::LoadJson(AvatarUri.LocalMetadataPath);
 	if (!MetadataStr.IsEmpty())
 	{
 		return FMetadataExtractor::ExtractAvatarMetadata(MetadataStr);
@@ -56,7 +74,7 @@ bool FAvatarCacheHandler::ShouldSaveMetadata() const
 
 void FAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, const FString& UpdatedDate)
 {
-	if (!IsCachingEnabled())
+	if (!bIsCachingEnabled)
 	{
 		return;
 	}
@@ -70,7 +88,7 @@ void FAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, con
 
 void FAvatarCacheHandler::SetModelData(const TArray<uint8>* Data)
 {
-	if (!IsCachingEnabled())
+	if (!bIsCachingEnabled)
 	{
 		return;
 	}
@@ -80,12 +98,20 @@ void FAvatarCacheHandler::SetModelData(const TArray<uint8>* Data)
 
 void FAvatarCacheHandler::SaveAvatarInCache() const
 {
-	if (IsCachingEnabled() && ModelData != nullptr)
+	if (bIsCachingEnabled && ModelData != nullptr)
 	{
 		if (bMetadataNeedsUpdate)
 		{
-			FAvatarStorage::SaveMetadata(AvatarUri.LocalMetadataPath, UpdatedMetadataStr);
+			FAvatarStorage::SaveJson(AvatarUri.LocalMetadataPath, UpdatedMetadataStr);
 		}
 		FAvatarStorage::SaveAvatar(AvatarUri.LocalModelPath, *ModelData);
+		AvatarManifest->AddAvatar(AvatarUri.Guid);
 	}
 }
+
+void FAvatarCacheHandler::ResetState()
+{
+	UpdatedMetadataStr = "";
+	ModelData = nullptr;
+	bMetadataNeedsUpdate = false;
+};

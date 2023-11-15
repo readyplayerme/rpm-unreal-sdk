@@ -16,12 +16,12 @@ class READYPLAYERME_API UReadyPlayerMeFunctionLibrary : public UBlueprintFunctio
 
 public:
 	/** Clears all avatars from the persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar Cache"))
-	static void ClearAvatarCache();
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar Cache", WorldContext = "WorldContextObject"))
+	static void ClearAvatarCache(const UObject* WorldContextObject);
 
 	/** Clears a specific avatar from persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar"))
-	static void ClearAvatar(const FString& Guid);
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar", WorldContext = "WorldContextObject"))
+	static void ClearAvatar(const UObject* WorldContextObject, const FString& AvatarId);
 
 	/** Is there any avatars present in the persistent cache. */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Is Avatar Cache Empty"))

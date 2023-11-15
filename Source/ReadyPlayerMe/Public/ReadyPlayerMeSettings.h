@@ -31,6 +31,10 @@ public:
 		ToolTip = "If checked, the loaded avatars will be saved in the local storage."))
 	bool bEnableAvatarCaching;
 
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (DisplayName = "Cached Avatar Limit",
+				ToolTip = "The limit of the cached avatars, when the milit is exceeded the old avatars will automatically be cleaned."))
+	int32 CachedAvatarLimit;
+
 	static void SetAvatarCaching(bool bEnableCaching);
 
 #if WITH_EDITOR

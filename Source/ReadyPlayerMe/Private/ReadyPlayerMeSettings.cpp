@@ -4,6 +4,7 @@
 
 UReadyPlayerMeSettings::UReadyPlayerMeSettings()
 	: bEnableAvatarCaching(false)
+	, CachedAvatarLimit(50)
 {
 }
 
