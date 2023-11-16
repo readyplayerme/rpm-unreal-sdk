@@ -27,7 +27,7 @@ FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr
 	, AvatarManifest(MoveTemp(Manifest))
 	, bIsCachingEnabled(IsCachingEnabled() && AvatarManifest.IsValid())
 {
-	if (!bIsCachingEnabled)
+	if (bIsCachingEnabled)
 	{
 		AvatarManifest->BlockAvatar(AvatarUri.Guid);
 	}
@@ -35,7 +35,7 @@ FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr
 
 FAvatarCacheHandler::~FAvatarCacheHandler()
 {
-	if (!bIsCachingEnabled)
+	if (bIsCachingEnabled)
 	{
 		AvatarManifest->UnblockAvatar(AvatarUri.Guid);
 	}
