@@ -4,6 +4,7 @@
 #include "ReadyPlayerMeFunctionLibrary.h"
 
 #include "ReadyPlayerMeGameSubsystem.h"
+#include "ReadyPlayerMeMemoryCache.h"
 #include "Kismet/GameplayStatics.h"
 #include "Storage/AvatarManifest.h"
 #include "Storage/AvatarStorage.h"
@@ -43,4 +44,18 @@ int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()
 FString UReadyPlayerMeFunctionLibrary::GetAvatarGuid(const FString& UrlShortcode)
 {
     return FAvatarUrlConvertor::GetAvatarId(UrlShortcode);
+}
+
+void UReadyPlayerMeFunctionLibrary::RemoveAvatarsFromRuntimeMemoryCache(const UObject* WorldContextObject)
+{
+    const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+    const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
+    GameSubsystem->MemoryCache->ClearAvatars();
+}
+
+void UReadyPlayerMeFunctionLibrary::RemoveAvatarFromRuntimeMemoryCache(const UObject* WorldContextObject, const FString& AvatarId)
+{
+    const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+    const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
+    GameSubsystem->MemoryCache->RemoveAvatar(FAvatarUrlConvertor::GetAvatarId(AvatarId));
 }

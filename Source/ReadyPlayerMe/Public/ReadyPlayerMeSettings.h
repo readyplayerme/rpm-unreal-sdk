@@ -27,6 +27,10 @@ public:
 	ToolTip = "The Subdomain is used to identify your application. You can find it in the Ready Player Me application dashboard in studio https://studio.readyplayer.me/applications."))
 	FString Subdomain;
 
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (DisplayName = "Add Loaded Avatars To Runtime Memory Cache",
+		ToolTip = "If checked, the loaded avatars will be saved in the runtime memory cache and will be reused afterwards."))
+	bool bAddLoadedAvatarsToRuntimeMemoryCache;
+
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (DisplayName = "Enable Avatar Caching",
 		ToolTip = "If checked, the loaded avatars will be saved in the local storage."))
 	bool bEnableAvatarCaching;
