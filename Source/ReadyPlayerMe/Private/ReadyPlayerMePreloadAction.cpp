@@ -46,6 +46,10 @@ void UReadyPlayerMePreloadAction::Preload()
 			AvatarLoaders.Add(AvatarId, AvatarLoader);
 		}
 	}
+	if (AvatarLoaders.Num() == 0)
+	{
+		OnCompleted.Broadcast();
+	}
 }
 
 void UReadyPlayerMePreloadAction::OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata)
