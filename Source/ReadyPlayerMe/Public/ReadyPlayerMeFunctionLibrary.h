@@ -40,7 +40,7 @@ public:
 	static FString GetAvatarGuid(UPARAM(DisplayName="Url") const FString& UrlShortcode);
 
 	/** Clears all avatars from the runtime memory cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatars From Runtime Memory Cache", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Remove Avatars From Runtime Memory Cache", WorldContext = "WorldContextObject"))
 	static void RemoveAvatarsFromRuntimeMemoryCache(const UObject* WorldContextObject);
 
 	/** Clears a specific avatar from the runtime memory cache. */
