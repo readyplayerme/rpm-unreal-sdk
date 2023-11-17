@@ -40,7 +40,7 @@ int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()
     return FAvatarStorage::GetCacheSize();
 }
 
-FString UReadyPlayerMeFunctionLibrary::GetAvatarGuid(const FString& UrlShortcode)
+FString UReadyPlayerMeFunctionLibrary::GetAvatarId(const FString& Url)
 {
-    return FAvatarUrlConvertor::GetAvatarId(UrlShortcode);
+    return FAvatarUrlConvertor::GetAvatarId(Url);
 }

@@ -36,6 +36,6 @@ public:
 	static int64 GetCacheSize();
 
 	/** Get unique id of the avatar. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Guid"))
-	static FString GetAvatarGuid(UPARAM(DisplayName="Url") const FString& UrlShortcode);
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Id"))
+	static FString GetAvatarId(const FString& Url);
 };
