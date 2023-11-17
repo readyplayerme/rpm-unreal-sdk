@@ -16,28 +16,28 @@ class READYPLAYERME_API UReadyPlayerMeFunctionLibrary : public UBlueprintFunctio
 
 public:
 	/** Clears all avatars from the persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar Cache", WorldContext = "WorldContextObject"))
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Clear Avatar Cache", WorldContext = "WorldContextObject"))
 	static void ClearAvatarCache(const UObject* WorldContextObject);
 
 	/** Clears a specific avatar from persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Clear Avatar", WorldContext = "WorldContextObject"))
-	static void ClearAvatar(const UObject* WorldContextObject, const FString& AvatarId);
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Clear Avatar From Cache", WorldContext = "WorldContextObject"))
+	static void ClearAvatarFromCache(const UObject* WorldContextObject, const FString& AvatarId);
 
 	/** Is there any avatars present in the persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Is Avatar Cache Empty"))
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Is Avatar Cache Empty"))
 	static bool IsAvatarCacheEmpty();
 
 	/** Total Avatars stored in persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Count"))
-	static int32 GetAvatarCount();
+	UFUNCTION(BlueprintPure, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Get Cached Avatar Count"))
+	static int32 GetCachedAvatarCount();
 
 	/** Total Avatars stored in persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Cache Size"))
-	static int64 GetCacheSize();
+	UFUNCTION(BlueprintPure, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Get Avatar Cache Size"))
+	static int64 GetAvatarCacheSize();
 
 	/** Get unique id of the avatar. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Guid"))
-	static FString GetAvatarGuid(UPARAM(DisplayName="Url") const FString& UrlShortcode);
+	UFUNCTION(BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Id"))
+	static FString GetAvatarId(const FString& Url);
 
 	/** Removes all avatars from the memory cache. */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Remove Avatars From Memory", WorldContext = "WorldContextObject"))
