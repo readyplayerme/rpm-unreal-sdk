@@ -3,6 +3,7 @@
 #include "ReadyPlayerMeSettings.h"
 
 UReadyPlayerMeSettings::UReadyPlayerMeSettings()
+	: bKeepLoadedAvatarsInMemory(false)
 {
 }
 

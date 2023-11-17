@@ -38,4 +38,12 @@ public:
 	/** Get unique id of the avatar. */
 	UFUNCTION(BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Id"))
 	static FString GetAvatarId(const FString& Url);
+
+	/** Clears all avatars from the memory cache. */
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Memory", meta = (DisplayName = "Clear Avatars From Memory", WorldContext = "WorldContextObject"))
+	static void ClearAvatarsFromMemory(const UObject* WorldContextObject);
+
+	/** Clears a specific avatar from the memory. */
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Memory", meta = (DisplayName = "Clear Avatar From Memory", WorldContext = "WorldContextObject"))
+	static void ClearAvatarFromMemory(const UObject* WorldContextObject, const FString& AvatarId);
 };
