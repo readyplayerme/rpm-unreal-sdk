@@ -67,7 +67,7 @@ void UReadyPlayerMeComponent::CancelAvatarLoad()
 void UReadyPlayerMeComponent::OnAvatarDownloaded(USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata)
 {
 	const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
-	if (IsValid(Settings) && Settings->bAddLoadedAvatarsToRuntimeMemoryCache)
+	if (IsValid(Settings) && Settings->bKeepLoadedAvatarsInMemory)
 	{
 		const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GetWorld()->GetGameInstance());
 		if (IsValid(GameSubsystem))

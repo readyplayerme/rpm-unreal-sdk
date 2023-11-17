@@ -3,7 +3,7 @@
 #include "ReadyPlayerMeSettings.h"
 
 UReadyPlayerMeSettings::UReadyPlayerMeSettings()
-	: bAddLoadedAvatarsToRuntimeMemoryCache(false)
+	: bKeepLoadedAvatarsInMemory(false)
 	, bEnableAvatarCaching(false)
 	, CachedAvatarLimit(50)
 {

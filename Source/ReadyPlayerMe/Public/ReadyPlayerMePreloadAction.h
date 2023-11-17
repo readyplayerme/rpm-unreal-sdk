@@ -29,7 +29,7 @@ struct FAvatarPreloadData
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAvatarPreloadCompleted);
 
 /**
- * Async action, responsible for preloading avatars in runtime memory cache.
+ * Async action, responsible for preloading avatars in memory to be used in the same game session.
  */
 UCLASS()
 class READYPLAYERME_API UReadyPlayerMePreloadAction : public UBlueprintAsyncActionBase

@@ -46,14 +46,14 @@ FString UReadyPlayerMeFunctionLibrary::GetAvatarGuid(const FString& UrlShortcode
     return FAvatarUrlConvertor::GetAvatarId(UrlShortcode);
 }
 
-void UReadyPlayerMeFunctionLibrary::RemoveAvatarsFromRuntimeMemoryCache(const UObject* WorldContextObject)
+void UReadyPlayerMeFunctionLibrary::RemoveAvatarsFromMemory(const UObject* WorldContextObject)
 {
     const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
     const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
-    GameSubsystem->MemoryCache->ClearAvatars();
+    GameSubsystem->MemoryCache->RemoveAvatars();
 }
 
-void UReadyPlayerMeFunctionLibrary::RemoveAvatarFromRuntimeMemoryCache(const UObject* WorldContextObject, const FString& AvatarId)
+void UReadyPlayerMeFunctionLibrary::RemoveAvatarFromMemory(const UObject* WorldContextObject, const FString& AvatarId)
 {
     const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
     const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);

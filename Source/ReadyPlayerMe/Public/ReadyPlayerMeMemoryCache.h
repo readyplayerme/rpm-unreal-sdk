@@ -44,7 +44,7 @@ public:
 	FAvatarMemoryCacheData GetAvatarCacheData(const FString& AvatarId, UReadyPlayerMeAvatarConfig* AvatarConfig) const;
 
 	/**
-	 * Adds an already loaded avatar to the memory cache.
+	 * Adds an already loaded avatar to the memory.
 	 *
 	 * @param AvatarId Avatar Id or url.
 	 * @param AvatarConfig Avatar config.
@@ -55,16 +55,16 @@ public:
 	void AddAvatar(const FString& AvatarId, UReadyPlayerMeAvatarConfig* AvatarConfig, USkeletalMesh* SkeletalMesh, const FAvatarMetadata& Metadata);
 
 	/**
-	 * Removes specific avatar data from the memory cache.
+	 * Removes specific avatar data from the memory.
 	 *
 	 * @param AvatarId Avatar Id or url.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me")
 	void RemoveAvatar(const FString& AvatarId);
 
-	/** Clears all avatars from the memory cache. */
+	/** Clears all avatars from the memory. */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me")
-	void ClearAvatars();
+	void RemoveAvatars();
 
 	/** Avatar Data for all the preloaded avatars. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ReadyPlayerMe")
