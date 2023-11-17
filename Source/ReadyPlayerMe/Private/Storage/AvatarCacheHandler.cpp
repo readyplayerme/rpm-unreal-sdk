@@ -3,20 +3,19 @@
 
 #include "AvatarCacheHandler.h"
 #include "AvatarStorage.h"
-#include "ReadyPlayerMeSettings.h"
 #include "AvatarManifest.h"
 #include "Utils/MetadataExtractor.h"
 
 namespace
 {
-	bool IsCachingEnabled()
+	FRpmAvatarCacheSettings GetAvatarCacheSettings()
 	{
 		const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
 		if (Settings)
 		{
-			return Settings->bEnableAvatarCaching;
+			return Settings->AvatarCacheSettings;
 		}
-		return false;
+		return {};
 	}
 }
 
@@ -25,9 +24,9 @@ FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr
 	, ModelData(nullptr)
 	, bMetadataNeedsUpdate(false)
 	, AvatarManifest(MoveTemp(Manifest))
-	, bIsCachingEnabled(IsCachingEnabled() && AvatarManifest.IsValid())
+	, AvatarCacheSettings(GetAvatarCacheSettings())
 {
-	if (bIsCachingEnabled)
+	if (AvatarCacheSettings.bEnableAvatarCaching && AvatarCacheSettings.bEnableAutomaticCacheCleaning && AvatarManifest.IsValid())
 	{
 		AvatarManifest->BlockAvatar(AvatarUri.Guid);
 	}
@@ -35,7 +34,7 @@ FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr
 
 FAvatarCacheHandler::~FAvatarCacheHandler()
 {
-	if (bIsCachingEnabled)
+	if (AvatarCacheSettings.bEnableAvatarCaching && AvatarCacheSettings.bEnableAutomaticCacheCleaning && AvatarManifest.IsValid())
 	{
 		AvatarManifest->UnblockAvatar(AvatarUri.Guid);
 	}
@@ -44,7 +43,7 @@ FAvatarCacheHandler::~FAvatarCacheHandler()
 
 bool FAvatarCacheHandler::ShouldLoadFromCache() const
 {
-	return bIsCachingEnabled && FAvatarStorage::AvatarExists(AvatarUri);
+	return AvatarCacheSettings.bEnableAvatarCaching && FAvatarStorage::AvatarExists(AvatarUri);
 }
 
 bool FAvatarCacheHandler::IsMedataUpdated(const FString& UpdatedDate) const
@@ -74,7 +73,7 @@ bool FAvatarCacheHandler::ShouldSaveMetadata() const
 
 void FAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, const FString& UpdatedDate)
 {
-	if (!bIsCachingEnabled)
+	if (!AvatarCacheSettings.bEnableAvatarCaching)
 	{
 		return;
 	}
@@ -88,7 +87,7 @@ void FAvatarCacheHandler::SetUpdatedMetadataStr(const FString& MetadataJson, con
 
 void FAvatarCacheHandler::SetModelData(const TArray<uint8>* Data)
 {
-	if (!bIsCachingEnabled)
+	if (!AvatarCacheSettings.bEnableAvatarCaching)
 	{
 		return;
 	}
@@ -98,14 +97,17 @@ void FAvatarCacheHandler::SetModelData(const TArray<uint8>* Data)
 
 void FAvatarCacheHandler::SaveAvatarInCache() const
 {
-	if (bIsCachingEnabled && ModelData != nullptr)
+	if (AvatarCacheSettings.bEnableAvatarCaching && ModelData != nullptr)
 	{
 		if (bMetadataNeedsUpdate)
 		{
 			FAvatarStorage::SaveJson(AvatarUri.LocalMetadataPath, UpdatedMetadataStr);
 		}
 		FAvatarStorage::SaveAvatar(AvatarUri.LocalModelPath, *ModelData);
-		AvatarManifest->AddAvatar(AvatarUri.Guid);
+		if (AvatarCacheSettings.bEnableAutomaticCacheCleaning && AvatarManifest.IsValid())
+		{
+			AvatarManifest->AddAvatarAndEnforceLimit(AvatarUri.Guid);
+		}
 	}
 }
 

@@ -7,13 +7,18 @@
 #include "Storage/AvatarStorage.h"
 #include "Utils/AvatarManifestExtractor.h"
 
+void FAvatarManifest::AddAvatarAndEnforceLimit(const FString& AvatarId)
+{
+	AddAvatar(AvatarId);
+	EnforceAvatarLimit();
+}
+
 void FAvatarManifest::AddAvatar(const FString& AvatarId)
 {
 	if (!AvatarRecords.Contains(AvatarId))
 	{
 		AvatarRecords.Add(AvatarId, FDateTime::Now().ToUnixTimestamp());
 	}
-	EnforceAvatarLimit();
 }
 
 void FAvatarManifest::BlockAvatar(const FString& AvatarId)
@@ -95,12 +100,12 @@ void FAvatarManifest::EnforceAvatarLimit()
 		Load();
 	}
 	int32 CurrentAvatarCount = AvatarRecords.Num();
-	if (CurrentAvatarCount <= Settings->CachedAvatarLimit)
+	if (CurrentAvatarCount <= Settings->AvatarCacheSettings.CachedAvatarLimit)
 	{
 		return;
 	}
 	TArray<FString> AvatarQueue = GetIdsByOldestDate();
-	while (CurrentAvatarCount > Settings->CachedAvatarLimit && AvatarQueue.Num() != 0)
+	while (CurrentAvatarCount > Settings->AvatarCacheSettings.CachedAvatarLimit && AvatarQueue.Num() != 0)
 	{
 		const FString AvatarId = AvatarQueue.Pop();
 		FAvatarStorage::ClearAvatar(AvatarId);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ReadyPlayerMeSettings.h"
 #include "ReadyPlayerMeTypes.h"
 
 class FAvatarCacheHandler
@@ -34,5 +35,5 @@ private:
 	bool bMetadataNeedsUpdate;
 
 	TSharedPtr<class FAvatarManifest> AvatarManifest;
-	const bool bIsCachingEnabled;
+	const FRpmAvatarCacheSettings AvatarCacheSettings;
 };
