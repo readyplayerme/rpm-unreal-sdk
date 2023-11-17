@@ -17,7 +17,7 @@ void UReadyPlayerMeFunctionLibrary::ClearAvatarCache(const UObject* WorldContext
     GameSubsystem->AvatarManifest->Clear();
 }
 
-void UReadyPlayerMeFunctionLibrary::ClearAvatar(const UObject* WorldContextObject, const FString& AvatarId)
+void UReadyPlayerMeFunctionLibrary::ClearAvatarFromCache(const UObject* WorldContextObject, const FString& AvatarId)
 {
     FAvatarStorage::ClearAvatar(AvatarId);
     const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
@@ -30,12 +30,12 @@ bool UReadyPlayerMeFunctionLibrary::IsAvatarCacheEmpty()
     return FAvatarStorage::IsCacheEmpty();
 }
 
-int32 UReadyPlayerMeFunctionLibrary::GetAvatarCount()
+int32 UReadyPlayerMeFunctionLibrary::GetCachedAvatarCount()
 {
     return FAvatarStorage::GetSavedAvatars().Num();
 }
 
-int64 UReadyPlayerMeFunctionLibrary::GetCacheSize()
+int64 UReadyPlayerMeFunctionLibrary::GetAvatarCacheSize()
 {
     return FAvatarStorage::GetCacheSize();
 }
