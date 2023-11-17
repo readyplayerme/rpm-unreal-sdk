@@ -28,7 +28,7 @@ FAvatarCacheHandler::FAvatarCacheHandler(const FAvatarUri& AvatarUri, TSharedPtr
 {
 	if (AvatarCacheSettings.bEnableAvatarCaching && AvatarCacheSettings.bEnableAutomaticCacheCleaning && AvatarManifest.IsValid())
 	{
-		AvatarManifest->BlockAvatar(AvatarUri.Guid);
+		AvatarManifest->LockAvatar(AvatarUri.Guid);
 	}
 }
 
@@ -36,7 +36,7 @@ FAvatarCacheHandler::~FAvatarCacheHandler()
 {
 	if (AvatarCacheSettings.bEnableAvatarCaching && AvatarCacheSettings.bEnableAutomaticCacheCleaning && AvatarManifest.IsValid())
 	{
-		AvatarManifest->UnblockAvatar(AvatarUri.Guid);
+		AvatarManifest->UnlockAvatar(AvatarUri.Guid);
 	}
 }
 

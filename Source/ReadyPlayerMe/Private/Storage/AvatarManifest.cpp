@@ -21,10 +21,10 @@ void FAvatarManifest::AddAvatar(const FString& AvatarId)
 	}
 }
 
-void FAvatarManifest::BlockAvatar(const FString& AvatarId)
+void FAvatarManifest::LockAvatar(const FString& AvatarId)
 {
 	Load();
-	BlockedAvatars.Add(AvatarId);
+	LockedAvatars.Add(AvatarId);
 	if (AvatarRecords.Contains(AvatarId))
 	{
 		AvatarRecords[AvatarId] = FDateTime::Now().ToUnixTimestamp();
@@ -32,9 +32,9 @@ void FAvatarManifest::BlockAvatar(const FString& AvatarId)
 	}
 }
 
-void FAvatarManifest::UnblockAvatar(const FString& AvatarId)
+void FAvatarManifest::UnlockAvatar(const FString& AvatarId)
 {
-	BlockedAvatars.Remove(AvatarId);
+	LockedAvatars.Remove(AvatarId);
 }
 
 void FAvatarManifest::ClearAvatar(const FString& AvatarId)
@@ -85,7 +85,7 @@ TArray<FString> FAvatarManifest::GetIdsByOldestDate()
 	AvatarRecords.ValueSort(TGreater<int64>());
 	TArray<FString> SortedIds;
 	AvatarRecords.GetKeys(SortedIds);
-	for (const FString& BlockedAvatar : BlockedAvatars)
+	for (const FString& BlockedAvatar : LockedAvatars)
 	{
 		SortedIds.Remove(BlockedAvatar);
 	}
