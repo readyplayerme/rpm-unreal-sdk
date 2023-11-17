@@ -21,7 +21,7 @@ struct READYPLAYERME_API FRpmAvatarCacheSettings
 	bool bEnableAvatarCaching = false;
 
 	UPROPERTY(EditAnywhere, Category = "Avatar Caching | Automated Cleanup", meta = (DisplayName = "Enable Automatic Avatar Cache Cleaning",
-		ToolTip = "If checked, the old avatars will be automatically removed if the number of the saved aavatars exceeds the cached avatar limit."))
+		ToolTip = "If checked, the old avatars will be automatically removed if the number of the saved avatars exceeds the cached avatar limit."))
 	bool bEnableAutomaticCacheCleaning = false;
 
 	UPROPERTY(EditAnywhere, Category = "Avatar Caching | Automated Cleanup", meta = (DisplayName = "Cached Avatar Limit",
