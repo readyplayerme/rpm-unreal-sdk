@@ -9,7 +9,7 @@ class FAvatarManifest
 public:
 	void AddAvatarAndEnforceLimit(const FString& AvatarId);
 	void AddAvatar(const FString& AvatarId);
-	void RemoveAvatar(const FString& AvatarId);
+	void ClearAvatar(const FString& AvatarId);
 	void BlockAvatar(const FString& AvatarId);
 	void UnblockAvatar(const FString& AvatarId);
 	void Clear();

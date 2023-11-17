@@ -37,7 +37,7 @@ void FAvatarManifest::UnblockAvatar(const FString& AvatarId)
 	BlockedAvatars.Remove(AvatarId);
 }
 
-void FAvatarManifest::RemoveAvatar(const FString& AvatarId)
+void FAvatarManifest::ClearAvatar(const FString& AvatarId)
 {
 	Load();
 	AvatarRecords.Remove(AvatarId);

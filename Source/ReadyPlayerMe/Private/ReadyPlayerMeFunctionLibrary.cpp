@@ -22,7 +22,7 @@ void UReadyPlayerMeFunctionLibrary::ClearAvatarFromCache(const UObject* WorldCon
     FAvatarStorage::ClearAvatar(AvatarId);
     const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
     const UReadyPlayerMeGameSubsystem* GameSubsystem = UGameInstance::GetSubsystem<UReadyPlayerMeGameSubsystem>(GameInstance);
-    GameSubsystem->AvatarManifest->RemoveAvatar(AvatarId);
+    GameSubsystem->AvatarManifest->ClearAvatar(AvatarId);
 }
 
 bool UReadyPlayerMeFunctionLibrary::IsAvatarCacheEmpty()
