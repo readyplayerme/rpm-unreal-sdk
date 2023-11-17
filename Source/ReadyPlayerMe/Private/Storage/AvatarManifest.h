@@ -10,8 +10,8 @@ public:
 	void AddAvatarAndEnforceLimit(const FString& AvatarId);
 	void AddAvatar(const FString& AvatarId);
 	void ClearAvatar(const FString& AvatarId);
-	void BlockAvatar(const FString& AvatarId);
-	void UnblockAvatar(const FString& AvatarId);
+	void LockAvatar(const FString& AvatarId);
+	void UnlockAvatar(const FString& AvatarId);
 	void Clear();
 
 private:
@@ -21,6 +21,6 @@ private:
 	void Load();
 	
 	TMap<FString, int64> AvatarRecords;
-	TSet<FString> BlockedAvatars;
+	TSet<FString> LockedAvatars;
 	bool bIsManifestLoaded = false;
 };
