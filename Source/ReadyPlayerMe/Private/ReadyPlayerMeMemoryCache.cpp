@@ -34,12 +34,12 @@ void UReadyPlayerMeMemoryCache::AddAvatar(const FString& AvatarId, UReadyPlayerM
 	}
 }
 
-void UReadyPlayerMeMemoryCache::RemoveAvatar(const FString& AvatarId)
+void UReadyPlayerMeMemoryCache::ClearAvatar(const FString& AvatarId)
 {
 	CachedAvatars.RemoveAll([&AvatarId](const FAvatarMemoryCacheData& Data){return Data.AvatarId == AvatarId;});
 }
 
-void UReadyPlayerMeMemoryCache::RemoveAvatars()
+void UReadyPlayerMeMemoryCache::ClearAvatars()
 {
 	CachedAvatars.Empty();
 }

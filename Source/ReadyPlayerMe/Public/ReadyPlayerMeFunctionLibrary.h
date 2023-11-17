@@ -39,11 +39,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Id"))
 	static FString GetAvatarId(const FString& Url);
 
-	/** Removes all avatars from the memory cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Remove Avatars From Memory", WorldContext = "WorldContextObject"))
-	static void RemoveAvatarsFromMemory(const UObject* WorldContextObject);
+	/** Clears all avatars from the memory cache. */
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Memory", meta = (DisplayName = "Clear Avatars From Memory", WorldContext = "WorldContextObject"))
+	static void ClearAvatarsFromMemory(const UObject* WorldContextObject);
 
-	/** Removes a specific avatar from the memory. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Remove Avatar From Memory", WorldContext = "WorldContextObject"))
-	static void RemoveAvatarFromMemory(const UObject* WorldContextObject, const FString& AvatarId);
+	/** Clears a specific avatar from the memory. */
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Memory", meta = (DisplayName = "Clear Avatar From Memory", WorldContext = "WorldContextObject"))
+	static void ClearAvatarFromMemory(const UObject* WorldContextObject, const FString& AvatarId);
 };

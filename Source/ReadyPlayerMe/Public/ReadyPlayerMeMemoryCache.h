@@ -60,11 +60,11 @@ public:
 	 * @param AvatarId Avatar Id or url.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me")
-	void RemoveAvatar(const FString& AvatarId);
+	void ClearAvatar(const FString& AvatarId);
 
 	/** Clears all avatars from the memory. */
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me")
-	void RemoveAvatars();
+	void ClearAvatars();
 
 	/** Avatar Data for all the preloaded avatars. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ReadyPlayerMe")
