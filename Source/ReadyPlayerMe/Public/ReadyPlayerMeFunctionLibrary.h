@@ -24,7 +24,7 @@ public:
 	static void ClearAvatarFromCache(const UObject* WorldContextObject, const FString& AvatarId);
 
 	/** Is there any avatars present in the persistent cache. */
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Is Avatar Cache Empty"))
+	UFUNCTION(BlueprintPure, Category = "Ready Player Me | Avatar Caching", meta = (DisplayName = "Is Avatar Cache Empty"))
 	static bool IsAvatarCacheEmpty();
 
 	/** Total Avatars stored in persistent cache. */
