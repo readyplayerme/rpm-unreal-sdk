@@ -9,6 +9,7 @@
 #include "ReadyPlayerMeGlbLoader.h"
 #include "Request/AvatarRequest.h"
 #include "Utils/MetadataExtractor.h"
+#include "Engine/GameInstance.h"
 
 //TODO: Move the timout to the RPMSettings to make it configurable
 constexpr float AVATAR_REQUEST_TIMEOUT = 60.f;
