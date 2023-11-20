@@ -63,7 +63,7 @@ void FAvatarManifest::Load()
 		const TArray<FString> SavedAvatars = FAvatarStorage::GetSavedAvatars();
 		for (const auto& AvatarId : SavedAvatars)
 		{
-			AvatarRecords[AvatarId] = FDateTime::Now().ToUnixTimestamp();
+			AvatarRecords.Add(AvatarId, FDateTime::Now().ToUnixTimestamp());
 		}
 		Save();
 	}

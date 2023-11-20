@@ -33,6 +33,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Renamed GetAvatarGuid function to GetAvatarId
 - Set the PhysicsAssetOverride property in the BP_RPM_Character to fix the shadow issues in UE5
 - UI fixes in AvatarCreator
+- Changed the background material of the avatar editor
 
 ## Removed
 

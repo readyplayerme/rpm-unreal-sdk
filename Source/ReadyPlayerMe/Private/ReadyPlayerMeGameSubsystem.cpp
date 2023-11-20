@@ -18,6 +18,7 @@ void UReadyPlayerMeGameSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 
 void UReadyPlayerMeGameSubsystem::Deinitialize()
 {
+    MemoryCache->ClearAvatars();
 	MemoryCache = nullptr;
 	AvatarManifest.Reset();
 }
