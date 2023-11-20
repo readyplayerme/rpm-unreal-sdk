@@ -6,6 +6,7 @@
 #include "ReadyPlayerMeGameSubsystem.h"
 #include "ReadyPlayerMeMemoryCache.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/GameInstance.h"
 #include "Utils/AvatarUrlConvertor.h"
 
 UReadyPlayerMePreloadAction* UReadyPlayerMePreloadAction::PreloadAvatarsAsync(UObject* WorldContextObject, const FAvatarPreloadData& PreloadData)
