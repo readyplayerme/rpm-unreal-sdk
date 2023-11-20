@@ -17,7 +17,7 @@ UReadyPlayerMePreloadAction* UReadyPlayerMePreloadAction::PreloadAvatarsAsync(UO
 
 void UReadyPlayerMePreloadAction::Activate()
 {
-	if (!IsValid(GetWorld()) || PreloadData.AvatarIds.Num() == 0 || !IsValid(PreloadData.TargetSkeleton))
+	if (GetWorld() == nullptr || PreloadData.AvatarIds.Num() == 0 || !IsValid(PreloadData.TargetSkeleton))
 	{
 		OnFailed.Broadcast();
 		return;
