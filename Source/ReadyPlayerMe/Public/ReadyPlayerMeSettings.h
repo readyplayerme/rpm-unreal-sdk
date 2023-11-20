@@ -26,7 +26,7 @@ struct READYPLAYERME_API FRpmAvatarCacheSettings
 
 	UPROPERTY(EditAnywhere, Category = "Avatar Caching | Automated Cleanup", meta = (DisplayName = "Cached Avatar Limit",
 				ToolTip = "The limit of the cached avatars, when the limit is exceeded and the automatic cleaning is enabled the old avatars will automatically be cleaned."))
-	int32 CachedAvatarLimit = 50;
+	int32 CachedAvatarLimit = 30;
 };
 
 UCLASS(config=Game, defaultconfig, meta = (DisplayName="Ready Player Me"))
