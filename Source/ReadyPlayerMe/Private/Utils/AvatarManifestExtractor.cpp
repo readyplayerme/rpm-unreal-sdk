@@ -4,6 +4,7 @@
 #include "AvatarManifestExtractor.h"
 
 #include "ReadyPlayerMeTypes.h"
+#include "Serialization/JsonSerializer.h"
 
 static const FString JSON_AVATAR_RECORDS = "AvatarRecords";
 static const FString JSON_ID = "id";

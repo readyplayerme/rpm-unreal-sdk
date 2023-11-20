@@ -21,12 +21,12 @@ struct READYPLAYERME_API FRpmAvatarCacheSettings
 	bool bEnableAvatarCaching = false;
 
 	UPROPERTY(EditAnywhere, Category = "Avatar Caching | Automated Cleanup", meta = (DisplayName = "Enable Automatic Avatar Cache Cleaning",
-		ToolTip = "If checked, the old avatars will be automatically removed if the number of the saved aavatars exceeds the cached avatar limit."))
+		ToolTip = "If checked, the old avatars will be automatically removed if the number of the saved avatars exceeds the cached avatar limit."))
 	bool bEnableAutomaticCacheCleaning = false;
 
 	UPROPERTY(EditAnywhere, Category = "Avatar Caching | Automated Cleanup", meta = (DisplayName = "Cached Avatar Limit",
 				ToolTip = "The limit of the cached avatars, when the limit is exceeded and the automatic cleaning is enabled the old avatars will automatically be cleaned."))
-	int32 CachedAvatarLimit = 50;
+	int32 CachedAvatarLimit = 30;
 };
 
 UCLASS(config=Game, defaultconfig, meta = (DisplayName="Ready Player Me"))

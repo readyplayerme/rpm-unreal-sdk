@@ -5,6 +5,7 @@
 
 #include "ReadyPlayerMeGameSubsystem.h"
 #include "ReadyPlayerMeMemoryCache.h"
+#include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Storage/AvatarManifest.h"
 #include "Storage/AvatarStorage.h"

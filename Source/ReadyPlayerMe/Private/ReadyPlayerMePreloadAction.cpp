@@ -6,6 +6,7 @@
 #include "ReadyPlayerMeGameSubsystem.h"
 #include "ReadyPlayerMeMemoryCache.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/GameInstance.h"
 #include "Utils/AvatarUrlConvertor.h"
 
 UReadyPlayerMePreloadAction* UReadyPlayerMePreloadAction::PreloadAvatarsAsync(UObject* WorldContextObject, const FAvatarPreloadData& PreloadData)
@@ -17,7 +18,7 @@ UReadyPlayerMePreloadAction* UReadyPlayerMePreloadAction::PreloadAvatarsAsync(UO
 
 void UReadyPlayerMePreloadAction::Activate()
 {
-	if (!IsValid(GetWorld()) || PreloadData.AvatarIds.Num() == 0 || !IsValid(PreloadData.TargetSkeleton))
+	if (GetWorld() == nullptr || PreloadData.AvatarIds.Num() == 0 || PreloadData.TargetSkeleton == nullptr)
 	{
 		OnFailed.Broadcast();
 		return;
