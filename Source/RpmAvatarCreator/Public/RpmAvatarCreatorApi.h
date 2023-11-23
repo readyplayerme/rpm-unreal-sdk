@@ -67,10 +67,7 @@ public:
 	void UpdateLockedAssets(const FUpdateLockedAssetsCompleted& UpdateLockedAssetsCompleted, const FAvatarCreatorFailed& Failed);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me", Meta = (ExposeOnSpawn="true"))
-	class USkeleton* FullBodySkeleton;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me", Meta = (ExposeOnSpawn="true"))
-	class USkeleton* HalfBodySkeleton;
+	class USkeleton* TargetSkeleton;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
 	FRpmAvatarProperties AvatarProperties;
@@ -78,7 +75,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
 	FString SelectedAvatarTemplateId;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me", Meta = (ExposeOnSpawn="true"))
 	EAvatarBodyType BodyType;
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Download Image"))
