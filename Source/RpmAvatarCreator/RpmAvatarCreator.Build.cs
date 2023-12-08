@@ -45,7 +45,7 @@ public class RpmAvatarCreator : ModuleRules
 				"UMG",
 				"Projects",
 				"DeveloperSettings",
-				"glTFRuntime"
+				"glTFRuntime", 
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

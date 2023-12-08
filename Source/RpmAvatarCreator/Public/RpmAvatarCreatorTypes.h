@@ -133,7 +133,20 @@ struct FRpmPartnerAsset
 		bIsLocked = false;
 		bIsCustomizable = true;
 	}
+
+	// Added to enable use of FRpmPartnerAsset as a key in TMap
+	bool operator==(const FRpmPartnerAsset& Other) const
+	{
+		return Id == Other.Id;
+	}
 };
+
+ // Added to enable use of FRpmPartnerAsset as a key in TMap
+FORCEINLINE uint32 GetTypeHash(const FRpmPartnerAsset& PartnerAsset)
+{
+	// Hash based on the unique identifier field
+	return GetTypeHash(PartnerAsset.Id);
+}
 
 USTRUCT(BlueprintType)
 struct FRpmAvatarProperties
@@ -186,7 +199,21 @@ struct FRpmAvatarTemplate
 	{
 		Gender = EAvatarGender::Undefined;
 	}
+	
+	// Added to enable use of FRpmAvatarTemplate as a key in TMap
+	bool operator==(const FRpmAvatarTemplate& Other) const
+	{
+		return Id == Other.Id;
+	}
 };
+
+ // Added to enable use of FRpmAvatarTemplate as a key in TMap
+FORCEINLINE uint32 GetTypeHash(const FRpmAvatarTemplate& Template)
+{
+	// Hash based on the unique identifier field
+	return GetTypeHash(Template.Id);
+}
+
 
 USTRUCT(BlueprintType)
 struct FRpmUserAvatar
