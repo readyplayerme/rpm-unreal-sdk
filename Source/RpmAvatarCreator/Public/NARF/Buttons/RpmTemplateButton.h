@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "RpmAvatarCreatorTypes.h"
-#include "RpmButtonBase.h"
+#include "NARF/Buttons/RpmButtonBase.h"
 #include "RpmTemplateButton.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTemplateSelected, FRpmAvatarTemplate, TemplateData);

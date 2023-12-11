@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "NARF/RpmAssetButton.h"
+#include "NARF/Buttons/RpmAssetButton.h"
+#include "RpmAvatarCreatorTypes.h"
 #include "RpmColorSelectionWidget.generated.h"
 
 USTRUCT(BlueprintType)
@@ -55,10 +56,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator")
 	TSubclassOf<URpmColorButton> ButtonBlueprint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator", meta=(BindWidget))
-	UPanelWidget* ButtonContainer;
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+
+	UPROPERTY(BlueprintAssignable, Category = "Ready Player Me/Creator")
 	FColorAssetSelectedEvent OnColorAssetSelected;
 	
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me/Creator")
@@ -66,9 +66,16 @@ public:
 
 	TArray<FRpmColorAsset> LoadColors(FString AvatarId);
 	void LoadColorsFailed(ERpmAvatarCreatorError Error);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator")
+	ERpmPartnerAssetColor AssetColorType;
 	
 	virtual void NativeConstruct() override;
 private:
+
+	UPROPERTY(meta=(BindWidget))
+	UPanelWidget* ButtonContainer;
+	
 	TMap<FRpmColorAsset, URpmColorButton*> AssetButtonMap;
 	
 	URpmColorButton* CurrentlySelectedButton;

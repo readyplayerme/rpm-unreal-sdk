@@ -1,7 +1,6 @@
-#include "NARF/RpmTemplateSelectionWidget.h"
+#include "NARF/Elements/RpmTemplateSelectionWidget.h"
 
-#include "ReadyPlayerMeSettings.h"
-#include "RpmTemplateButton.h"
+#include "NARF/Buttons/RpmTemplateButton.h"
 #include "Components/PanelWidget.h"
 #include "NARF/RpmAvatarTemplateFetcher.h"
 
@@ -10,16 +9,6 @@ void URpmTemplateSelectionWidget::NativeConstruct()
     Super::NativeConstruct();
     
     TemplateFetcher = MakeShared<RpmAvatarTemplateFetcher>();
-
-    const UReadyPlayerMeSettings* Settings = GetDefault<UReadyPlayerMeSettings>();
-    if (!IsValid(Settings) || Settings->Subdomain.IsEmpty())
-    {
-        UE_LOG(LogRpmAvatarCreator, Error, TEXT("Application subdomain is required for the avatar creator. Find the subdomain of your application from the Ready Player Me studio website, and set it in your project settings under the ReadyPlayerMe > Subdomain"));
-    }
-    if (!IsValid(Settings) || Settings->AppId.IsEmpty())
-    {
-        UE_LOG(LogRpmAvatarCreator, Error, TEXT("AppId is required for the avatar creator. Find the AppId of your application from the Ready Player Me studio website, and set it in your project settings under the ReadyPlayerMe > AppId"));
-    }
 }
 
 void URpmTemplateSelectionWidget::LoadAndCreateButtons()

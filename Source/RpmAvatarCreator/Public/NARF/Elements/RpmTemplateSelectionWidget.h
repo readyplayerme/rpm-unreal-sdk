@@ -19,9 +19,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator")
 	TSubclassOf<URpmTemplateButton> ButtonBlueprint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator", meta=(BindWidget))
-	UPanelWidget* ButtonContainer;
-
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FTemplateSelectedEvent OnTemplateSelected;
 	
@@ -33,6 +30,9 @@ public:
 	
 	virtual void NativeConstruct() override;
 private:
+	UPROPERTY(meta=(BindWidget))
+	UPanelWidget* ButtonContainer;
+	
 	TMap<FRpmAvatarTemplate, URpmTemplateButton*> TemplateButtonMap;
 	URpmTemplateButton* CurrentlySelectedButton;
 

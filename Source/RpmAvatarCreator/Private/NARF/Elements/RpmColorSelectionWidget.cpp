@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "NARF/RpmColorSelectionWidget.h"
+#include "NARF/Elements/RpmColorSelectionWidget.h"
 
 #include "Downloaders/RpmColorDownloader.h"
-#include "NARF/RpmColorButton.h"
+#include "NARF/Buttons/RpmColorButton.h"
 
 void URpmColorSelectionWidget::NativeConstruct()
 {
@@ -33,6 +33,7 @@ TArray<FRpmColorAsset> URpmColorSelectionWidget::LoadColors(FString AvatarId)
 {
 	//add color fetch logic
 	ColorDownloader->DownloadColors(AvatarId);
+	// it should filter or get colors based on AssetColorType set from BP's 
 	const TArray<FRpmColorPalette> ColorPallete = ColorDownloader->GetColors();
 	// convert to FRpmColorAsset defined in RPMColorSelectionWidget.h
 	return TArray<FRpmColorAsset>();

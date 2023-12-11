@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "NARF/RpmGenderSelectWidget.h"
+#include "NARF/Elements/RpmGenderSelectWidget.h"
 
 #include "ReadyPlayerMeTypes.h"
 #include "Components/Button.h"

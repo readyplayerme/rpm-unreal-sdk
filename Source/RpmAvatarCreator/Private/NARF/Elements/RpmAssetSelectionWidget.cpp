@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "NARF/RpmAssetSelectionWidget.h"
+#include "NARF/Elements/RpmAssetSelectionWidget.h"
 #include "Components/PanelWidget.h"
 #include "Downloaders/RpmAuthManager.h"
-#include "NARF/RpmAssetButton.h"
+#include "NARF/Buttons/RpmAssetButton.h"
 #include "NARF/RpmAssetFetcher.h"
 
 void URpmAssetSelectionWidget::AssetIconFetched(const FRpmPartnerAsset& PartnerAsset)

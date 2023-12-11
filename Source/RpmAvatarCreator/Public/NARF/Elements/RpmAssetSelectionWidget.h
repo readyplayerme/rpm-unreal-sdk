@@ -20,9 +20,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator")
 	TSubclassOf<URpmAssetButton> ButtonBlueprint;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ready Player Me/Creator", meta = (BindWidget))
-	UPanelWidget* ButtonContainer;
-
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FAssetSelectedEvent OnAssetSelected;
 
@@ -42,6 +39,9 @@ protected:
 	virtual void NativeConstruct() override;
 
 private:
+	UPROPERTY(meta = (BindWidget))
+	UPanelWidget* ButtonContainer;
+	
 	TMap<FRpmPartnerAsset, URpmAssetButton*> AssetButtonMap;
 	URpmAssetButton* CurrentlySelectedButton;
 	TSharedPtr<class RpmAssetFetcher> AssetFetcher;

@@ -39,5 +39,5 @@ protected:
 
 	// Reference to the selected indicator widget
 	UPROPERTY(meta = (BindWidget))
-	UWidget* SelectedIndicator;
+	UWidget* SelectedIcon;
 };

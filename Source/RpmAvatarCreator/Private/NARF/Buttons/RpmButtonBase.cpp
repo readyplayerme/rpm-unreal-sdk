@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RpmButtonBase.h"
+#include "NARF/Buttons/RpmButtonBase.h"
 
 #include "Components/Image.h"
 
@@ -27,8 +27,8 @@ void URpmButtonBase::SetColor(const FLinearColor& NewColor)
 
 void URpmButtonBase::SetSelected(bool bIsSelected)
 {
-	if (SelectedIndicator)
+	if (SelectedIcon)
 	{
-		SelectedIndicator->SetVisibility(bIsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+		SelectedIcon->SetVisibility(bIsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	}
 }
