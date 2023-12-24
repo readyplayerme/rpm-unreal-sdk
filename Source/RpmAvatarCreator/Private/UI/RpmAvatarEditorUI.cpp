@@ -38,6 +38,43 @@ void URpmAvatarEditorUI::SetupAssets()
 		AssetContainerMap[ERpmPartnerAssetType::Footwear]->GetChildrenCount() == 0;
 }
 
+void URpmAvatarEditorUI::DiscardAvatarDraft()
+{
+	auto& AvatarProperties = AvatarCreatorApi->AvatarProperties;
+	if (!AvatarProperties.Id.IsEmpty())
+	{
+		AvatarCreatorApi->DeleteAvatar(AvatarProperties.Id, true, {}, {});
+	}
+	AvatarCreatorApi->SelectedAvatarTemplateId.Empty();
+	AvatarProperties.Assets.Empty();
+	AvatarProperties.Colors.Empty();
+	AvatarProperties.Id.Empty();
+	AvatarProperties.Base64Image.Empty();
+}
+
+void URpmAvatarEditorUI::UpdateLockedAssets()
+{
+	AvatarCreatorApi->UpdateLockedAssets(UpdateLockedAssetsCompleted, {});
+}
+
+void URpmAvatarEditorUI::OnUpdateLockedAssetsCompleted()
+{
+	bool ContainsLockedAsset = false;
+	const auto& SelectedAssets = AvatarCreatorApi->AvatarProperties.Assets;
+	for (const auto& Asset : AvatarCreatorApi->GetFilteredPartnerAssets())
+	{
+		if (SelectedAssets.Contains(Asset.AssetType) && SelectedAssets[Asset.AssetType] == Asset.Id && Asset.bIsLocked)
+		{
+			ContainsLockedAsset = true;
+			break;
+		}
+	}
+	if (!ContainsLockedAsset)
+	{
+		AssetUnlocked();
+	}
+}
+
 bool URpmAvatarEditorUI::IsCustomizableAssetSelected() const
 {
 	return bIsCustomizableAssetSelected;

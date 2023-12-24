@@ -25,6 +25,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Setup Assets"))
 	void SetupAssets();
 
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Discard Avatar Draft"))
+	void DiscardAvatarDraft();
+
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Update Locked Assets"))
+	void UpdateLockedAssets();
+
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "DownloadAssetIcons"))
 	void DownloadAssetIcons(const UWrapBox* AssetContainer);
 
@@ -39,6 +45,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ready Player Me", meta = (DisplayName = "Preview Downloaded"))
 	void PreviewDownloaded(const USkeletalMesh* SkeletalMesh);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Ready Player Me", meta = (DisplayName = "Asset Unlocked"))
+	void AssetUnlocked();
 
 	UFUNCTION(BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Is Customizable Asset Selected"))
 	bool IsCustomizableAssetSelected() const;
@@ -106,6 +115,9 @@ private:
 	void OnBadgeIconDownloaded(UTexture2D* Image, const FString& Url);
 
 	UFUNCTION()
+	void OnUpdateLockedAssetsCompleted();
+
+	UFUNCTION()
 	void OnAssetButtonClicked(const FRpmPartnerAsset& Asset);
 
 	UFUNCTION()
@@ -122,6 +134,9 @@ private:
 
 	UPROPERTY()
 	FImageDownloadCompleted BadgeIconDownloadCompleted;
+
+	UPROPERTY()
+	FUpdateLockedAssetsCompleted UpdateLockedAssetsCompleted;
 
 	UPROPERTY()
 	TMap<FString, URpmAssetButtonUI*> AssetImageMap;
