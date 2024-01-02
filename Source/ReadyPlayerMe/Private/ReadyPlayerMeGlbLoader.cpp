@@ -32,7 +32,9 @@ void UReadyPlayerMeGlbLoader::LoadFromLodData(const TArray<const TArray<uint8>*>
 	{
 		UglTFRuntimeAsset* LodAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromData(*LodData[i], FAvatarGltfConfigCreator::GetGlTFRuntimeConfig());
 		RuntimeLODs.Add({});
-		LodAsset->LoadMeshAsRuntimeLOD(0, RuntimeLODs[i], {});
+		int SkinIndex = i;
+		LodAsset->LoadSkinnedMeshRecursiveAsRuntimeLOD("", {}, RuntimeLODs[i], {}, {}, SkinIndex);
+
 		if (i == 0)
 		{
 			Asset = LodAsset;
@@ -49,7 +51,9 @@ void UReadyPlayerMeGlbLoader::LoadFromLodFiles(const TArray<FString>& LocalModel
 	{
 		UglTFRuntimeAsset* LodAsset = UglTFRuntimeFunctionLibrary::glTFLoadAssetFromFilename(LocalModelLodPaths[i], false, FAvatarGltfConfigCreator::GetGlTFRuntimeConfig());
 		RuntimeLODs.Add({});
-		LodAsset->LoadMeshAsRuntimeLOD(0, RuntimeLODs[i], {});
+		int SkinIndex = 0;
+		LodAsset->LoadSkinnedMeshRecursiveAsRuntimeLOD("", {}, RuntimeLODs[i], {}, {}, SkinIndex);
+
 		if (i == 0)
 		{
 			Asset = LodAsset;
