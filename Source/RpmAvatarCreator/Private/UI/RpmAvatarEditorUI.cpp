@@ -291,8 +291,6 @@ void URpmAvatarEditorUI::SetupTemplates()
 			continue;
 		}
 		URpmTemplateButtonUI* TemplateButton = WidgetTree->ConstructWidget<URpmTemplateButtonUI>(TemplateButtonClass);
-		// AssetButton->bIsSelected = IsAssetSelected(Asset);
-		// AssetButton->SetSelected(AssetButton->bIsSelected);
 		TemplateButton->Template = Template;
 		TemplateButton->UpdateUI();
 		TemplateContainer->AddChildToWrapBox(TemplateButton);
@@ -305,10 +303,6 @@ void URpmAvatarEditorUI::SetupTemplates()
 
 void URpmAvatarEditorUI::OnTemplateButtonClicked(const FRpmAvatarTemplate& Template)
 {
-	// if (AvatarCreatorApi->SelectedAvatarTemplateId == Template.Id)
-	// {
-	// 	return;
-	// }
 	AvatarCreatorApi->SelectedAvatarTemplateId = Template.Id;
 	TemplateSelected(Template);
 	for (UWidget* Widget : TemplateContainer->GetAllChildren())
