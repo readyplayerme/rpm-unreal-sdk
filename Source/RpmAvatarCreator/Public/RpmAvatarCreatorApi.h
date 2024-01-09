@@ -87,6 +87,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Color Palettes"))
 	TArray<FRpmColorPalette> GetColorPalettes() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Avatar Templates"))
+	TArray<FRpmAvatarTemplate> GetAvatarTemplates() const;
+
 	virtual void BeginDestroy() override;
 
 private:

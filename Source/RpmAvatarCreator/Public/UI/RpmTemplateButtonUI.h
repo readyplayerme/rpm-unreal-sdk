@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "RpmIconUI.h"
 #include "RpmAvatarCreatorTypes.h"
-#include "RpmAssetButtonUI.generated.h"
+#include "RpmTemplateButtonUI.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAssetButtonSelected, const FRpmPartnerAsset&, Asset);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTemplateButtonSelected, const FRpmAvatarTemplate&, Template);
 
 UCLASS(Abstract)
-class RPMAVATARCREATOR_API URpmAssetButtonUI : public URpmIconUI
+class RPMAVATARCREATOR_API URpmTemplateButtonUI : public URpmIconUI
 {
 	GENERATED_BODY()
 
@@ -22,11 +22,8 @@ public:
 	void UpdateUI();
 
 	UPROPERTY(BlueprintCallable, Category = "Ready Player Me")
-	FAssetButtonSelected AssetButtonSelected;
+	FTemplateButtonSelected TemplateButtonSelected;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Ready Player Me")
-	FRpmPartnerAsset Asset;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Ready Player Me")
-	bool bIsSelected;
+	FRpmAvatarTemplate Template;
 };

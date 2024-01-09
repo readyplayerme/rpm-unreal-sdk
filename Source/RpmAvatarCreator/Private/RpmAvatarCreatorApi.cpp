@@ -214,6 +214,11 @@ TArray<FRpmColorPalette> URpmAvatarCreatorApi::GetColorPalettes() const
 	return ColorDownloader->GetColors();
 }
 
+TArray<FRpmAvatarTemplate> URpmAvatarCreatorApi::GetAvatarTemplates() const
+{
+	return AvatarTemplateDownloader->GetAvatarTemplates();
+}
+
 void URpmAvatarCreatorApi::BeginDestroy()
 {
 	if (RequestFactory)
