@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RpmIconUI.h"
 #include "RpmAvatarCreatorTypes.h"
-#include "Blueprint/UserWidget.h"
 #include "RpmTemplateButtonUI.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTemplateButtonSelected, const FRpmAvatarTemplate&, Template);
 
 UCLASS(Abstract)
-class RPMAVATARCREATOR_API URpmTemplateButtonUI : public UUserWidget
+class RPMAVATARCREATOR_API URpmTemplateButtonUI : public URpmIconUI
 {
 	GENERATED_BODY()
 
@@ -20,9 +20,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ready Player Me", meta = (DisplayName = "Update UI"))
 	void UpdateUI();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Ready Player Me", meta = (DisplayName = "Set Icon Texture"))
-	void SetIconTexture(UTexture2D* Image);
 
 	UPROPERTY(BlueprintCallable, Category = "Ready Player Me")
 	FTemplateButtonSelected TemplateButtonSelected;

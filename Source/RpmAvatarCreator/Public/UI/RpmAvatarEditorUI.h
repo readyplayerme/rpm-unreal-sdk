@@ -32,7 +32,7 @@ protected:
 	void UpdateLockedAssets();
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "DownloadAssetIcons"))
-	void DownloadAssetIcons(const UWrapBox* AssetContainer);
+	void DownloadAssetIcons(const class UWrapBox* AssetContainer);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Ready Player Me", meta = (DisplayName = "Asset Selected"))
 	void AssetSelected(const FRpmPartnerAsset& Asset);
@@ -55,10 +55,10 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Are Modular Outfits Disabled"))
 	bool AreModularOutfitsDisabled() const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
-	TMap<ERpmPartnerAssetType, class UWrapBox*> AssetContainerMap;
+	UPROPERTY(BlueprintReadWrite, Category="Ready Player Me")
+	TMap<ERpmPartnerAssetType, UWrapBox*> AssetContainerMap;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
+	UPROPERTY(BlueprintReadWrite, Category="Ready Player Me")
 	TMap<ERpmPartnerAssetColor, UWrapBox*> ColorContainerMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ready Player Me")
@@ -77,7 +77,7 @@ protected:
 	TSubclassOf<URpmTemplateButtonUI> TemplateButtonClass;
 
 	UPROPERTY(EditAnywhere, Instanced, BlueprintReadWrite, Category="Ready Player Me")
-	class URpmBadgeIconUI* BadgeIcon = nullptr;
+	class URpmIconUI* BadgeIcon = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category="Ready Player Me")
 	class URpmAvatarCreatorApi* AvatarCreatorApi = nullptr;

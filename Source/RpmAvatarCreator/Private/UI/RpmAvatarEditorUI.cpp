@@ -182,7 +182,7 @@ void URpmAvatarEditorUI::OnAssetButtonClicked(const FRpmPartnerAsset& Asset)
 		}
 		else
 		{
-			AvatarCreatorApi->DownloadImage(Asset.BadgeUrl, 64, BadgeIconDownloadCompleted);
+			AvatarCreatorApi->DownloadImage(Asset.BadgeUrl, BadgeIcon->IconSize, BadgeIconDownloadCompleted);
 		}
 	}
 }
@@ -267,7 +267,7 @@ void URpmAvatarEditorUI::DownloadAssetIcons(const UWrapBox* AssetContainer)
 		if (!IconUrl.IsEmpty())
 		{
 			AssetImageMap.Add(IconUrl, AssetButton);
-			AvatarCreatorApi->DownloadImage(IconUrl, 64, AssetIconDownloadCompleted);
+			AvatarCreatorApi->DownloadImage(IconUrl, AssetButton->IconSize, AssetIconDownloadCompleted);
 		}
 	}
 }
@@ -297,7 +297,7 @@ void URpmAvatarEditorUI::SetupTemplates()
 		TemplateButton->TemplateButtonSelected.AddDynamic(this, &URpmAvatarEditorUI::OnTemplateButtonClicked);
 
 		TemplateImageMap.Add(Template.ImageUrl, TemplateButton);
-		AvatarCreatorApi->DownloadImage(Template.ImageUrl, 64, TemplateIconDownloadCompleted);
+		AvatarCreatorApi->DownloadImage(Template.ImageUrl, TemplateButton->IconSize, TemplateIconDownloadCompleted);
 	}
 }
 
