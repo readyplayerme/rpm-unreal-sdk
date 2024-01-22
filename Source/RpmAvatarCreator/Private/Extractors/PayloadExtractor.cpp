@@ -112,8 +112,7 @@ FRpmAvatarProperties FPayloadExtractor::ExtractPayload(const FString& JsonString
 			const FString AssetStr = AssetsObject->GetStringField(Item.Value);
 			if (!AssetStr.IsEmpty())
 			{
-				int64 AssetId = 0;
-				FDefaultValueHelper::ParseInt64(AssetsObject->GetStringField(Item.Value), AssetId);
+				FString AssetId = AssetsObject->GetStringField(Item.Value);
 				AvatarProperties.Assets.Add(Item.Key, AssetId);
 			}
 		}
@@ -154,11 +153,10 @@ FString FPayloadExtractor::MakeUpdatePayload(const TSharedPtr<FJsonObject> Asset
 
 	return FDataJsonUtils::MakeDataPayload(DataObject);
 }
-FString FPayloadExtractor::MakeUpdatePayload(ERpmPartnerAssetType AssetType, int64 AssetId)
+FString FPayloadExtractor::MakeUpdatePayload(ERpmPartnerAssetType AssetType, const FString& AssetId)
 {
 	const TSharedPtr<FJsonObject> AssetsObject = MakeShared<FJsonObject>();
-	const FString AssetIdStr = AssetId != 0 ? FString::FromInt(AssetId) : "";
-	AssetsObject->SetStringField(ASSET_TYPE_TO_STRING_MAP[AssetType], AssetIdStr);
+	AssetsObject->SetStringField(ASSET_TYPE_TO_STRING_MAP[AssetType], AssetId);
 	if (AssetType == ERpmPartnerAssetType::Top || AssetType == ERpmPartnerAssetType::Bottom || AssetType == ERpmPartnerAssetType::Footwear)
 	{
 		AssetsObject->SetStringField(ASSET_TYPE_TO_STRING_MAP[ERpmPartnerAssetType::Outfit], "");
@@ -186,8 +184,7 @@ FString FPayloadExtractor::MakePrecompilePayload(ERpmPartnerAssetType Precompile
 	{
 		if (PrecompileAssetType == Asset.AssetType)
 		{
-			const FString AssetStr = FString::Printf(TEXT("%lld"), Asset.Id);
-			PreloadAssetString.Add(MakeShared<FJsonValueString>(AssetStr));
+			PreloadAssetString.Add(MakeShared<FJsonValueString>(Asset.Id));
 		}
 	}
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
