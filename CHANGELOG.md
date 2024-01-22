@@ -3,11 +3,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.2.1] 2024-01-22
+
+## Fixed
+
+- Fixed assetID type issue in the AvatarCreator by @harrisonhough in [#54](https://github.com/readyplayerme/rpm-unreal-sdk/pull/54)
+
 ## [2.2.0] 2024-01-12
 
 ## Added
 
-- Added support for auto LODs for the avatars
+- Added support for auto LODs for the avatars in [#52](https://github.com/readyplayerme/rpm-unreal-sdk/pull/52)
 
 ## Fixed
 
