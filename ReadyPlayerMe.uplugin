@@ -49,11 +49,5 @@
 				"IOS"
 			]
 		}
-	],
-	"Plugins": [
-		{
-			"Name": "glTFRuntime",
-			"Enabled": true
-		}
 	]
 }

@@ -376,62 +376,63 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromBinary(const uint8* DataP
 
 void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 {
-	UMaterialInterface* OpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeBase"));
+	FString RootPath = "/ReadyPlayerMe/glTFRuntime";
+	UMaterialInterface* OpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeBase")));
 	if (OpaqueMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, OpaqueMaterial);
 	}
 
-	UMaterialInterface* TranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeTranslucent_Inst"));
+	UMaterialInterface* TranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTranslucent_Inst")));
 	if (TranslucentMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, TranslucentMaterial);
 	}
 
-	UMaterialInterface* TwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeTwoSided_Inst"));
+	UMaterialInterface* TwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTwoSided_Inst")));
 	if (TwoSidedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, TwoSidedMaterial);
 	}
 
-	UMaterialInterface* TwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeTwoSidedTranslucent_Inst"));
+	UMaterialInterface* TwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (TwoSidedTranslucentMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, TwoSidedTranslucentMaterial);
 	}
 
-	UMaterialInterface* MaskedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeMasked_Inst"));
+	UMaterialInterface* MaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeMasked_Inst")));
 	if (MaskedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, MaskedMaterial);
 	}
 
-	UMaterialInterface* TwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntimeTwoSidedMasked_Inst"));
+	UMaterialInterface* TwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTwoSidedMasked_Inst")));
 	if (TwoSidedMaskedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, TwoSidedMaskedMaterial);
 	}
 
 	// KHR_materials_pbrSpecularGlossiness
-	UMaterialInterface* SGOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntime_SG_Base"));
+	UMaterialInterface* SGOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_Base")));
 	if (SGOpaqueMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, SGOpaqueMaterial);
 	}
 
-	UMaterialInterface* SGTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntime_SG_Translucent_Inst"));
+	UMaterialInterface* SGTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_Translucent_Inst")));
 	if (SGTranslucentMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, SGTranslucentMaterial);
 	}
 
-	UMaterialInterface* SGTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntime_SG_TwoSided_Inst"));
+	UMaterialInterface* SGTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_TwoSided_Inst")));
 	if (SGTwoSidedMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, SGTwoSidedMaterial);
 	}
 
-	UMaterialInterface* SGTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_glTFRuntime_SG_TwoSidedTranslucent_Inst"));
+	UMaterialInterface* SGTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_TwoSidedTranslucent_Inst")));
 	if (SGTwoSidedTranslucentMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, SGTwoSidedTranslucentMaterial);
@@ -439,44 +440,44 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 
 
 	// KHR_materials_unlit 
-	UMaterialInterface* UnlitOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeBase"));
+	UMaterialInterface* UnlitOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeBase")));
 	if (UnlitOpaqueMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, UnlitOpaqueMaterial);
 	}
 
-	UMaterialInterface* UnlitTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTranslucent_Inst"));
+	UMaterialInterface* UnlitTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTranslucent_Inst")));
 	if (UnlitTranslucentMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, UnlitTranslucentMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSided_Inst"));
+	UMaterialInterface* UnlitTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSided_Inst")));
 	if (UnlitTwoSidedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, UnlitTwoSidedMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSidedTranslucent_Inst"));
+	UMaterialInterface* UnlitTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (UnlitTwoSidedTranslucentMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, UnlitTwoSidedTranslucentMaterial);
 	}
 
-	UMaterialInterface* UnlitMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeMasked_Inst"));
+	UMaterialInterface* UnlitMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeMasked_Inst")));
 	if (UnlitMaskedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, UnlitMaskedMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSidedMasked_Inst"));
+	UMaterialInterface* UnlitTwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSidedMasked_Inst")));
 	if (UnlitTwoSidedMaskedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, UnlitTwoSidedMaskedMaterial);
 	}
 
 	// KHR_materials_transmission
-	UMaterialInterface* TrasmissionMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Transmission_glTFRuntimeBase"));
+	UMaterialInterface* TrasmissionMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Transmission_glTFRuntimeBase")));
 	if (TranslucentMaterial)
 	{
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, TrasmissionMaterial);
@@ -484,7 +485,7 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, TrasmissionMaterial);
 	}
 
-	UMaterialInterface* TrasmissionTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_Transmission_glTFRuntimeTwoSided_Inst"));
+	UMaterialInterface* TrasmissionTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Transmission_glTFRuntimeTwoSided_Inst")));
 	if (TrasmissionTwoSidedMaterial)
 	{
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, TrasmissionTwoSidedMaterial);
@@ -493,26 +494,26 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 	}
 
 	// KHR_materials_transmission
-	UMaterialInterface* ClearCoatMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeBase"));
+	UMaterialInterface* ClearCoatMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeBase")));
 	if (ClearCoatMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, ClearCoatMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTranslucent_Inst"));
+	UMaterialInterface* ClearCoatTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTranslucent_Inst")));
 	if (ClearCoatTranslucentMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, ClearCoatTranslucentMaterial);
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, ClearCoatTranslucentMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTwoSided_Inst"));
+	UMaterialInterface* ClearCoatTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTwoSided_Inst")));
 	if (ClearCoatTwoSidedMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, ClearCoatTwoSidedMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTwoSidedTranslucent_Inst"));
+	UMaterialInterface* ClearCoatTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (ClearCoatTwoSidedTranslucentMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, ClearCoatTwoSidedTranslucentMaterial);
