@@ -105,7 +105,8 @@ void FAvatarStorage::ClearAvatar(const FString& Guid)
 
 TArray<FString> FAvatarStorage::GetSavedAvatars()
 {
-	const FString Path = FPaths::Combine(GetAvatarCacheDir(), "*");
+	const FString Path = FPaths::Combine(GetAvatarCacheDir(), TEXT("*"));
+	
 	TArray<FString> FoundDirs;
 	IFileManager::Get().FindFiles(FoundDirs, *Path, false, true);
 	for (auto& Dir : FoundDirs)
@@ -119,10 +120,11 @@ int64 FAvatarStorage::GetCacheSize()
 {
 	int64 DirectorySize = 0;
 	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
 	PlatformFile.IterateDirectoryRecursively(*GetAvatarCacheDir(),
 		[&DirectorySize, &PlatformFile](const TCHAR* Filename, bool bIsDirectory) -> bool
 		{
-			if (!bIsDirectory)
+			if (!bIsDirectory && !FCString::Strstr(Filename, TEXT("AvatarManifest.json")))
 			{
 				DirectorySize += PlatformFile.FileSize(Filename);
 			}
