@@ -123,7 +123,7 @@ FAssetPaginationData FPartnerAssetExtractor::ExtractAssets(const FString& JsonSt
 		}
 		if (JsonObject->HasField(JSON_FIELD_ID))
 		{
-			Asset.Id = JsonObject->GetIntegerField(JSON_FIELD_ID);
+			Asset.Id = JsonObject->GetStringField(JSON_FIELD_ID);
 		}
 		if (JsonObject->HasTypedField<EJson::String>(JSON_FIELD_NAME))
 		{
