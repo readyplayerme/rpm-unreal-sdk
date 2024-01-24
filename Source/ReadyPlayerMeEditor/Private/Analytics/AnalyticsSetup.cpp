@@ -7,7 +7,7 @@
 #include "EditorUtilitySubsystem.h"
 #include "ReadyPlayerMeSettings.h"
 
-static const FString STARTUP_BLUEPRINT = "/ReadyPlayerMe/Editor/BP_RPM_StartupEditor.BP_RPM_StartupEditor";
+static const FString STARTUP_BLUEPRINT = "/ReadyPlayerMe/ReadyPlayerMe/Editor/BP_RPM_StartupEditor.BP_RPM_StartupEditor";
 static const FName SETTINGS_ENABLE_CACHING = "bEnableAvatarCaching";
 
 namespace
