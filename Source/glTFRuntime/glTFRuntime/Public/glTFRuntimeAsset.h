@@ -247,9 +247,6 @@ public:
 	UTextureCube* LoadCubeMapFromBlob(const bool bSpherical, const bool bAutoRotate, const FglTFRuntimeImagesConfig& ImagesConfig);
 
 	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "ImagesConfig", AutoCreateRefTerm = "ImagesConfig"), Category = "glTFRuntime")
-	void LoadCubeMapFromBlobAsync(const bool bSpherical, const bool bAutoRotate, const FglTFRuntimeTextureCubeAsync& AsyncCallback, const FglTFRuntimeImagesConfig& ImagesConfig);
-
-	UFUNCTION(BlueprintCallable, meta = (AdvancedDisplay = "ImagesConfig", AutoCreateRefTerm = "ImagesConfig"), Category = "glTFRuntime")
 	UTexture2DArray* LoadImageArrayFromBlob(const FglTFRuntimeImagesConfig& ImagesConfig);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "glTFRuntime")

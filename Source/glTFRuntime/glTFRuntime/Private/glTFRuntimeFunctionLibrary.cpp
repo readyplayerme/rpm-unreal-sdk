@@ -232,7 +232,7 @@ TArray<FglTFRuntimePathItem> UglTFRuntimeFunctionLibrary::glTFRuntimePathItemArr
 			{
 				if (SquareBracketEnd > SquareBracketStart)
 				{
-					const FString KeyIndex = Key.Mid(SquareBracketStart + 1, SquareBracketEnd - SquareBracketStart);
+					const FString KeyIndex = Key.Mid(SquareBracketStart + 1, SquareBracketEnd - SquareBracketEnd);
 					PathIndex = FCString::Atoi(*KeyIndex);
 					PathKey = Key.Left(SquareBracketStart);
 				}
@@ -270,7 +270,7 @@ bool UglTFRuntimeFunctionLibrary::GetPositionsAsBytesFromglTFRuntimeLODPrimitive
 	}
 
 	const FglTFRuntimePrimitive& Primitive = RuntimeLOD.Primitives[PrimitiveIndex];
-	Bytes.Reserve(Primitive.Positions.Num() * sizeof(float) * 3);
+	Bytes.AddUninitialized(Primitive.Positions.Num() * sizeof(float) * 3);
 	for (const FVector& Position : Primitive.Positions)
 	{
 		float X = static_cast<float>(Position.X);
@@ -291,7 +291,7 @@ bool UglTFRuntimeFunctionLibrary::GetNormalsAsBytesFromglTFRuntimeLODPrimitive(c
 	}
 
 	const FglTFRuntimePrimitive& Primitive = RuntimeLOD.Primitives[PrimitiveIndex];
-	Bytes.Reserve(Primitive.Positions.Num() * sizeof(float) * 3);
+	Bytes.AddUninitialized(Primitive.Positions.Num() * sizeof(float) * 3);
 	for (const FVector& Normal : Primitive.Normals)
 	{
 		float X = static_cast<float>(Normal.X);

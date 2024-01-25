@@ -93,76 +93,76 @@ UMaterialInterface* FglTFRuntimeParser::LoadMaterial_Internal(const int32 Index,
 	}
 
 	auto GetMaterialVector = [](const TSharedRef<FJsonObject> JsonMaterialObject, const FString& ParamName, const int32 Fields, bool& bHasParam, FLinearColor& ParamValue)
+	{
+		const TArray<TSharedPtr<FJsonValue>>* JsonValues;
+		if (JsonMaterialObject->TryGetArrayField(ParamName, JsonValues))
 		{
-			const TArray<TSharedPtr<FJsonValue>>* JsonValues;
-			if (JsonMaterialObject->TryGetArrayField(ParamName, JsonValues))
+			if (JsonValues->Num() != Fields)
 			{
-				if (JsonValues->Num() != Fields)
-				{
-					return;
-				}
-
-				double Values[4];
-				// default alpha
-				Values[3] = 1;
-
-				for (int32 Index = 0; Index < Fields; Index++)
-				{
-					(*JsonValues)[Index]->TryGetNumber(Values[Index]);
-				}
-
-				bHasParam = true;
-				ParamValue = FLinearColor(Values[0], Values[1], Values[2], Values[3]);
+				return;
 			}
-		};
+
+			double Values[4];
+			// default alpha
+			Values[3] = 1;
+
+			for (int32 Index = 0; Index < Fields; Index++)
+			{
+				(*JsonValues)[Index]->TryGetNumber(Values[Index]);
+			}
+
+			bHasParam = true;
+			ParamValue = FLinearColor(Values[0], Values[1], Values[2], Values[3]);
+		}
+	};
 
 	auto GetMaterialTexture = [this, MaterialsConfig](const TSharedRef<FJsonObject> JsonMaterialObject, const FString& ParamName, const bool sRGB, UTexture2D*& ParamTextureCache, TArray<FglTFRuntimeMipMap>& ParamMips, FglTFRuntimeTextureTransform& ParamTransform, FglTFRuntimeTextureSampler& Sampler, const bool bForceNormalMapCompression) -> const TSharedPtr<FJsonObject>
+	{
+		const TSharedPtr<FJsonObject>* JsonTextureObject;
+		if (JsonMaterialObject->TryGetObjectField(ParamName, JsonTextureObject))
 		{
-			const TSharedPtr<FJsonObject>* JsonTextureObject;
-			if (JsonMaterialObject->TryGetObjectField(ParamName, JsonTextureObject))
+			int64 TextureIndex;
+			if (!(*JsonTextureObject)->TryGetNumberField("index", TextureIndex))
 			{
-				int64 TextureIndex;
-				if (!(*JsonTextureObject)->TryGetNumberField("index", TextureIndex))
-				{
-					return nullptr;
-				}
-
-				if (!(*JsonTextureObject)->TryGetNumberField("texCoord", ParamTransform.TexCoord))
-				{
-					ParamTransform.TexCoord = 0;
-				}
-
-				ParamTransform.Rotation = (1.0 / (PI * 2)) * GetJsonExtensionObjectNumber(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "rotation", 0) * -1;
-				TArray<double> Offset = GetJsonExtensionObjectNumbers(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "offset");
-				if (Offset.Num() >= 2)
-				{
-					ParamTransform.Offset = FLinearColor(Offset[0], Offset[1], 0, 0);
-				}
-				TArray<double> Scale = GetJsonExtensionObjectNumbers(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "scale");
-				if (Scale.Num() >= 2)
-				{
-					ParamTransform.Scale = FLinearColor(Scale[0], Scale[1], 1, 1);
-				}
-				ParamTransform.TexCoord = GetJsonExtensionObjectIndex(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "texCoord", ParamTransform.TexCoord);
-
-				if (ParamTransform.TexCoord < 0 || ParamTransform.TexCoord > 3)
-				{
-					AddError("LoadMaterial_Internal()", FString::Printf(TEXT("Invalid UV Set for %s: %d"), *ParamName, ParamTransform.TexCoord));
-					return nullptr;
-				}
-
-				// hack for allowing BC5 compression for plugins
-				if (bForceNormalMapCompression)
-				{
-					FglTFRuntimeImagesConfig& ImagesConfig = const_cast<FglTFRuntimeImagesConfig&>(MaterialsConfig.ImagesConfig);
-					ImagesConfig.Compression = TextureCompressionSettings::TC_Normalmap;
-				}
-
-				ParamTextureCache = LoadTexture(TextureIndex, ParamMips, sRGB, MaterialsConfig, Sampler);
-				return *JsonTextureObject;
+				return nullptr;
 			}
-			return nullptr;
-		};
+
+			if (!(*JsonTextureObject)->TryGetNumberField("texCoord", ParamTransform.TexCoord))
+			{
+				ParamTransform.TexCoord = 0;
+			}
+
+			ParamTransform.Rotation = (1.0 / (PI * 2)) * GetJsonExtensionObjectNumber(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "rotation", 0) * -1;
+			TArray<double> Offset = GetJsonExtensionObjectNumbers(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "offset");
+			if (Offset.Num() >= 2)
+			{
+				ParamTransform.Offset = FLinearColor(Offset[0], Offset[1], 0, 0);
+			}
+			TArray<double> Scale = GetJsonExtensionObjectNumbers(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "scale");
+			if (Scale.Num() >= 2)
+			{
+				ParamTransform.Scale = FLinearColor(Scale[0], Scale[1], 1, 1);
+			}
+			ParamTransform.TexCoord = GetJsonExtensionObjectIndex(JsonTextureObject->ToSharedRef(), "KHR_texture_transform", "texCoord", ParamTransform.TexCoord);
+
+			if (ParamTransform.TexCoord < 0 || ParamTransform.TexCoord > 3)
+			{
+				AddError("LoadMaterial_Internal()", FString::Printf(TEXT("Invalid UV Set for %s: %d"), *ParamName, ParamTransform.TexCoord));
+				return nullptr;
+			}
+
+			// hack for allowing BC5 compression for plugins
+			if (bForceNormalMapCompression)
+			{
+				FglTFRuntimeImagesConfig& ImagesConfig = const_cast<FglTFRuntimeImagesConfig&>(MaterialsConfig.ImagesConfig);
+				ImagesConfig.Compression = TextureCompressionSettings::TC_Normalmap;
+			}
+
+			ParamTextureCache = LoadTexture(TextureIndex, ParamMips, sRGB, MaterialsConfig, Sampler);
+			return *JsonTextureObject;
+		}
+		return nullptr;
+	};
 
 	const TSharedPtr<FJsonObject>* JsonPBRObject;
 	if (JsonMaterialObject->TryGetObjectField("pbrMetallicRoughness", JsonPBRObject))
@@ -222,11 +222,11 @@ UMaterialInterface* FglTFRuntimeParser::LoadMaterial_Internal(const int32 Index,
 		{
 			if ((*JsonMaterialTransmission)->TryGetNumberField("transmissionFactor", RuntimeMaterial.TransmissionFactor))
 			{
-				RuntimeMaterial.bHasTransmissionFactor = (RuntimeMaterial.TransmissionFactor > 0.0);
+				RuntimeMaterial.bHasTransmissionFactor = true;
 			}
 			GetMaterialTexture(JsonMaterialTransmission->ToSharedRef(), "transmissionTexture", false, RuntimeMaterial.TransmissionTextureCache, RuntimeMaterial.TransmissionTextureMips, RuntimeMaterial.TransmissionTransform, RuntimeMaterial.TransmissionSampler, false);
 
-			RuntimeMaterial.bKHR_materials_transmission = (RuntimeMaterial.TransmissionFactor > 0.0);
+			RuntimeMaterial.bKHR_materials_transmission = true;
 		}
 
 		// KHR_materials_unlit 
@@ -358,26 +358,8 @@ UTexture2D* FglTFRuntimeParser::BuildTexture(UObject* Outer, const TArray<FglTFR
 		}
 #endif
 #endif
-		uint8* Data = reinterpret_cast<uint8*>(Mip->BulkData.Realloc(MipMap.Pixels.Num()));
-		// ETargetPlatformFeatures::NormalmapLAEncodingMode has been added in 5.3 for mobile platforms
-#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 3 && (PLATFORM_ANDROID || PLATFORM_IOS)
-		if (ImagesConfig.Compression == TC_Normalmap)
-		{
-			for (int32 PIndex = 0; PIndex < MipMap.Pixels.Num(); PIndex += 4)
-			{
-				Data[PIndex + 0] = 0;
-				Data[PIndex + 1] = 0;
-				Data[PIndex + 2] = MipMap.Pixels[PIndex + 2];
-				Data[PIndex + 3] = MipMap.Pixels[PIndex + 1];
-			}
-		}
-		else
-		{
-#endif
-			FMemory::Memcpy(Data, MipMap.Pixels.GetData(), MipMap.Pixels.Num());
-#if ENGINE_MAJOR_VERSION >= 5 && ENGINE_MINOR_VERSION >= 3 && (PLATFORM_ANDROID || PLATFORM_IOS)
-		}
-#endif
+		void* Data = Mip->BulkData.Realloc(MipMap.Pixels.Num());
+		FMemory::Memcpy(Data, MipMap.Pixels.GetData(), MipMap.Pixels.Num());
 		Mip->BulkData.Unlock();
 	}
 
@@ -405,99 +387,6 @@ UTexture2D* FglTFRuntimeParser::BuildTexture(UObject* Outer, const TArray<FglTFR
 
 	return Texture;
 }
-
-UVolumeTexture* FglTFRuntimeParser::BuildVolumeTexture(UObject* Outer, const TArray<FglTFRuntimeMipMap>& Mips, const int32 TileZ, const FglTFRuntimeImagesConfig& ImagesConfig, const FglTFRuntimeTextureSampler& Sampler)
-{
-	if (Mips.Num() == 0)
-	{
-		return nullptr;
-	}
-
-	UVolumeTexture* Texture = NewObject<UVolumeTexture>(Outer, NAME_None, RF_Public);
-	FTexturePlatformData* PlatformData = new FTexturePlatformData();
-	PlatformData->SizeX = Mips[0].Width;
-	PlatformData->SizeY = Mips[0].Height;
-	PlatformData->PixelFormat = Mips[0].PixelFormat;
-	PlatformData->SetNumSlices(TileZ);
-
-#if ENGINE_MAJOR_VERSION > 4
-	Texture->SetPlatformData(PlatformData);
-#else
-	Texture->PlatformData = PlatformData;
-#endif
-
-	Texture->LODBias = (ImagesConfig.LODBias >= 0 && ImagesConfig.LODBias < (Mips.Num() - 1)) ? ImagesConfig.LODBias : 0;
-	Texture->NeverStream = !ImagesConfig.bStreaming;
-
-	if (ImagesConfig.bStreaming)
-	{
-		Texture->AddAssetUserData(NewObject<UglTFRuntimeTextureMipDataProviderFactory>());
-	}
-
-	for (const FglTFRuntimeMipMap& MipMap : Mips)
-	{
-		FTexture2DMipMap* Mip = new FTexture2DMipMap();
-		PlatformData->Mips.Add(Mip);
-		Mip->SizeX = MipMap.Width;
-		Mip->SizeY = MipMap.Height;
-		Mip->SizeZ = TileZ;
-
-#if !WITH_EDITOR
-#if !NO_LOGGING
-		ELogVerbosity::Type CurrentLogSerializationVerbosity = LogSerialization.GetVerbosity();
-		bool bResetLogVerbosity = false;
-		if (CurrentLogSerializationVerbosity >= ELogVerbosity::Warning)
-		{
-			LogSerialization.SetVerbosity(ELogVerbosity::Error);
-			bResetLogVerbosity = true;
-		}
-#endif
-#endif
-
-#if !WITH_EDITOR
-		// this is a hack for allowing texture streaming without messing around with deriveddata
-		Mip->BulkData.SetBulkDataFlags(BULKDATA_PayloadInSeperateFile);
-#endif
-		Mip->BulkData.Lock(LOCK_READ_WRITE);
-
-#if !WITH_EDITOR
-#if !NO_LOGGING
-		if (bResetLogVerbosity)
-		{
-			LogSerialization.SetVerbosity(CurrentLogSerializationVerbosity);
-		}
-#endif
-#endif
-		void* Data = Mip->BulkData.Realloc(MipMap.Pixels.Num());
-		FMemory::Memcpy(Data, MipMap.Pixels.GetData(), MipMap.Pixels.Num());
-		Mip->BulkData.Unlock();
-	}
-
-
-	Texture->CompressionSettings = ImagesConfig.Compression;
-	Texture->LODGroup = ImagesConfig.Group;
-	Texture->SRGB = ImagesConfig.bSRGB;
-
-	if (Sampler.MinFilter != TextureFilter::TF_Default)
-	{
-		Texture->Filter = Sampler.MinFilter;
-	}
-
-	if (Sampler.MagFilter != TextureFilter::TF_Default)
-	{
-		Texture->Filter = Sampler.MagFilter;
-	}
-
-#if WITH_EDITOR
-	Texture->Source2DTileSizeX = Mips[0].Width;
-	Texture->Source2DTileSizeY = Mips[0].Height;
-#endif
-
-	Texture->UpdateResource();
-
-	return Texture;
-}
-
 
 UMaterialInterface* FglTFRuntimeParser::BuildVertexColorOnlyMaterial(const FglTFRuntimeMaterialsConfig& MaterialsConfig)
 {
@@ -564,11 +453,6 @@ UMaterialInterface* FglTFRuntimeParser::BuildMaterial(const int32 Index, const F
 		}
 	}
 
-	if (MaterialsConfig.ForceMaterial)
-	{
-		BaseMaterial = MaterialsConfig.ForceMaterial;
-	}
-
 	if (MaterialsConfig.UberMaterialsOverrideMap.Contains(RuntimeMaterial.MaterialType))
 	{
 		BaseMaterial = MaterialsConfig.UberMaterialsOverrideMap[RuntimeMaterial.MaterialType];
@@ -605,45 +489,45 @@ UMaterialInterface* FglTFRuntimeParser::BuildMaterial(const int32 Index, const F
 	Material->SetScalarParameterValue("alphaCutoff", RuntimeMaterial.AlphaCutoff);
 
 	auto ApplyMaterialFactor = [this, Material](bool bHasFactor, const FName& FactorName, FLinearColor FactorValue)
+	{
+		if (bHasFactor)
 		{
-			if (bHasFactor)
-			{
-				Material->SetVectorParameterValue(FactorName, FactorValue);
-			}
-		};
+			Material->SetVectorParameterValue(FactorName, FactorValue);
+		}
+	};
 
 	auto ApplyMaterialFloatFactor = [this, Material](bool bHasFactor, const FName& FactorName, float FactorValue)
+	{
+		if (bHasFactor)
 		{
-			if (bHasFactor)
-			{
-				Material->SetScalarParameterValue(FactorName, FactorValue);
-			}
-		};
+			Material->SetScalarParameterValue(FactorName, FactorValue);
+		}
+	};
 
 	auto ApplyMaterialTexture = [this, Material, MaterialsConfig](const FName& TextureName, UTexture2D* TextureCache, const TArray<FglTFRuntimeMipMap>& Mips, const FglTFRuntimeTextureSampler& Sampler, const FString& TransformPrefix, const FglTFRuntimeTextureTransform& Transform, const TEnumAsByte<TextureCompressionSettings> Compression, const bool sRGB)
+	{
+		UTexture2D* Texture = TextureCache;
+		if (!Texture)
 		{
-			UTexture2D* Texture = TextureCache;
-			if (!Texture)
+			if (Mips.Num() > 0)
 			{
-				if (Mips.Num() > 0)
-				{
-					FglTFRuntimeImagesConfig ImagesConfig = MaterialsConfig.ImagesConfig;
-					ImagesConfig.Compression = Compression;
-					ImagesConfig.bSRGB = sRGB;
-					Texture = BuildTexture(Material, Mips, ImagesConfig, Sampler);
-				}
+				FglTFRuntimeImagesConfig ImagesConfig = MaterialsConfig.ImagesConfig;
+				ImagesConfig.Compression = Compression;
+				ImagesConfig.bSRGB = sRGB;
+				Texture = BuildTexture(Material, Mips, ImagesConfig, Sampler);
 			}
-			if (Texture)
-			{
-				Material->SetTextureParameterValue(TextureName, Texture);
-				FVector4 UVSet = FVector4(0, 0, 0, 0);
-				UVSet[Transform.TexCoord] = 1;
-				Material->SetVectorParameterValue(FName(TransformPrefix + "TexCoord"), FLinearColor(UVSet));
-				Material->SetVectorParameterValue(FName(TransformPrefix + "Offset"), Transform.Offset);
-				Material->SetScalarParameterValue(FName(TransformPrefix + "Rotation"), Transform.Rotation);
-				Material->SetVectorParameterValue(FName(TransformPrefix + "Scale"), Transform.Scale);
-			}
-		};
+		}
+		if (Texture)
+		{
+			Material->SetTextureParameterValue(TextureName, Texture);
+			FVector4 UVSet = FVector4(0, 0, 0, 0);
+			UVSet[Transform.TexCoord] = 1;
+			Material->SetVectorParameterValue(FName(TransformPrefix + "TexCoord"), FLinearColor(UVSet));
+			Material->SetVectorParameterValue(FName(TransformPrefix + "Offset"), Transform.Offset);
+			Material->SetScalarParameterValue(FName(TransformPrefix + "Rotation"), Transform.Rotation);
+			Material->SetVectorParameterValue(FName(TransformPrefix + "Scale"), Transform.Scale);
+		}
+	};
 
 	ApplyMaterialFactor(RuntimeMaterial.bHasBaseColorFactor, "baseColorFactor", RuntimeMaterial.BaseColorFactor);
 	ApplyMaterialTexture("baseColorTexture", RuntimeMaterial.BaseColorTextureCache, RuntimeMaterial.BaseColorTextureMips,
