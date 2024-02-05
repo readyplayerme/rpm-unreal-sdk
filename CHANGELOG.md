@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Added
 
-feat: add rpm source header to requests by @rk132 in [#56](https://github.com/readyplayerme/rpm-unreal-sdk/pull/56)
+- Add rpm source header to requests by @rk132 in [#56](https://github.com/readyplayerme/rpm-unreal-sdk/pull/56)
 
 ## [2.3.0] 2024-01-24
 
