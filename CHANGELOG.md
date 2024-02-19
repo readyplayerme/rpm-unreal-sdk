@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.0] 2024-02-19
+
+## Added
+
+- Add rpm source header to requests by @rk132 in [#56](https://github.com/readyplayerme/rpm-unreal-sdk/pull/56)
+
 ## [2.3.0] 2024-01-24
 
 ## Fixed
