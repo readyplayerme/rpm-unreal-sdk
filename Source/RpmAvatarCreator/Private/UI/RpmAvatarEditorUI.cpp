@@ -277,6 +277,14 @@ void URpmAvatarEditorUI::OnAssetIconDownloaded(UTexture2D* Image, const FString&
 	if (AssetImageMap.Contains(Url))
 	{
 		AssetImageMap[Url]->SetIconTexture(Image);
+		if (IsValid(AssetImageMap[Url]))
+		{
+			UE_LOG(LogTemp, Error, TEXT("Image is valid"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Image is not valid!!!!"));
+		}
 		AssetImageMap.Remove(Url);
 	}
 }

@@ -57,6 +57,14 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 	UTexture2D* Texture = nullptr;
 	if (bSuccess)
 	{
+		if(ImageRequests.Contains(ImageUrl) && ImageRequests[ImageUrl].IsValid())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ImageUrl is valid"))
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ImageUrl is not valid!!!!!!"))
+		}
 		Texture = UKismetRenderingLibrary::ImportBufferAsTexture2D(this, ImageRequests[ImageUrl]->GetContent());
 		ImageMap.Add(ImageUrl, Texture);
 	}
