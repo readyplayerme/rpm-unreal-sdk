@@ -66,7 +66,7 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 			UE_LOG(LogTemp, Warning, TEXT("ImageUrl is not valid!!!!!!"))
 		}
 		Texture = UKismetRenderingLibrary::ImportBufferAsTexture2D(this, ImageRequests[ImageUrl]->GetContent());
-		Texture->MipGenSettings = TMGS_NoMipmaps;
+		Texture->MipGenSettings = TextureMipGenSettings::TMGS_NoMipmaps;
 		ImageMap.Add(ImageUrl, Texture);
 	}
 	for (auto& Callback : RequestCallbacks[ImageUrl])
