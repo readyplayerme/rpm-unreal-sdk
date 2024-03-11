@@ -39,6 +39,7 @@ public class RpmAvatarCreator : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"ImageCore",
 				"Json",
 				"JsonUtilities",
 				"HTTP",
