@@ -87,7 +87,6 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 			UE_LOG(LogTemp, Warning, TEXT("Error in CreateTransient"));
 		}
 		Texture->bNotOfflineProcessed = true;
-		Texture->MipGenSettings = TMGS_NoMipmaps;
 		Texture->LODGroup = TextureGroup::TEXTUREGROUP_UI;
 		
 		uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
