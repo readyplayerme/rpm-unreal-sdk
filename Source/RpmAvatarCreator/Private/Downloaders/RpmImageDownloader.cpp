@@ -80,9 +80,12 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 
 		ERawImageFormat::Type PixelFormatRawFormat;
 		EPixelFormat PixelFormat = FImageCoreUtils::GetPixelFormatForRawImageFormat(Image.Format,&PixelFormatRawFormat);
-
-		Texture = UTexture2D::CreateTransient(Image.SizeX, Image.SizeY, PF_DXT5);
 		UE_LOG(LogTemp, Warning, TEXT("Image size: %d, %d"), Image.SizeX, Image.SizeY);
+		UE_LOG(LogTemp, Warning, TEXT("Image raw format: %d"), PixelFormatRawFormat);
+		UE_LOG(LogTemp, Warning, TEXT("Image format: %d"), PixelFormat);
+		
+		Texture = UTexture2D::CreateTransient(Image.SizeX, Image.SizeY, PixelFormat);
+		
 		if (Texture == nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Error in CreateTransient"));
@@ -103,6 +106,9 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 
 		Texture->UpdateResource();
 
+		UE_LOG(LogTemp, Warning, TEXT("Image texture group: %d"), Texture->GetLODGroupForStreaming());
+
+		UE_LOG(LogTemp, Warning, TEXT("ImageUrl: %s"), *ImageUrl);
 		ImageMap.Add(ImageUrl, Texture);
 	}
 	for (auto& Callback : RequestCallbacks[ImageUrl])
