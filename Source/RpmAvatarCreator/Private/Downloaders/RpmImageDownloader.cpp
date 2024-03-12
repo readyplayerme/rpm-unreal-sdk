@@ -81,13 +81,15 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 		ERawImageFormat::Type PixelFormatRawFormat;
 		EPixelFormat PixelFormat = FImageCoreUtils::GetPixelFormatForRawImageFormat(Image.Format,&PixelFormatRawFormat);
 
-		Texture = UTexture2D::CreateTransient(Image.SizeX, Image.SizeY, PF_B8G8R8A8);
+		Texture = UTexture2D::CreateTransient(Image.SizeX, Image.SizeY, PF_DXT5);
+		UE_LOG(LogTemp, Warning, TEXT("Image size: %d, %d"), Image.SizeX, Image.SizeY);
 		if (Texture == nullptr)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Error in CreateTransient"));
 		}
 		Texture->bNotOfflineProcessed = true;
-		Texture->LODGroup = TextureGroup::TEXTUREGROUP_UI;
+		Texture->LODGroup = TextureGroup::TEXTUREGROUP_World;
+		
 		
 		uint8* MipData = static_cast<uint8*>(Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE));
 		check( MipData != nullptr );
