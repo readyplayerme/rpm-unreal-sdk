@@ -106,8 +106,6 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 
 		Texture->UpdateResource();
 
-		UE_LOG(LogTemp, Warning, TEXT("Image texture group: %d"), Texture->GetLODGroupForStreaming());
-
 		UE_LOG(LogTemp, Warning, TEXT("ImageUrl: %s"), *ImageUrl);
 		ImageMap.Add(ImageUrl, Texture);
 	}
