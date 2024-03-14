@@ -57,19 +57,24 @@ void URpmImageDownloader::DownloadImage(const FString& ImageUrl, int32 Size, con
 	ImageRequest->Download();
 }
 
+void URpmImageDownloader::CancelRequest(const FString& ImageUrl)
+{
+	if(ImageRequests.Contains(ImageUrl))
+	{
+		ImageRequests[ImageUrl]->CancelRequest();
+		ImageRequests.Remove(ImageUrl);
+	}
+	if(RequestCallbacks.Contains(ImageUrl))
+	{
+		RequestCallbacks.Remove(ImageUrl);
+	}
+}
+
 void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageUrl)
 {
 	UTexture2D* Texture = nullptr;
 	if (bSuccess)
 	{
-		if(ImageRequests.Contains(ImageUrl) && ImageRequests[ImageUrl].IsValid())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ImageUrl is valid"))
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ImageUrl is not valid!!!!!!"))
-		}
 		//Texture = UKismetRenderingLibrary::ImportBufferAsTexture2D(this, ImageRequests[ImageUrl]->GetContent());
 		//Texture->LODGroup = TextureGroup::TEXTUREGROUP_UI;
 		FImage Image;
@@ -81,8 +86,7 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 		ERawImageFormat::Type PixelFormatRawFormat;
 		EPixelFormat PixelFormat = FImageCoreUtils::GetPixelFormatForRawImageFormat(Image.Format,&PixelFormatRawFormat);
 		UE_LOG(LogTemp, Warning, TEXT("Image size: %d, %d"), Image.SizeX, Image.SizeY);
-		UE_LOG(LogTemp, Warning, TEXT("Image raw format: %d"), PixelFormatRawFormat);
-		UE_LOG(LogTemp, Warning, TEXT("Image format: %d"), PixelFormat);
+		UE_LOG(LogTemp, Warning, TEXT("Image raw format: %d, Image format: %d"), PixelFormatRawFormat, PixelFormat);
 		
 		Texture = UTexture2D::CreateTransient(Image.SizeX, Image.SizeY, PixelFormat);
 		
@@ -106,7 +110,6 @@ void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageU
 
 		Texture->UpdateResource();
 
-		UE_LOG(LogTemp, Warning, TEXT("ImageUrl: %s"), *ImageUrl);
 		ImageMap.Add(ImageUrl, Texture);
 	}
 	for (auto& Callback : RequestCallbacks[ImageUrl])

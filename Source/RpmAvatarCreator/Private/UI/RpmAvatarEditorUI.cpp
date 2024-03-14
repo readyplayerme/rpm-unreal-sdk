@@ -85,6 +85,16 @@ bool URpmAvatarEditorUI::AreModularOutfitsDisabled() const
 	return bAreModularOutfitsDisabled;
 }
 
+void URpmAvatarEditorUI::ResetCategory()
+{
+	for (auto& ImageUrl : AssetImageMap)
+	{
+		AvatarCreatorApi->CancelDownload(ImageUrl.Key);
+		
+	}
+	AssetImageMap.Empty();
+}
+
 UWrapBox* URpmAvatarEditorUI::GetColorContainerByColor(ERpmPartnerAssetColor Color) const
 {
 	return ColorContainerMap[Color];
@@ -277,14 +287,6 @@ void URpmAvatarEditorUI::OnAssetIconDownloaded(UTexture2D* Image, const FString&
 	if (AssetImageMap.Contains(Url))
 	{
 		AssetImageMap[Url]->SetIconTexture(Image);
-		if (IsValid(AssetImageMap[Url]))
-		{
-			UE_LOG(LogTemp, Error, TEXT("Image is valid"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Image is not valid!!!!"));
-		}
 		AssetImageMap.Remove(Url);
 	}
 }
