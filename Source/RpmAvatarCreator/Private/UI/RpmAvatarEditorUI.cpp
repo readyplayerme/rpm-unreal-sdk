@@ -85,14 +85,9 @@ bool URpmAvatarEditorUI::AreModularOutfitsDisabled() const
 	return bAreModularOutfitsDisabled;
 }
 
-void URpmAvatarEditorUI::ResetCategory()
+bool URpmAvatarEditorUI::ResetCategory()
 {
-	for (auto& ImageUrl : AssetImageMap)
-	{
-		AvatarCreatorApi->CancelDownload(ImageUrl.Key);
-		
-	}
-	AssetImageMap.Empty();
+	 return AssetImageMap.IsEmpty();
 }
 
 UWrapBox* URpmAvatarEditorUI::GetColorContainerByColor(ERpmPartnerAssetColor Color) const

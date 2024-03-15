@@ -15,8 +15,6 @@ class URpmImageDownloader : public UObject
 public:
 	void DownloadImage(const FString& ImageUrl, int32 Size, const FImageDownloadCompleted& ImageDownloaded);
 
-	void CancelRequest(const FString& ImageUrl);
-
 	void SetRequestFactory(TSharedPtr<class FRequestFactory> Factory);
 
 	void RemoveImage(const FString& ImageUrl);

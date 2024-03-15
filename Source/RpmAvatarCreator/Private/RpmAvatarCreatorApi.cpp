@@ -204,11 +204,6 @@ void URpmAvatarCreatorApi::DownloadImage(const FString& Url, int32 Size, const F
 	return ImageDownloader->DownloadImage(Url, Size, DownloadCompleted);
 }
 
-void URpmAvatarCreatorApi::CancelDownload(const FString& Url)
-{
-	ImageDownloader->CancelRequest(Url);
-}
-
 TArray<FRpmPartnerAsset> URpmAvatarCreatorApi::GetFilteredPartnerAssets() const
 {
 	return AssetDownloader->GetFilteredAssets(AvatarProperties.Gender);

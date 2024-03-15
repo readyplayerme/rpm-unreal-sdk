@@ -57,19 +57,6 @@ void URpmImageDownloader::DownloadImage(const FString& ImageUrl, int32 Size, con
 	ImageRequest->Download();
 }
 
-void URpmImageDownloader::CancelRequest(const FString& ImageUrl)
-{
-	if(ImageRequests.Contains(ImageUrl))
-	{
-		ImageRequests[ImageUrl]->CancelRequest();
-		ImageRequests.Remove(ImageUrl);
-	}
-	if(RequestCallbacks.Contains(ImageUrl))
-	{
-		RequestCallbacks.Remove(ImageUrl);
-	}
-}
-
 void URpmImageDownloader::OnImageDownloadCompleted(bool bSuccess, FString ImageUrl)
 {
 	UTexture2D* Texture = nullptr;

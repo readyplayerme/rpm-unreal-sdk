@@ -56,7 +56,7 @@ protected:
 	bool AreModularOutfitsDisabled() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Reset Category"))
-	void ResetCategory();
+	bool ResetCategory();
 
 	UPROPERTY(BlueprintReadWrite, Category="Ready Player Me")
 	TMap<ERpmPartnerAssetType, UWrapBox*> AssetContainerMap;

@@ -81,9 +81,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Download Image"))
 	void DownloadImage(const FString& Url, int32 Size, const FImageDownloadCompleted& DownloadCompleted);
 
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Download Image"))
-	void CancelDownload(const FString& Url);
-
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Get Filtered Partner Assets"))
 	TArray<FRpmPartnerAsset> GetFilteredPartnerAssets() const;
 
