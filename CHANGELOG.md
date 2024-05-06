@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Added
 
-- gltfRuntime is merged now to Ready Player Me Plugin and it is no longer needed to download it manually [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
+- gltfRuntime is merged now to the Ready Player Me Plugin and it is no longer needed to download it manually [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
 
 ## Fixed
 - resize image based on camera resolution [#61](https://github.com/readyplayerme/rpm-unreal-sdk/pull/61)
@@ -17,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Breaking
 
-- gltfRuntime is now part of the SDK, so the separate version of gltfRuntime from plugins folder needs to be removed [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
+- gltfRuntime is now part of the SDK, so the separate version of gltfRuntime from the plugins folder needs to be removed [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
 
 ## [2.4.0] 2024-02-19
 
