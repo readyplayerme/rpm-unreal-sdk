@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] 2024-05-08
+
+## Added
+
+- gltfRuntime is merged now to the Ready Player Me Plugin and it is no longer needed to download it manually [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
+
+## Fixed
+- resize image based on camera resolution [#61](https://github.com/readyplayerme/rpm-unreal-sdk/pull/61)
+- Fix setup guide path [#60](https://github.com/readyplayerme/rpm-unreal-sdk/pull/60)
+- Fix typos in quickstart [#62](https://github.com/readyplayerme/rpm-unreal-sdk/pull/62)
+- Dont show halfbody/fullbody-xr animations in quickstart [#63](https://github.com/readyplayerme/rpm-unreal-sdk/pull/63)
+
+## Breaking
+
+- gltfRuntime is now part of the SDK, so the separate version of gltfRuntime from the plugins folder needs to be removed [#55](https://github.com/readyplayerme/rpm-unreal-sdk/pull/55)
+
 ## [2.4.0] 2024-02-19
 
 ## Added
