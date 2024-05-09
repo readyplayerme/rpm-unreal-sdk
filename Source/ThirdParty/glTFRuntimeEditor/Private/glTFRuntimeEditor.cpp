@@ -5,7 +5,9 @@
 #include "Developer/DesktopPlatform/Public/IDesktopPlatform.h"
 #include "Developer/DesktopPlatform/Public/DesktopPlatformModule.h"
 #include "glTFRuntimeEditorDelegates.h"
-#include "glTFRuntimeFunctionLibrary.h"
+#include "glTFRuntime/Public/glTFRuntimeFunctionLibrary.h"
+#include "glTFRuntime/Public/glTFRuntimeAssetActor.h"
+#include "IDesktopPlatform.h"
 #include "LevelEditor.h"
 
 #define LOCTEXT_NAMESPACE "FglTFRuntimeEditorModule"
