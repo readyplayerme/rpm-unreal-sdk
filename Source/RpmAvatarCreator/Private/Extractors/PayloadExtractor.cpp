@@ -79,6 +79,13 @@ namespace
 		{ERpmPartnerAssetColor::HairColor, "hairColor"},
 		{ERpmPartnerAssetColor::SkinColor, "skinColor"},
 	};
+
+	const FString JSON_FIELD_ASSETS = "assets";
+	const FString JSON_FIELD_ID = "id";
+	const FString JSON_FIELD_PARTNER = "partner";
+	const FString JSON_FIELD_GENDER = "gender";
+	const FString JSON_FIELD_BODYTYPE = "bodyType";
+	const FString JSON_FIELD_BASEIMAGE = "base64Image";
 }
 
 EAvatarGender FPayloadExtractor::GetGenderFromString(const FString& GenderStr)
@@ -94,17 +101,17 @@ FString FPayloadExtractor::GetStringFromGender(EAvatarGender Gender)
 FRpmAvatarProperties FPayloadExtractor::ExtractPayload(const FString& JsonString)
 {
 	const TSharedPtr<FJsonObject> DataObject = FDataJsonUtils::ExtractDataObject(JsonString);
-	if (!DataObject || !DataObject->HasField("assets"))
+	if (!DataObject || !DataObject->HasField(JSON_FIELD_ASSETS))
 	{
 		return {};
 	}
 
 	FRpmAvatarProperties AvatarProperties;
-	AvatarProperties.Id = DataObject->GetStringField("id");
-	AvatarProperties.Partner = DataObject->GetStringField("partner");
-	AvatarProperties.Gender = StringToGender(DataObject->GetStringField("gender"));
-	AvatarProperties.BodyType = StringToBodyType(DataObject->GetStringField("bodyType"));
-	const auto AssetsObject = DataObject->GetObjectField("assets");
+	AvatarProperties.Id = DataObject->GetStringField(JSON_FIELD_ID);
+	AvatarProperties.Partner = DataObject->GetStringField(JSON_FIELD_PARTNER);
+	AvatarProperties.Gender = StringToGender(DataObject->GetStringField(JSON_FIELD_GENDER));
+	AvatarProperties.BodyType = StringToBodyType(DataObject->GetStringField(JSON_FIELD_BODYTYPE));
+	const auto AssetsObject = DataObject->GetObjectField(JSON_FIELD_ASSETS);
 	for (const auto& Item : ASSET_TYPE_TO_STRING_MAP)
 	{
 		if (AssetsObject->HasField(Item.Value))
@@ -133,14 +140,14 @@ FString FPayloadExtractor::MakeCreatePayload(const FRpmAvatarProperties& AvatarP
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
 	const TSharedPtr<FJsonObject> AssetsObject = MakeShared<FJsonObject>();
 
-	DataObject->SetObjectField("assets", AssetsObject);
+	DataObject->SetObjectField(JSON_FIELD_ASSETS, AssetsObject);
 
-	DataObject->SetStringField("partner", AvatarProperties.Partner);
-	DataObject->SetStringField("bodyType", BodyTypeToString(AvatarProperties.BodyType));
+	DataObject->SetStringField(JSON_FIELD_PARTNER, AvatarProperties.Partner);
+	DataObject->SetStringField(JSON_FIELD_BODYTYPE, BodyTypeToString(AvatarProperties.BodyType));
 	if (!AvatarProperties.Base64Image.IsEmpty())
 	{
-		DataObject->SetStringField("base64Image", AvatarProperties.Base64Image);
-		DataObject->SetStringField("gender",  GenderToString(AvatarProperties.Gender));
+		DataObject->SetStringField(JSON_FIELD_BASEIMAGE, AvatarProperties.Base64Image);
+		DataObject->SetStringField(JSON_FIELD_GENDER,  GenderToString(AvatarProperties.Gender));
 	}
 
 	return FDataJsonUtils::MakeDataPayload(DataObject);
@@ -149,7 +156,7 @@ FString FPayloadExtractor::MakeCreatePayload(const FRpmAvatarProperties& AvatarP
 FString FPayloadExtractor::MakeUpdatePayload(const TSharedPtr<FJsonObject> AssetsObject)
 {
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
-	DataObject->SetObjectField("assets", AssetsObject);
+	DataObject->SetObjectField(JSON_FIELD_ASSETS, AssetsObject);
 
 	return FDataJsonUtils::MakeDataPayload(DataObject);
 }
