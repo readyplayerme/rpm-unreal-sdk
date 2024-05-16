@@ -156,7 +156,7 @@ FAssetPaginationData FPartnerAssetExtractor::ExtractAssets(const FString& JsonSt
 		PaginationData.Assets.Add(Asset);
 	}
 	TSharedPtr<FJsonObject> JsonObject;
-	if (FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(JsonString), JsonObject) && JsonObject->HasField("pagination"))
+	if (FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(JsonString), JsonObject) && JsonObject->HasField(JSON_PAGINATION))
 	{
 		const TSharedPtr<FJsonObject> PaginationJson = JsonObject->GetObjectField(JSON_PAGINATION);
 		PaginationData.TotalPages = PaginationJson->GetNumberField(JSON_TOTAL_PAGES);
