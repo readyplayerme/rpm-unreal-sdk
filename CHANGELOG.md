@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.0] 2024-05-22
+
+## Updated
+
+- updated to latest version of glTFRuntime [#65](https://github.com/readyplayerme/rpm-unreal-sdk/pull/65)
+
+## Fixed
+
+- removed UE5.4 warnings [#66](https://github.com/readyplayerme/rpm-unreal-sdk/pull/66)
+
 ## [3.1.0] 2024-05-08
 
 ## Added
