@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.2.0] 2024-05-22
+## [3.2.0] 2024-05-23
 
 ## Updated
 
@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## Fixed
 
 - removed UE5.4 warnings [#66](https://github.com/readyplayerme/rpm-unreal-sdk/pull/66)
+- fixed a crash caused by unmanaged avatar request callbacks in Avatar Creator [#67](https://github.com/readyplayerme/rpm-unreal-sdk/pull/67)
 
 ## [3.1.0] 2024-05-08
 
