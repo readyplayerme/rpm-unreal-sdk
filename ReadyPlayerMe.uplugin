@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "3.1.0",
+	"VersionName": "3.2.0",
 	"FriendlyName": "Ready Player Me",
 	"Description": "Ready Player Me SDK",
 	"Category": "Runtime",
@@ -53,13 +53,23 @@
 			"Name": "glTFRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [ "Win64", "Mac", "Linux", "Android", "IOS" ]
+			"WhitelistPlatforms": [
+				"Win64",
+				"Mac",
+				"Linux",
+				"Android",
+				"IOS"
+			]
 		},
 		{
 			"Name": "glTFRuntimeEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [ "Win64", "Mac", "Linux" ]
+			"WhitelistPlatforms": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
 		}
 	],
 	"Plugins": [
@@ -68,5 +78,4 @@
 			"Enabled": true
 		}
 	]
-
 }
