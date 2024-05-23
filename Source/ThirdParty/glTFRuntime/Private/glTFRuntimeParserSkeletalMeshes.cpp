@@ -529,14 +529,14 @@ USkeletalMesh* FglTFRuntimeParser::CreateSkeletalMeshFromLODs(TSharedRef<FglTFRu
 				TMap<int32, FName>& BoneMapInUse = Primitive.OverrideBoneMap.Num() > 0 ? Primitive.OverrideBoneMap : MainBoneMap;
 				TMap<int32, int32>& BonesCacheInUse = Primitive.OverrideBoneMap.Num() > 0 ? Primitive.BonesCache : MainBonesCache;
 
-				if (!SkeletalMeshContext->SkeletalMeshConfig.bIgnoreSkin && SkeletalMeshContext->SkinIndex > INDEX_NONE)
+				if ((!SkeletalMeshContext->SkeletalMeshConfig.bIgnoreSkin && SkeletalMeshContext->SkinIndex > INDEX_NONE) || LOD->Skeleton.Num() > 0)
 				{
 					uint32 TotalWeight = 0;
 					const int32 JointsNum = FMath::Min(Primitive.Joints.Num(), MeshSection.MaxBoneInfluences / 4);
 					for (int32 JointsIndex = 0; JointsIndex < JointsNum; JointsIndex++)
 					{
-						FglTFRuntimeUInt16Vector4 Joints = Primitive.Joints[JointsIndex][Index];
-						FVector4 Weights = Primitive.Weights[JointsIndex][Index];
+						const FglTFRuntimeUInt16Vector4& Joints = Primitive.Joints[JointsIndex][Index];
+						const FVector4& Weights = Primitive.Weights[JointsIndex][Index];
 						for (int32 j = 0; j < 4; j++)
 						{
 							if (BoneMapInUse.Contains(Joints[j]))
@@ -664,133 +664,147 @@ USkeletalMesh* FglTFRuntimeParser::CreateSkeletalMeshFromLODs(TSharedRef<FglTFRu
 					}
 				};
 
-			for (int32 VertexIndex = 0; VertexIndex < TotalVertexIndex; VertexIndex += 3)
-			{
-
-#if ENGINE_MAJOR_VERSION > 4
-				FVector Position0 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex));
-				FVector4 TangentZ0 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex));
-#else
-				FVector Position0 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex);
-				FVector4 TangentZ0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex);
-#endif
-
-
-#if ENGINE_MAJOR_VERSION > 4
-				FVector Position1 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 1));
-				FVector4 TangentZ1 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 1));
-#else
-				FVector Position1 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 1);
-				FVector4 TangentZ1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 1);
-#endif
-
-
-#if ENGINE_MAJOR_VERSION > 4
-				FVector Position2 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 2));
-				FVector4 TangentZ2 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 2));
-#else
-				FVector Position2 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 2);
-				FVector4 TangentZ2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 2);
-#endif
-
-				if (!LOD->bHasNormals)
+			ParallelFor(TotalVertexIndex / 3, [&](const int32 VertexTriangleIndex)
 				{
-					const FVector SideA = Position1 - Position0;
-					const FVector SideB = Position2 - Position0;
 
-					const FVector NormalFromCross = FVector::CrossProduct(SideB, SideA).GetSafeNormal();
+					const int32 VertexIndex = VertexTriangleIndex * 3;
 
-					TangentZ0 = NormalFromCross;
-					TangentZ1 = NormalFromCross;
-					TangentZ2 = NormalFromCross;
-				}
-
-				// if we do not have tangents but we have normals and a UV channel, we can compute them
-				if (!LOD->bHasTangents && LOD->bHasUV)
-				{
-					FVector DeltaPosition0 = Position1 - Position0;
-					FVector DeltaPosition1 = Position2 - Position0;
+#if ENGINE_MAJOR_VERSION > 4
+					FVector Position0 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex));
+					FVector4 TangentZ0 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex));
+#else
+					FVector Position0 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex);
+					FVector4 TangentZ0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex);
+#endif
 
 
 #if ENGINE_MAJOR_VERSION > 4
-					const FVector2f& UV0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex, 0);
-					const FVector2f& UV1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 1, 0);
-					const FVector2f& UV2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 2, 0);
-					FVector2f DeltaUV0 = UV1 - UV0;
-					FVector2f DeltaUV1 = UV2 - UV0;
+					FVector Position1 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 1));
+					FVector4 TangentZ1 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 1));
 #else
-					const FVector2D& UV0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex, 0);
-					const FVector2D& UV1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 1, 0);
-					const FVector2D& UV2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 2, 0);
-					FVector2D DeltaUV0 = UV1 - UV0;
-					FVector2D DeltaUV1 = UV2 - UV0;
+					FVector Position1 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 1);
+					FVector4 TangentZ1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 1);
 #endif
 
-					float Factor = 1.0f / (DeltaUV0.X * DeltaUV1.Y - DeltaUV0.Y * DeltaUV1.X);
 
-					FVector TriangleTangentX = ((DeltaPosition0 * DeltaUV1.Y) - (DeltaPosition1 * DeltaUV0.Y)) * Factor;
-					FVector TriangleTangentY = ((DeltaPosition0 * DeltaUV1.X) - (DeltaPosition1 * DeltaUV0.X)) * Factor;
+#if ENGINE_MAJOR_VERSION > 4
+					FVector Position2 = FVector(LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 2));
+					FVector4 TangentZ2 = FVector4(LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 2));
+#else
+					FVector Position2 = LodRenderData->StaticVertexBuffers.PositionVertexBuffer.VertexPosition(VertexIndex + 2);
+					FVector4 TangentZ2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentZ(VertexIndex + 2);
+#endif
 
-					FVector TangentX0 = TriangleTangentX - (TangentZ0 * FVector::DotProduct(TangentZ0, TriangleTangentX));
-					TangentX0.Normalize();
+					if (!LOD->bHasNormals)
+					{
+						const FVector SideA = Position1 - Position0;
+						const FVector SideB = Position2 - Position0;
 
-					FVector TangentX1 = TriangleTangentX - (TangentZ1 * FVector::DotProduct(TangentZ1, TriangleTangentX));
-					TangentX1.Normalize();
+						const FVector NormalFromCross = FVector::CrossProduct(SideB, SideA).GetSafeNormal();
 
-					FVector TangentX2 = TriangleTangentX - (TangentZ2 * FVector::DotProduct(TangentZ2, TriangleTangentX));
-					TangentX2.Normalize();
+						TangentZ0 = NormalFromCross;
+						TangentZ1 = NormalFromCross;
+						TangentZ2 = NormalFromCross;
+					}
+
+					// if we do not have tangents but we have normals and a UV channel, we can compute them
+					if (!LOD->bHasTangents)
+					{
+						const FVector DeltaPosition0 = Position1 - Position0;
+						const FVector DeltaPosition1 = Position2 - Position0;
+
+						FVector TangentX0;
+						FVector TangentX1;
+						FVector TangentX2;
+
+						if (LOD->bHasUV)
+						{
+#if ENGINE_MAJOR_VERSION > 4
+							const FVector2f& UV0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex, 0);
+							const FVector2f& UV1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 1, 0);
+							const FVector2f& UV2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 2, 0);
+							const FVector2f DeltaUV0 = UV1 - UV0;
+							const FVector2f DeltaUV1 = UV2 - UV0;
+#else
+							const FVector2D& UV0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex, 0);
+							const FVector2D& UV1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 1, 0);
+							const FVector2D& UV2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.GetVertexUV(VertexIndex + 2, 0);
+							const FVector2D DeltaUV0 = UV1 - UV0;
+							const FVector2D DeltaUV1 = UV2 - UV0;
+#endif
+
+							const float Factor = 1.0f / (DeltaUV0.X * DeltaUV1.Y - DeltaUV0.Y * DeltaUV1.X);
+
+							const FVector TriangleTangentX = ((DeltaPosition0 * DeltaUV1.Y) - (DeltaPosition1 * DeltaUV0.Y)) * Factor;
+							const FVector TriangleTangentY = ((DeltaPosition0 * DeltaUV1.X) - (DeltaPosition1 * DeltaUV0.X)) * Factor;
+
+							TangentX0 = TriangleTangentX - (TangentZ0 * FVector::DotProduct(TangentZ0, TriangleTangentX));
+							TangentX0.Normalize();
+
+							TangentX1 = TriangleTangentX - (TangentZ1 * FVector::DotProduct(TangentZ1, TriangleTangentX));
+							TangentX1.Normalize();
+
+							TangentX2 = TriangleTangentX - (TangentZ2 * FVector::DotProduct(TangentZ2, TriangleTangentX));
+							TangentX2.Normalize();
+						}
+						else
+						{
+							TangentX0 = FVector::CrossProduct(TangentZ0, FVector::UpVector);
+							TangentX1 = FVector::CrossProduct(TangentZ1, FVector::UpVector);
+							TangentX2 = FVector::CrossProduct(TangentZ2, FVector::UpVector);
+						}
 
 #if PLATFORM_ANDROID
-					FixVectorIfNan(TangentX0, 0);
-					FixVectorIfNan(TangentX1, 0);
-					FixVectorIfNan(TangentX2, 0);
+						FixVectorIfNan(TangentX0, 0);
+						FixVectorIfNan(TangentX1, 0);
+						FixVectorIfNan(TangentX2, 0);
 #endif
 
-					FVector TangentY0 = ComputeTangentY(TangentZ0, TangentX0) * TangentsDirection;
-					FVector TangentY1 = ComputeTangentY(TangentZ1, TangentX1) * TangentsDirection;
-					FVector TangentY2 = ComputeTangentY(TangentZ2, TangentX2) * TangentsDirection;
+						FVector TangentY0 = ComputeTangentY(TangentZ0, TangentX0) * TangentsDirection;
+						FVector TangentY1 = ComputeTangentY(TangentZ1, TangentX1) * TangentsDirection;
+						FVector TangentY2 = ComputeTangentY(TangentZ2, TangentX2) * TangentsDirection;
 #if PLATFORM_ANDROID
-					FixVectorIfNan(TangentY0, 1);
-					FixVectorIfNan(TangentY1, 1);
-					FixVectorIfNan(TangentY2, 1);
+						FixVectorIfNan(TangentY0, 1);
+						FixVectorIfNan(TangentY1, 1);
+						FixVectorIfNan(TangentY2, 1);
 #endif
 
 
 #if ENGINE_MAJOR_VERSION > 4
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, FVector3f(TangentX0), FVector3f(TangentY0), FVector3f(FVector(TangentZ0)));
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, FVector3f(TangentX1), FVector3f(TangentY1), FVector3f(FVector(TangentZ1)));
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, FVector3f(TangentX2), FVector3f(TangentY2), FVector3f(FVector(TangentZ2)));
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, FVector3f(TangentX0), FVector3f(TangentY0), FVector3f(FVector(TangentZ0)));
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, FVector3f(TangentX1), FVector3f(TangentY1), FVector3f(FVector(TangentZ1)));
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, FVector3f(TangentX2), FVector3f(TangentY2), FVector3f(FVector(TangentZ2)));
 #else
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, TangentZ0);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, TangentZ1);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, TangentZ2);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, TangentZ0);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, TangentZ1);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, TangentZ2);
 #endif
-				}
-				else if (!LOD->bHasNormals) // if we are here we need to reapply normals
-				{
+					}
+					else if (!LOD->bHasNormals) // if we are here we need to reapply normals
+					{
 #if ENGINE_MAJOR_VERSION > 4
-					FVector4f TangentX0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex);
-					FVector4f TangentX1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 1);
-					FVector4f TangentX2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 2);
-					FVector3f TangentY0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex);
-					FVector3f TangentY1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 1);
-					FVector3f TangentY2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 2);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, FVector4f(TangentZ0));
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, FVector4f(TangentZ1));
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, FVector4f(TangentZ2));
+						FVector4f TangentX0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex);
+						FVector4f TangentX1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 1);
+						FVector4f TangentX2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 2);
+						FVector3f TangentY0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex);
+						FVector3f TangentY1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 1);
+						FVector3f TangentY2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 2);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, FVector4f(TangentZ0));
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, FVector4f(TangentZ1));
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, FVector4f(TangentZ2));
 #else
-					FVector4 TangentX0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex);
-					FVector4 TangentX1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 1);
-					FVector4 TangentX2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 2);
-					FVector TangentY0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex);
-					FVector TangentY1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 1);
-					FVector TangentY2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 2);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, TangentZ0);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, TangentZ1);
-					LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, TangentZ2);
+						FVector4 TangentX0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex);
+						FVector4 TangentX1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 1);
+						FVector4 TangentX2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentX(VertexIndex + 2);
+						FVector TangentY0 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex);
+						FVector TangentY1 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 1);
+						FVector TangentY2 = LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.VertexTangentY(VertexIndex + 2);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex, TangentX0, TangentY0, TangentZ0);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 1, TangentX1, TangentY1, TangentZ1);
+						LodRenderData->StaticVertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(VertexIndex + 2, TangentX2, TangentY2, TangentZ2);
 #endif
-				}
-			}
+					}
+				});
 		}
 
 		LodRenderData->SkinWeightVertexBuffer.SetNeedsCPUAccess(SkeletalMeshContext->SkeletalMeshConfig.bPerPolyCollision);
@@ -1044,13 +1058,9 @@ USkeletalMesh* FglTFRuntimeParser::FinalizeSkeletalMeshWithLODs(TSharedRef<FglTF
 	}
 
 #if WITH_EDITOR
-	SkeletalMeshContext->SkeletalMesh->SetLODSettings(NewObject<USkeletalMeshLODSettings>());
-
-#if ENGINE_MAJOR_VERSION >= 5 || ENGINE_MINOR_VERSION >= 27
-	SkeletalMeshContext->SkeletalMesh->GetLODSettings()->SetLODSettingsFromMesh(SkeletalMeshContext->SkeletalMesh);
-#else
-	SkeletalMeshContext->SkeletalMesh->LODSettings->SetLODSettingsFromMesh(SkeletalMeshContext->SkeletalMesh);
-#endif
+	USkeletalMeshLODSettings* LODSettings = NewObject<USkeletalMeshLODSettings>();
+	LODSettings->SetLODSettingsFromMesh(SkeletalMeshContext->SkeletalMesh);
+	SkeletalMeshContext->SkeletalMesh->SetLODSettings(LODSettings);
 
 	for (int32 LODIndex = 0; LODIndex < SkeletalMeshContext->LODs.Num(); LODIndex++)
 	{
@@ -1745,7 +1755,7 @@ UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimationByName(USkeletalMesh* Sk
 	}
 
 	const TArray<TSharedPtr<FJsonValue>>* JsonAnimations;
-	if (!Root->TryGetArrayField("animations", JsonAnimations))
+	if (!Root->TryGetArrayField(TEXT("animations"), JsonAnimations))
 	{
 		AddError("LoadSkeletalAnimationByName()", "No animations defined in the asset.");
 		return nullptr;
@@ -1760,7 +1770,7 @@ UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimationByName(USkeletalMesh* Sk
 		}
 
 		FString JsonAnimationName;
-		if (JsonAnimationObject->TryGetStringField("name", JsonAnimationName))
+		if (JsonAnimationObject->TryGetStringField(TEXT("name"), JsonAnimationName))
 		{
 			if (JsonAnimationName == AnimationName)
 			{
@@ -1798,7 +1808,7 @@ UAnimSequence* FglTFRuntimeParser::LoadNodeSkeletalAnimation(USkeletalMesh* Skel
 		}
 
 		const TArray<TSharedPtr<FJsonValue>>* JsonJoints;
-		if (!JsonSkinObject->TryGetArrayField("joints", JsonJoints))
+		if (!JsonSkinObject->TryGetArrayField(TEXT("joints"), JsonJoints))
 		{
 			AddError("LoadNodeSkeletalAnimation()", "No joints defined in the skin");
 			return nullptr;
@@ -1816,7 +1826,7 @@ UAnimSequence* FglTFRuntimeParser::LoadNodeSkeletalAnimation(USkeletalMesh* Skel
 	}
 
 	const TArray<TSharedPtr<FJsonValue>>* JsonAnimations;
-	if (!Root->TryGetArrayField("animations", JsonAnimations))
+	if (!Root->TryGetArrayField(TEXT("animations"), JsonAnimations))
 	{
 		return nullptr;
 	}
@@ -1882,7 +1892,7 @@ TMap<FString, UAnimSequence*> FglTFRuntimeParser::LoadNodeSkeletalAnimationsMap(
 		}
 
 		const TArray<TSharedPtr<FJsonValue>>* JsonJoints;
-		if (!JsonSkinObject->TryGetArrayField("joints", JsonJoints))
+		if (!JsonSkinObject->TryGetArrayField(TEXT("joints"), JsonJoints))
 		{
 			AddError("LoadNodeSkeletalAnimation()", "No joints defined in the skin");
 			return SkeletalAnimationsMap;
@@ -1900,7 +1910,7 @@ TMap<FString, UAnimSequence*> FglTFRuntimeParser::LoadNodeSkeletalAnimationsMap(
 	}
 
 	const TArray<TSharedPtr<FJsonValue>>* JsonAnimations;
-	if (!Root->TryGetArrayField("animations", JsonAnimations))
+	if (!Root->TryGetArrayField(TEXT("animations"), JsonAnimations))
 	{
 		return SkeletalAnimationsMap;
 	}
@@ -1914,7 +1924,7 @@ TMap<FString, UAnimSequence*> FglTFRuntimeParser::LoadNodeSkeletalAnimationsMap(
 		}
 
 		FString AnimationName;
-		if (!JsonAnimationObject->TryGetStringField("name", AnimationName))
+		if (!JsonAnimationObject->TryGetStringField(TEXT("name"), AnimationName))
 		{
 			AnimationName = FString::Printf(TEXT("Animation_%d"), JsonAnimationIndex);
 		}
@@ -1951,29 +1961,8 @@ TMap<FString, UAnimSequence*> FglTFRuntimeParser::LoadNodeSkeletalAnimationsMap(
 	return SkeletalAnimationsMap;
 }
 
-UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimation(USkeletalMesh* SkeletalMesh, const int32 AnimationIndex, const FglTFRuntimeSkeletalAnimationConfig& SkeletalAnimationConfig)
+UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimationFromTracksAndMorphTargets(USkeletalMesh* SkeletalMesh, TMap<FString, FRawAnimSequenceTrack>& Tracks, TMap<FName, TArray<TPair<float, float>>>& MorphTargetCurves, const float Duration, const FglTFRuntimeSkeletalAnimationConfig& SkeletalAnimationConfig)
 {
-	if (!SkeletalMesh)
-	{
-		return nullptr;
-	}
-
-	TSharedPtr<FJsonObject> JsonAnimationObject = GetJsonObjectFromRootIndex("animations", AnimationIndex);
-	if (!JsonAnimationObject)
-	{
-		AddError("LoadNodeSkeletalAnimation()", FString::Printf(TEXT("Unable to find animation %d"), AnimationIndex));
-		return nullptr;
-	}
-
-	float Duration;
-	TMap<FString, FRawAnimSequenceTrack> Tracks;
-
-	TMap<FName, TArray<TPair<float, float>>> MorphTargetCurves;
-	if (!LoadSkeletalAnimation_Internal(JsonAnimationObject.ToSharedRef(), Tracks, MorphTargetCurves, Duration, SkeletalAnimationConfig, [](const FglTFRuntimeNode& Node) -> bool { return true; }))
-	{
-		return nullptr;
-	}
-
 	int32 NumFrames = FMath::Max<int32>(Duration * SkeletalAnimationConfig.FramesPerSecond, 1);
 	UAnimSequence* AnimSequence = NewObject<UAnimSequence>(GetTransientPackage(), NAME_None, RF_Public);
 #if ENGINE_MAJOR_VERSION > 4 || ENGINE_MINOR_VERSION > 26
@@ -2390,6 +2379,32 @@ UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimation(USkeletalMesh* Skeletal
 #endif
 
 	return AnimSequence;
+}
+
+UAnimSequence* FglTFRuntimeParser::LoadSkeletalAnimation(USkeletalMesh* SkeletalMesh, const int32 AnimationIndex, const FglTFRuntimeSkeletalAnimationConfig& SkeletalAnimationConfig)
+{
+	if (!SkeletalMesh)
+	{
+		return nullptr;
+	}
+
+	TSharedPtr<FJsonObject> JsonAnimationObject = GetJsonObjectFromRootIndex("animations", AnimationIndex);
+	if (!JsonAnimationObject)
+	{
+		AddError("LoadNodeSkeletalAnimation()", FString::Printf(TEXT("Unable to find animation %d"), AnimationIndex));
+		return nullptr;
+	}
+
+	float Duration;
+	TMap<FString, FRawAnimSequenceTrack> Tracks;
+
+	TMap<FName, TArray<TPair<float, float>>> MorphTargetCurves;
+	if (!LoadSkeletalAnimation_Internal(JsonAnimationObject.ToSharedRef(), Tracks, MorphTargetCurves, Duration, SkeletalAnimationConfig, [](const FglTFRuntimeNode& Node) -> bool { return true; }))
+	{
+		return nullptr;
+	}
+
+	return LoadSkeletalAnimationFromTracksAndMorphTargets(SkeletalMesh, Tracks, MorphTargetCurves, Duration, SkeletalAnimationConfig);
 }
 
 UAnimSequence* FglTFRuntimeParser::CreateAnimationFromPose(USkeletalMesh* SkeletalMesh, const int32 SkinIndex, const FglTFRuntimeSkeletalAnimationConfig& SkeletalAnimationConfig)
@@ -3642,11 +3657,11 @@ USkeletalMesh* FglTFRuntimeParser::LoadSkeletalMeshFromRuntimeLODs(const TArray<
 		return nullptr;
 	}
 
-	if (RuntimeLODs[0].Primitives[0].OverrideBoneMap.Num() < 1)
+	/*if (RuntimeLODs[0].Primitives[0].OverrideBoneMap.Num() < 1)
 	{
 		AddError("LoadSkeletalMeshFromRuntimeLODs()", "Empty Primitive OverrideBoneMap");
 		return nullptr;
-	}
+	}*/
 
 	const TMap<int32, FName>& BaseBoneMap = RuntimeLODs[0].Primitives[0].OverrideBoneMap;
 
@@ -3677,11 +3692,11 @@ USkeletalMesh* FglTFRuntimeParser::LoadSkeletalMeshFromRuntimeLODs(const TArray<
 
 		for (const FglTFRuntimePrimitive& Primitive : RuntimeLODs[LODIndex].Primitives)
 		{
-			if (Primitive.OverrideBoneMap.Num() < 1)
+			/*if (Primitive.OverrideBoneMap.Num() < 1)
 			{
 				AddError("LoadSkeletalMeshFromRuntimeLODs()", "Empty Primitive OverrideBoneMap");
 				return nullptr;
-			}
+			}*/
 
 			FglTFRuntimePrimitive& NonConstPrimitive = const_cast<FglTFRuntimePrimitive&>(Primitive);
 
@@ -3700,11 +3715,77 @@ USkeletalMesh* FglTFRuntimeParser::LoadSkeletalMeshFromRuntimeLODs(const TArray<
 
 	if (!CreateSkeletalMeshFromLODs(SkeletalMeshContext))
 	{
-		AddError("LoadSkeletalMesh()", "Unable to load SkeletalMesh.");
+		AddError("LoadSkeletalMeshFromRuntimeLODs()", "Unable to load SkeletalMesh.");
 		return nullptr;
 	}
 
 	return FinalizeSkeletalMeshWithLODs(SkeletalMeshContext);
+}
+
+void FglTFRuntimeParser::LoadSkeletalMeshFromRuntimeLODsAsync(const TArray<FglTFRuntimeMeshLOD>& RuntimeLODs, const int32 SkinIndex, const FglTFRuntimeSkeletalMeshAsync& AsyncCallback, const FglTFRuntimeSkeletalMeshConfig& SkeletalMeshConfig)
+{
+	TSharedRef<FglTFRuntimeSkeletalMeshContext, ESPMode::ThreadSafe> SkeletalMeshContext = MakeShared<FglTFRuntimeSkeletalMeshContext, ESPMode::ThreadSafe>(AsShared(), SkeletalMeshConfig);
+	SkeletalMeshContext->SkinIndex = SkinIndex;
+
+	Async(EAsyncExecution::Thread, [this, SkeletalMeshContext, RuntimeLODs, AsyncCallback]()
+		{
+			FglTFRuntimeSkeletalMeshContextFinalizer AsyncFinalizer(SkeletalMeshContext, AsyncCallback);
+
+			if (RuntimeLODs.Num() < 1)
+			{
+				AddError("LoadSkeletalMeshFromRuntimeLODsAsync()", "No RuntimeLOD specified");
+				return;
+			}
+
+			if (RuntimeLODs[0].Primitives.Num() < 1)
+			{
+				AddError("LoadSkeletalMeshFromRuntimeLODsAsync()", "No Primitives for RuntimeLOD 0");
+				return;
+			}
+
+			const TMap<int32, FName>& BaseBoneMap = RuntimeLODs[0].Primitives[0].OverrideBoneMap;
+
+			SkeletalMeshContext->LODs.Add(const_cast<FglTFRuntimeMeshLOD*>(&RuntimeLODs[0]));
+
+			auto ContainsBone = [BaseBoneMap](FName BoneName) -> bool
+				{
+					for (const TPair<int32, FName>& Pair : BaseBoneMap)
+					{
+						if (Pair.Value == BoneName)
+						{
+							return true;
+						}
+					}
+					return false;
+				};
+
+			for (int32 LODIndex = 1; LODIndex < RuntimeLODs.Num(); LODIndex++)
+			{
+				if (RuntimeLODs[LODIndex].Primitives.Num() < 1)
+				{
+					AddError("LoadSkeletalMeshFromRuntimeLODsAsync()", "Invalid RuntimeLOD, no Primitives defined");
+					return;
+				}
+
+				for (const FglTFRuntimePrimitive& Primitive : RuntimeLODs[LODIndex].Primitives)
+				{
+					FglTFRuntimePrimitive& NonConstPrimitive = const_cast<FglTFRuntimePrimitive&>(Primitive);
+
+					for (TPair<int32, FName>& Pair : NonConstPrimitive.OverrideBoneMap)
+					{
+						if (!ContainsBone(Pair.Value))
+						{
+							AddError("LoadSkeletalMeshFromRuntimeLODsAsync()", FString::Printf(TEXT("Unknown bone %s"), *Pair.Value.ToString()));
+							return;
+						}
+					}
+				}
+
+				SkeletalMeshContext->LODs.Add(const_cast<FglTFRuntimeMeshLOD*>(&RuntimeLODs[LODIndex]));
+			}
+
+			SkeletalMeshContext->SkeletalMesh = CreateSkeletalMeshFromLODs(SkeletalMeshContext);
+		});
 }
 
 const FBox& FglTFRuntimeSkeletalMeshContext::GetBoneBox(const int32 BoneIndex)
