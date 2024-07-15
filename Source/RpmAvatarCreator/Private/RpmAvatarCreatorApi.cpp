@@ -29,7 +29,7 @@ void URpmAvatarCreatorApi::Initialize()
 	AuthManager->BindTokenRefreshDelegate();
 	ColorDownloader = MakeShared<FRpmColorDownloader>(RequestFactory);
 	AssetDownloader = MakeShared<FRpmPartnerAssetDownloader>(RequestFactory, BodyType);
-	AvatarTemplateDownloader = MakeShared<FRpmAvatarTemplateDownloader>(RequestFactory);
+	AvatarTemplateDownloader = MakeShared<FRpmAvatarTemplateDownloader>(RequestFactory, BodyType);
 	UserAvatarDownloader = MakeShared<FRpmUserAvatarDownloader>(RequestFactory);
 	ImageDownloader = NewObject<URpmImageDownloader>();
 	ImageDownloader->SetRequestFactory(RequestFactory);

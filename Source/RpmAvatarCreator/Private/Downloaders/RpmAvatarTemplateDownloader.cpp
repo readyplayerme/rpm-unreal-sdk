@@ -1,13 +1,11 @@
 // Copyright © 2023++ Ready Player Me
 
-
 #include "RpmAvatarTemplateDownloader.h"
-
 #include "Requests/RequestFactory.h"
 #include "Extractors/AvatarTemplateExtractor.h"
 
-FRpmAvatarTemplateDownloader::FRpmAvatarTemplateDownloader(TSharedPtr<class FRequestFactory> Factory)
-	: RequestFactory(Factory)
+FRpmAvatarTemplateDownloader::FRpmAvatarTemplateDownloader(TSharedPtr<class FRequestFactory> Factory,
+	const EAvatarBodyType& BodyType) : RequestFactory(Factory), AvatarBodyType(BodyType)
 {
 }
 
@@ -20,7 +18,7 @@ void FRpmAvatarTemplateDownloader::DownloadTemplates(const FAvatarTemplatesDownl
 	}
 	OnDownloadCompleted = DownloadCompleted;
 	OnFailed = Failed;
-	AvatarTemplatesRequest = RequestFactory->CreateAvatarTemplatesRequest();
+	AvatarTemplatesRequest = RequestFactory->CreateAvatarTemplatesRequest(AvatarBodyType);
 	AvatarTemplatesRequest->GetCompleteCallback().BindSP(AsShared(), &FRpmAvatarTemplateDownloader::OnTemplatesDownloadCompleted);
 	AvatarTemplatesRequest->Download();
 }
