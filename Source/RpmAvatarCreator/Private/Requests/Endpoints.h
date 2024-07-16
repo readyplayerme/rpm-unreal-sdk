@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 
+enum class EAvatarBodyType : uint8;
+enum class ERpmAvatarTemplateType : uint8;
+
 class FEndpoints
 {
 public:
@@ -15,7 +18,9 @@ public:
 
 	static FString GetTokenRefreshEndpoint(const FString& Subdomain);
 
-	static FString GetAvatarTemplatesEndpoint(const FString& TemplateId = "");
+	static FString GetCreateFromTemplateEndpoint(const FString& TemplateId = "");
+	
+	static FString GetAvatarTemplatesByType(const EAvatarBodyType& BodyType);
 
 	static FString GetAssetEndpoint(const FString& AssetTypeStr, int32 Limit, int32 Page, const FString& UserId, const FString& AppId);
 

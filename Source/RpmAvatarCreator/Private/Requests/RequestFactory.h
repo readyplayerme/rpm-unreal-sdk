@@ -34,7 +34,7 @@ public:
 	TSharedPtr<IBaseRequest> CreateColorRequest(const FString& AvatarId) const;
 	TSharedPtr<IBaseRequest> CreateAvatarModelRequest(const FString& AvatarId, bool bIsPreview) const;
 	TSharedPtr<IBaseRequest> CreateAvatarMetadataRequest(const FString& AvatarId) const;
-	TSharedPtr<IBaseRequest> CreateAvatarTemplatesRequest() const;
+	TSharedPtr<IBaseRequest> CreateAvatarTemplatesRequest(const EAvatarBodyType& BodyType) const;
 	TSharedPtr<IBaseRequest> CreateAvatarCreateRequest(const FString& PayloadJson, const FString& TemplateId) const;
 	TSharedPtr<IBaseRequest> CreateImageRequest(const FString& IconUrl) const;
 	TSharedPtr<IBaseRequest> CreateRenderRequest(const FString& AvatarId) const;

@@ -26,4 +26,6 @@ public:
 	/** Get skeletal mesh from the skeletal mesh component. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ready Player Me", meta = (DisplayName = "Get Skeletal Mesh From Component"))
 	static class USkeletalMesh* GetSkeletalMeshFromComponent(const class USkeletalMeshComponent* Component);
+
+	
 };
