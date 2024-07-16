@@ -8,7 +8,7 @@
 class FRpmAvatarTemplateDownloader : public TSharedFromThis<FRpmAvatarTemplateDownloader>
 {
 public:
-	FRpmAvatarTemplateDownloader(TSharedPtr<class FRequestFactory> Factory);
+	FRpmAvatarTemplateDownloader(TSharedPtr<class FRequestFactory> Factory, const EAvatarBodyType& BodyType);
 
 	void DownloadTemplates(const FAvatarTemplatesDownloadCompleted& DownloadCompleted, const FAvatarCreatorFailed& Failed);
 	TArray<FRpmAvatarTemplate> GetAvatarTemplates() const;
@@ -22,4 +22,5 @@ private:
 	TSharedPtr<class FRequestFactory> RequestFactory;
 	TArray<FRpmAvatarTemplate> AvatarTemplates;
 	TSharedPtr<class IBaseRequest> AvatarTemplatesRequest;
+	EAvatarBodyType AvatarBodyType;
 };

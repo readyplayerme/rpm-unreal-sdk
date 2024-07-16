@@ -2,6 +2,7 @@
 
 
 #include "Endpoints.h"
+#include "RpmAvatarCreatorTypes.h"
 
 static const TCHAR* API_ENDPOINT = TEXT("https://{0}.readyplayer.me/api{1}");
 static const TCHAR* AVATAR_API_V2_ENDPOINT = TEXT("https://api.readyplayer.me/v2/avatars");
@@ -65,9 +66,24 @@ FString FEndpoints::GetCreateEndpoint()
 	return AVATAR_API_V2_ENDPOINT;
 }
 
-FString FEndpoints::GetAvatarTemplatesEndpoint(const FString& TemplateId)
+FString FEndpoints::GetCreateFromTemplateEndpoint(const FString& TemplateId)
 {
 	return FString::Format(TEXT("{0}/{1}/{2}"), {AVATAR_API_V2_ENDPOINT, TEXT("templates"), TemplateId});
+}
+
+FString FEndpoints::GetAvatarTemplatesByType(const EAvatarBodyType& BodyType)
+{
+	// Define the static map
+	static const TMap<EAvatarBodyType, FString> EnumToStringMap = {
+		{EAvatarBodyType::Undefined, TEXT("")},
+		{EAvatarBodyType::FullBody, TEXT("fullbody")},
+		{EAvatarBodyType::HalfBody, TEXT("halfbody")}
+	};
+
+	// Find the string associated with the enum
+	const FString* StringValue = EnumToStringMap.Find(BodyType);
+	
+	return FString::Format(TEXT("{0}/{1}?bodyType={2}"), {AVATAR_API_V2_ENDPOINT, TEXT("templates"), *StringValue});
 }
 
 FString FEndpoints::GetAvatarModelEndpoint(const FString& AvatarId, bool bIsPreview)

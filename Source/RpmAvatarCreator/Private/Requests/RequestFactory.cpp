@@ -75,9 +75,9 @@ TSharedPtr<IBaseRequest> FRequestFactory::CreateAuthAnonymousRequest() const
 	return CreateBaseRequest(FEndpoints::GetAuthAnonymousEndpoint(Subdomain), ERequestVerb::Post);
 }
 
-TSharedPtr<IBaseRequest> FRequestFactory::CreateAvatarTemplatesRequest() const
+TSharedPtr<IBaseRequest> FRequestFactory::CreateAvatarTemplatesRequest(const EAvatarBodyType& BodyType) const
 {
-	return CreateAuthorizedRequest(FEndpoints::GetAvatarTemplatesEndpoint());
+	return CreateAuthorizedRequest(FEndpoints::GetAvatarTemplatesByType(BodyType));
 }
 
 TSharedPtr<IBaseRequest> FRequestFactory::CreateAssetRequest(const FString& AssetTypeStr, int32 Limit, int32 Page) const
@@ -121,7 +121,7 @@ TSharedPtr<IBaseRequest> FRequestFactory::CreateAvatarCreateRequest(const FStrin
 	{
 		return CreateAuthorizedRequest(FEndpoints::GetCreateEndpoint(), ERequestVerb::Post, PayloadJson);
 	}
-	return CreateAuthorizedRequest(FEndpoints::GetAvatarTemplatesEndpoint(TemplateId), ERequestVerb::Post, PayloadJson);
+	return CreateAuthorizedRequest(FEndpoints::GetCreateFromTemplateEndpoint(TemplateId), ERequestVerb::Post, PayloadJson);
 }
 
 TSharedPtr<IBaseRequest> FRequestFactory::CreateUpdateAvatarRequest(const FString& AvatarId, const FString& PayloadJson) const
