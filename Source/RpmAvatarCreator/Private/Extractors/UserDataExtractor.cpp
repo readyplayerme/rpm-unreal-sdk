@@ -13,7 +13,8 @@ static const FString JSON_FIELD_CODE = "code";
 static const FString JSON_FIELD_NAME = "name";
 static const FString JSON_FIELD_ID = "id";
 static const FString JSON_FIELD__ID = "_id";
-static const FString JSON_FIELD_AUTH_TYPE = "authType";
+static const FString JSON_FIELD_APP_NAME = "appName";
+static const FString JSON_FIELD_REQUEST_TOKEN = "requestToken";
 
 FRpmUserData FUserDataExtractor::ExtractAnonymousUserData(const FString& JsonString)
 {
@@ -33,22 +34,22 @@ FRpmUserData FUserDataExtractor::ExtractAnonymousUserData(const FString& JsonStr
 
 FRpmUserData FUserDataExtractor::ExtractRefreshedUserSession(const FString& JsonString)
 {
-	const TSharedPtr<FJsonObject> DataObject = FDataJsonUtils::ExtractDataObject(JsonString);
-	if (!DataObject || !DataObject->HasField(JSON_FIELD_REFRESH_TOKEN) || !DataObject->HasField(JSON_FIELD_TOKEN))
+	const TSharedPtr<FJsonObject> ResponseObject = FDataJsonUtils::ExtractBodyObject(JsonString);
+	if (!ResponseObject || !ResponseObject->HasField(JSON_FIELD_REFRESH_TOKEN) || !ResponseObject->HasField(JSON_FIELD_TOKEN))
 	{
 		return {};
 	}
 
 	FRpmUserData UserData;
 	UserData.bIsAuthenticated = true;
-	UserData.RefreshToken = DataObject->GetStringField(JSON_FIELD_REFRESH_TOKEN);
-	UserData.Token = DataObject->GetStringField(JSON_FIELD_TOKEN);
+	UserData.RefreshToken = ResponseObject->GetStringField(JSON_FIELD_REFRESH_TOKEN);
+	UserData.Token = ResponseObject->GetStringField(JSON_FIELD_TOKEN);
 	return UserData;
 }
 
 FRpmUserData FUserDataExtractor::ExtractUserData(const FString& JsonString)
 {
-	const TSharedPtr<FJsonObject> DataObject = FDataJsonUtils::ExtractDataObject(JsonString);
+	const TSharedPtr<FJsonObject> DataObject = FDataJsonUtils::ExtractBodyObject(JsonString);
 	if (!DataObject || !DataObject->HasField(JSON_FIELD__ID) || !DataObject->HasField(JSON_FIELD_TOKEN))
 	{
 		return {};
@@ -65,32 +66,39 @@ FRpmUserData FUserDataExtractor::ExtractUserData(const FString& JsonString)
 	return UserData;
 }
 
-FString FUserDataExtractor::MakeAuthStartPayload(const FString& Email, const FString& UserId, bool bIsTypeCode)
+FString FUserDataExtractor::MakeRequestLoginCodePayload(const FString& Email, const FString& UserId, const FString& Subdomain)
 {
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
 	DataObject->SetStringField(JSON_FIELD_EMAIL, Email);
+	DataObject->SetStringField(JSON_FIELD_APP_NAME, Subdomain);
 	if (!UserId.IsEmpty())
 	{
 		DataObject->SetStringField(JSON_FIELD_ID, UserId);
 	}
-	if (bIsTypeCode)
-	{
-		DataObject->SetStringField(JSON_FIELD_AUTH_TYPE, JSON_FIELD_CODE);
-	}
-	return FDataJsonUtils::MakeDataPayload(DataObject);
+	return FDataJsonUtils::MakePayload(DataObject);
 }
 
-FString FUserDataExtractor::MakeConfirmCodePayload(const FString& Code)
+FString FUserDataExtractor::MakeConfirmCodePayload(const FString& Code, const FString& Subdomain)
 {
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
 	DataObject->SetStringField(JSON_FIELD_CODE, Code);
+	DataObject->SetStringField(JSON_FIELD_APP_NAME, Subdomain);
+	return FDataJsonUtils::MakePayload(DataObject);
+}
+
+FString FUserDataExtractor::MakeAuthAnonymousPayload(const FString& Subdomain)
+{
+	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
+	DataObject->SetStringField(JSON_FIELD_APP_NAME, Subdomain);
+	DataObject->SetBooleanField(JSON_FIELD_REQUEST_TOKEN, true);
 	return FDataJsonUtils::MakeDataPayload(DataObject);
 }
+
 
 FString FUserDataExtractor::MakeTokenRefreshPayload(const FRpmUserData& UserData)
 {
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
 	DataObject->SetStringField(JSON_FIELD_REFRESH_TOKEN, UserData.RefreshToken);
 	DataObject->SetStringField(JSON_FIELD_TOKEN, UserData.Token);
-	return FDataJsonUtils::MakeDataPayload(DataObject);
+	return FDataJsonUtils::MakePayload(DataObject);
 }

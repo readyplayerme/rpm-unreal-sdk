@@ -10,13 +10,13 @@ enum class ERpmAvatarTemplateType : uint8;
 class FEndpoints
 {
 public:
-	static FString GetAuthAnonymousEndpoint(const FString& Subdomain);
+	static FString GetAuthAnonymousEndpoint();
 	
-	static FString GetAuthStartEndpoint(const FString& Subdomain);
+	static FString GetRequestLoginCodeEndpoint();
 	
-	static FString GetConfirmCodeEndpoint(const FString& Subdomain);
+	static FString GetConfirmCodeEndpoint();
 
-	static FString GetTokenRefreshEndpoint(const FString& Subdomain);
+	static FString GetTokenRefreshEndpoint();
 
 	static FString GetCreateFromTemplateEndpoint(const FString& TemplateId = "");
 	

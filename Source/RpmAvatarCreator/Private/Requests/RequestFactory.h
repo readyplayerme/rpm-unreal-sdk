@@ -26,10 +26,10 @@ public:
 
 	void CancelRequests() const;
 
-	TSharedPtr<IBaseRequest> CreateAuthStartRequest(const FString& PayloadJson) const;
+	TSharedPtr<IBaseRequest> CreateRequestLoginCodeRequest(const FString& PayloadJson) const;
 	TSharedPtr<IBaseRequest> CreateConfirmCodeRequest(const FString& PayloadJson) const;
 	TSharedPtr<IBaseRequest> CreateTokenRefreshRequest() const;
-	TSharedPtr<IBaseRequest> CreateAuthAnonymousRequest() const;
+	TSharedPtr<IBaseRequest> CreateAuthAnonymousRequest(const FString& PayloadJson) const;
 	TSharedPtr<IBaseRequest> CreateAssetRequest(const FString& AssetTypeStr, int32 Limit, int32 Page) const;
 	TSharedPtr<IBaseRequest> CreateColorRequest(const FString& AvatarId) const;
 	TSharedPtr<IBaseRequest> CreateAvatarModelRequest(const FString& AvatarId, bool bIsPreview) const;

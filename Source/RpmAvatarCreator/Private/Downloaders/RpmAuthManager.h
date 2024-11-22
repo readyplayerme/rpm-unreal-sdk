@@ -11,7 +11,7 @@ class FRpmAuthManager : public TSharedFromThis<FRpmAuthManager>
 public:
 	FRpmAuthManager(TSharedPtr<class FRequestFactory> RequestFactory);
 	void BindTokenRefreshDelegate();
-	void AuthStart(const FString& Email, bool bIsTypeCode, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
+	void RequestLoginCode(const FString& Email, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 	void ConfirmActivationCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 	void AuthAnonymous(const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 	void Logout();
@@ -20,7 +20,7 @@ public:
 
 private:
 	void AuthAnonymousCompleted(bool bSuccess);
-	void AuthStartCompleted(bool bSuccess);
+	void RequestLoginCodeCompleted(bool bSuccess);
 	void ConfirmActivationCodeCompleted(bool bSuccess);
 	void TokenRefreshed(const FString& Token, const FString& RefreshToken);
 

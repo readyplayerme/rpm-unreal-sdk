@@ -31,7 +31,7 @@ public:
 	void AuthAnonymous(const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Authorization Start"))
-	void AuthStart(const FString& Email, bool bIsTypeCode, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
+	void RequestLoginCode(const FString& Email, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Confirm Activation Code"))
 	void ConfirmActivationCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
