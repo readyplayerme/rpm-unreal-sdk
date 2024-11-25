@@ -90,7 +90,7 @@ FString FUserDataExtractor::MakeAuthAnonymousPayload(const FString& Subdomain)
 {
 	const TSharedPtr<FJsonObject> DataObject = MakeShared<FJsonObject>();
 	DataObject->SetStringField(JSON_FIELD_APP_NAME, Subdomain);
-	DataObject->SetBooleanField(JSON_FIELD_REQUEST_TOKEN, true);
+	DataObject->SetBoolField(JSON_FIELD_REQUEST_TOKEN, true);
 	return FDataJsonUtils::MakeDataPayload(DataObject);
 }
 

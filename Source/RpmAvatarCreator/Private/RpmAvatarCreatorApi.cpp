@@ -77,7 +77,7 @@ void URpmAvatarCreatorApi::RequestLoginCode(const FString& Email, const FAuthent
 	AuthManager->RequestLoginCode(Email, Completed, Failed);
 }
 
-void URpmAvatarCreatorApi::ConfirmActivationCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed)
+void URpmAvatarCreatorApi::ConfirmLoginCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed)
 {
 	AuthManager->ConfirmActivationCode(Code, Completed, Failed);
 }

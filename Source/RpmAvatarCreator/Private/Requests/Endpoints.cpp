@@ -3,12 +3,12 @@
 #include "Endpoints.h"
 #include "RpmAvatarCreatorTypes.h"
 
-static const TCHAR *API_ENDPOINT = TEXT("https://api.readyplayer.me/v1{0}");
-static const TCHAR *AVATAR_API_V2_ENDPOINT = TEXT("https://api.readyplayer.me/v2/avatars");
-static const TCHAR *AVATAR_API_V1_ENDPOINT = TEXT("https://api.readyplayer.me/v1/avatars");
-static const TCHAR *ASSET_ENDPOINT = TEXT("https://api.readyplayer.me/v1/assets?type={0}&limit={1}&page={2}&filter=viewable-by-user-and-app&filterUserId={3}&filterApplicationId={4}");
-static const TCHAR *REQUEST_OPTIMIZATION_PARAMS = TEXT("morphTargets=none&textureAtlas=none&textureSizeLimit=768&lod=0&useHands=false");
-static const TCHAR *MODELS_URL_PREFIX = TEXT("https://models.readyplayer.me");
+static const TCHAR* API_ENDPOINT = TEXT("https://api.readyplayer.me/v1{0}");
+static const TCHAR* AVATAR_API_V2_ENDPOINT = TEXT("https://api.readyplayer.me/v2/avatars");
+static const TCHAR* AVATAR_API_V1_ENDPOINT = TEXT("https://api.readyplayer.me/v1/avatars");
+static const TCHAR* ASSET_ENDPOINT = TEXT("https://api.readyplayer.me/v1/assets?type={0}&limit={1}&page={2}&filter=viewable-by-user-and-app&filterUserId={3}&filterApplicationId={4}");
+static const TCHAR* REQUEST_OPTIMIZATION_PARAMS = TEXT("morphTargets=none&textureAtlas=none&textureSizeLimit=768&lod=0&useHands=false");
+static const TCHAR* MODELS_URL_PREFIX = TEXT("https://models.readyplayer.me");
 
 FString FEndpoints::GetAuthAnonymousEndpoint()
 {
