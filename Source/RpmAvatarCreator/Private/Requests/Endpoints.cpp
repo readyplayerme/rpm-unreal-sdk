@@ -1,39 +1,38 @@
 // Copyright © 2023++ Ready Player Me
 
-
 #include "Endpoints.h"
 #include "RpmAvatarCreatorTypes.h"
 
-static const TCHAR* API_ENDPOINT = TEXT("https://{0}.readyplayer.me/api{1}");
+static const TCHAR* API_ENDPOINT = TEXT("https://api.readyplayer.me/v1{0}");
 static const TCHAR* AVATAR_API_V2_ENDPOINT = TEXT("https://api.readyplayer.me/v2/avatars");
 static const TCHAR* AVATAR_API_V1_ENDPOINT = TEXT("https://api.readyplayer.me/v1/avatars");
 static const TCHAR* ASSET_ENDPOINT = TEXT("https://api.readyplayer.me/v1/assets?type={0}&limit={1}&page={2}&filter=viewable-by-user-and-app&filterUserId={3}&filterApplicationId={4}");
 static const TCHAR* REQUEST_OPTIMIZATION_PARAMS = TEXT("morphTargets=none&textureAtlas=none&textureSizeLimit=768&lod=0&useHands=false");
 static const TCHAR* MODELS_URL_PREFIX = TEXT("https://models.readyplayer.me");
 
-FString FEndpoints::GetAuthAnonymousEndpoint(const FString& Subdomain)
+FString FEndpoints::GetAuthAnonymousEndpoint()
 {
-	return FString::Format(API_ENDPOINT, {Subdomain, TEXT("/users")});
+	return FString::Format(API_ENDPOINT, {TEXT("/users")});
 }
 
-FString FEndpoints::GetAuthStartEndpoint(const FString& Subdomain)
+FString FEndpoints::GetRequestLoginCodeEndpoint()
 {
-	return FString::Format(API_ENDPOINT, {Subdomain, TEXT("/auth/start")});
+	return FString::Format(API_ENDPOINT, {TEXT("/auth/request-login-code")});
 }
 
-FString FEndpoints::GetConfirmCodeEndpoint(const FString& Subdomain)
+FString FEndpoints::GetConfirmCodeEndpoint()
 {
-	return FString::Format(API_ENDPOINT, {Subdomain, TEXT("/auth/login")});
+	return FString::Format(API_ENDPOINT, {TEXT("/auth/login")});
 }
 
-FString FEndpoints::GetTokenRefreshEndpoint(const FString& Subdomain)
+FString FEndpoints::GetTokenRefreshEndpoint()
 {
-	return FString::Format(API_ENDPOINT, {Subdomain, TEXT("/auth/refresh")});
+	return FString::Format(API_ENDPOINT, {TEXT("/auth/refresh")});
 }
 
 FString FEndpoints::GetAssetEndpoint(const FString& AssetTypeStr, int32 Limit, int32 Page, const FString& UserId, const FString& AppId)
 {
-	return FString::Format(ASSET_ENDPOINT, { AssetTypeStr, Limit, Page, UserId, AppId});
+	return FString::Format(ASSET_ENDPOINT, {AssetTypeStr, Limit, Page, UserId, AppId});
 }
 
 FString FEndpoints::GetColorEndpoint(const FString& AvatarId)

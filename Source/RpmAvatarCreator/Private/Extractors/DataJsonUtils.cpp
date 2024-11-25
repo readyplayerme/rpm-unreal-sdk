@@ -1,6 +1,5 @@
 // Copyright © 2023++ Ready Player Me
 
-
 #include "DataJsonUtils.h"
 
 #include "Templates/SharedPointer.h"
@@ -36,12 +35,29 @@ TSharedPtr<FJsonObject> FDataJsonUtils::ExtractDataObject(const FString& JsonStr
 	return JsonObject->GetObjectField(JSON_FIELD_DATA);
 }
 
+TSharedPtr<FJsonObject> FDataJsonUtils::ExtractBodyObject(const FString& JsonString)
+{
+	TSharedPtr<FJsonObject> JsonObject;
+
+	if (!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(JsonString), JsonObject))
+	{
+		return {};
+	}
+
+	return JsonObject;
+}
+
 FString FDataJsonUtils::MakeDataPayload(const TSharedPtr<FJsonObject> DataObject)
 {
-	FString OutputJsonString;
-
 	const TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
 	JsonObject->SetObjectField(JSON_FIELD_DATA, DataObject);
+
+	return MakePayload(JsonObject);
+}
+
+FString FDataJsonUtils::MakePayload(const TSharedPtr<FJsonObject> JsonObject)
+{
+	FString OutputJsonString;
 
 	if (!FJsonSerializer::Serialize(JsonObject.ToSharedRef(), TJsonWriterFactory<>::Create(&OutputJsonString)))
 	{
