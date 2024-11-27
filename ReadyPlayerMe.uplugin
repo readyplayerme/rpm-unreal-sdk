@@ -77,8 +77,5 @@
 			"Name": "ProceduralMeshComponent",
 			"Enabled": true
 		}
-	],
-	"FileList": [
-		"Config/DefaultReadyPlayerMe.ini"
 	]
 }
