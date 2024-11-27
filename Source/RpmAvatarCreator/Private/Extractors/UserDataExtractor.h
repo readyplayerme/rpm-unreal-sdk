@@ -14,9 +14,11 @@ public:
 
 	static FRpmUserData ExtractRefreshedUserSession(const FString& JsonString);
 
-	static FString MakeAuthStartPayload(const FString& Email, const FString& UserId, bool bIsTypeCode);
+	static FString MakeRequestLoginCodePayload(const FString& Email, const FString& UserId, const FString& Subdomain);
 
-	static FString MakeConfirmCodePayload(const FString& Code);
+	static FString MakeConfirmCodePayload(const FString& Code, const FString& Subdomain);
+
+	static FString MakeAuthAnonymousPayload(const FString& Subdomain);
 
 	static FString MakeTokenRefreshPayload(const FRpmUserData& UserData);
 };

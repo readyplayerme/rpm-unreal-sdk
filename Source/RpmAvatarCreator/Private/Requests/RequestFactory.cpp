@@ -1,6 +1,5 @@
 // Copyright © 2023++ Ready Player Me
 
-
 #include "RequestFactory.h"
 
 #include "CoreMinimal.h"
@@ -55,24 +54,24 @@ void FRequestFactory::CancelRequests() const
 	CancellationDelegate->Broadcast();
 }
 
-TSharedPtr<IBaseRequest> FRequestFactory::CreateAuthStartRequest(const FString& PayloadJson) const
+TSharedPtr<IBaseRequest> FRequestFactory::CreateRequestLoginCodeRequest(const FString& PayloadJson) const
 {
-	return CreateBaseRequest(FEndpoints::GetAuthStartEndpoint(Subdomain), ERequestVerb::Post, PayloadJson);
+	return CreateBaseRequest(FEndpoints::GetRequestLoginCodeEndpoint(), ERequestVerb::Post, PayloadJson);
 }
 
 TSharedPtr<IBaseRequest> FRequestFactory::CreateConfirmCodeRequest(const FString& PayloadJson) const
 {
-	return CreateBaseRequest(FEndpoints::GetConfirmCodeEndpoint(Subdomain), ERequestVerb::Post, PayloadJson);
+	return CreateBaseRequest(FEndpoints::GetConfirmCodeEndpoint(), ERequestVerb::Post, PayloadJson);
 }
 
 TSharedPtr<IBaseRequest> FRequestFactory::CreateTokenRefreshRequest() const
 {
-	return CreateBaseRequest(FEndpoints::GetTokenRefreshEndpoint(Subdomain), ERequestVerb::Post, FUserDataExtractor::MakeTokenRefreshPayload(UserData));
+	return CreateBaseRequest(FEndpoints::GetTokenRefreshEndpoint(), ERequestVerb::Post, FUserDataExtractor::MakeTokenRefreshPayload(UserData));
 }
 
-TSharedPtr<IBaseRequest> FRequestFactory::CreateAuthAnonymousRequest() const
+TSharedPtr<IBaseRequest> FRequestFactory::CreateAuthAnonymousRequest(const FString& PayloadJson) const
 {
-	return CreateBaseRequest(FEndpoints::GetAuthAnonymousEndpoint(Subdomain), ERequestVerb::Post);
+	return CreateBaseRequest(FEndpoints::GetAuthAnonymousEndpoint(), ERequestVerb::Post, PayloadJson);
 }
 
 TSharedPtr<IBaseRequest> FRequestFactory::CreateAvatarTemplatesRequest(const EAvatarBodyType& BodyType) const

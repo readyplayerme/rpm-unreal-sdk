@@ -30,11 +30,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Authorize Anonymous"))
 	void AuthAnonymous(const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Authorization Start"))
-	void AuthStart(const FString& Email, bool bIsTypeCode, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Request Login Code"))
+	void RequestLoginCode(const FString& Email, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 
-	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Confirm Activation Code"))
-	void ConfirmActivationCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
+	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "Confirm Login Code"))
+	void ConfirmLoginCode(const FString& Code, const FAuthenticationCompleted& Completed, const FAvatarCreatorFailed& Failed);
 
 	UFUNCTION(BlueprintCallable, Category = "Ready Player Me", meta = (DisplayName = "LogOut"))
 	void LogOut();
