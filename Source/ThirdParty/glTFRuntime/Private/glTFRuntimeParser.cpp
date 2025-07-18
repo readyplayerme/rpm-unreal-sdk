@@ -26,6 +26,8 @@
 #include "RenderUtils.h"
 #endif
 
+#include "glTFRuntimeAssetUserData.h"
+
 DEFINE_LOG_CATEGORY(LogGLTFRuntime);
 
 FglTFRuntimeOnPreLoadedPrimitive FglTFRuntimeParser::OnPreLoadedPrimitive;
@@ -153,6 +155,7 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromRawDataAndArchive(const u
 		{
 			NewParser->AsBlob.Append(DataPtr, DataNum);
 			NewParser->Archive = InArchive;
+			NewParser->AssetUserDataClasses = LoaderConfig.AssetUserDataClasses;
 		}
 		return NewParser;
 	}
@@ -479,12 +482,22 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromData(const uint8* DataPtr
 	TSharedPtr<FglTFRuntimeArchive> Archive = nullptr;
 
 	// Zip archive ?
-	if (DataNum > 4 && DataPtr[0] == 0x50 && DataPtr[1] == 0x4b && DataPtr[2] == 0x03 && DataPtr[3] == 0x04)
+	if (!LoaderConfig.bNoArchive && DataNum > 4 && DataPtr[0] == 0x50 && DataPtr[1] == 0x4b && DataPtr[2] == 0x03 && DataPtr[3] == 0x04)
 	{
 		TSharedPtr<FglTFRuntimeArchiveZip> ZipFile = MakeShared<FglTFRuntimeArchiveZip>();
 		if (!LoaderConfig.EncryptionKey.IsEmpty())
 		{
 			ZipFile->SetPassword(LoaderConfig.EncryptionKey);
+		}
+
+		if (LoaderConfig.PasswordPromptHook.IsBound())
+		{
+			ZipFile->PromptHook = LoaderConfig.PasswordPromptHook;
+		}
+
+		if (LoaderConfig.AESDecrypterHook.IsBound())
+		{
+			ZipFile->AESDecrypterHook = LoaderConfig.AESDecrypterHook;
 		}
 
 		if (!ZipFile->FromData(DataPtr, DataNum))
@@ -496,7 +509,7 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromData(const uint8* DataPtr
 		Archive = ZipFile;
 	}
 	// tar ?
-	else if (DataNum % 512 == 0 && DataNum >= 10240 && DataPtr[257] == 'u' && DataPtr[258] == 's' && DataPtr[259] == 't' && DataPtr[260] == 'a' && DataPtr[261] == 'r')
+	else if (!LoaderConfig.bNoArchive && DataNum % 512 == 0 && DataNum >= 10240 && DataPtr[257] == 'u' && DataPtr[258] == 's' && DataPtr[259] == 't' && DataPtr[260] == 'a' && DataPtr[261] == 'r')
 	{
 		TMap<FString, TArray64<uint8>> TarMap;
 
@@ -640,6 +653,7 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromString(const FString& Jso
 		}
 		Parser->DefaultPrefixForUnnamedNodes = LoaderConfig.PrefixForUnnamedNodes;
 		Parser->Archive = InArchive;
+		Parser->AssetUserDataClasses = LoaderConfig.AssetUserDataClasses;
 	}
 
 	return Parser;
@@ -708,63 +722,63 @@ TSharedPtr<FglTFRuntimeParser> FglTFRuntimeParser::FromBinary(const uint8* DataP
 
 void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 {
-	FString RootPath = "/ReadyPlayerMe/glTFRuntime";
-	UMaterialInterface* OpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeBase")));
+	FString RootPath = "/ReadyPlayerMe";
+	UMaterialInterface* OpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeBase")));
 	if (OpaqueMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, OpaqueMaterial);
 	}
 
-	UMaterialInterface* TranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTranslucent_Inst")));
+	UMaterialInterface* TranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeTranslucent_Inst")));
 	if (TranslucentMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, TranslucentMaterial);
 	}
 
-	UMaterialInterface* TwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTwoSided_Inst")));
+	UMaterialInterface* TwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeTwoSided_Inst")));
 	if (TwoSidedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, TwoSidedMaterial);
 	}
 
-	UMaterialInterface* TwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr,*(RootPath + TEXT("/M_glTFRuntimeTwoSidedTranslucent_Inst")));
+	UMaterialInterface* TwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (TwoSidedTranslucentMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, TwoSidedTranslucentMaterial);
 	}
 
-	UMaterialInterface* MaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeMasked_Inst")));
+	UMaterialInterface* MaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeMasked_Inst")));
 	if (MaskedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, MaskedMaterial);
 	}
 
-	UMaterialInterface* TwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntimeTwoSidedMasked_Inst")));
+	UMaterialInterface* TwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntimeTwoSidedMasked_Inst")));
 	if (TwoSidedMaskedMaterial)
 	{
 		MetallicRoughnessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, TwoSidedMaskedMaterial);
 	}
 
 	// KHR_materials_pbrSpecularGlossiness
-	UMaterialInterface* SGOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_Base")));
+	UMaterialInterface* SGOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntime_SG_Base")));
 	if (SGOpaqueMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, SGOpaqueMaterial);
 	}
 
-	UMaterialInterface* SGTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_Translucent_Inst")));
+	UMaterialInterface* SGTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntime_SG_Translucent_Inst")));
 	if (SGTranslucentMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, SGTranslucentMaterial);
 	}
 
-	UMaterialInterface* SGTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_TwoSided_Inst")));
+	UMaterialInterface* SGTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntime_SG_TwoSided_Inst")));
 	if (SGTwoSidedMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, SGTwoSidedMaterial);
 	}
 
-	UMaterialInterface* SGTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_glTFRuntime_SG_TwoSidedTranslucent_Inst")));
+	UMaterialInterface* SGTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_glTFRuntime_SG_TwoSidedTranslucent_Inst")));
 	if (SGTwoSidedTranslucentMaterial)
 	{
 		SpecularGlossinessMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, SGTwoSidedTranslucentMaterial);
@@ -772,44 +786,44 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 
 
 	// KHR_materials_unlit 
-	UMaterialInterface* UnlitOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeBase")));
+	UMaterialInterface* UnlitOpaqueMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeBase")));
 	if (UnlitOpaqueMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, UnlitOpaqueMaterial);
 	}
 
-	UMaterialInterface* UnlitTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTranslucent_Inst")));
+	UMaterialInterface* UnlitTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTranslucent_Inst")));
 	if (UnlitTranslucentMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, UnlitTranslucentMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSided_Inst")));
+	UMaterialInterface* UnlitTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSided_Inst")));
 	if (UnlitTwoSidedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, UnlitTwoSidedMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSidedTranslucent_Inst")));
+	UMaterialInterface* UnlitTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (UnlitTwoSidedTranslucentMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedTranslucent, UnlitTwoSidedTranslucentMaterial);
 	}
 
-	UMaterialInterface* UnlitMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeMasked_Inst")));
+	UMaterialInterface* UnlitMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeMasked_Inst")));
 	if (UnlitMaskedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, UnlitMaskedMaterial);
 	}
 
-	UMaterialInterface* UnlitTwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Unlit_glTFRuntimeTwoSidedMasked_Inst")));
+	UMaterialInterface* UnlitTwoSidedMaskedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Unlit_glTFRuntimeTwoSidedMasked_Inst")));
 	if (UnlitTwoSidedMaskedMaterial)
 	{
 		UnlitMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, UnlitTwoSidedMaskedMaterial);
 	}
 
 	// KHR_materials_transmission
-	UMaterialInterface* TrasmissionMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Transmission_glTFRuntimeBase")));
+	UMaterialInterface* TrasmissionMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Transmission_glTFRuntimeBase")));
 	if (TranslucentMaterial)
 	{
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, TrasmissionMaterial);
@@ -817,7 +831,7 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, TrasmissionMaterial);
 	}
 
-	UMaterialInterface* TrasmissionTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_Transmission_glTFRuntimeTwoSided_Inst")));
+	UMaterialInterface* TrasmissionTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_Transmission_glTFRuntimeTwoSided_Inst")));
 	if (TrasmissionTwoSidedMaterial)
 	{
 		TransmissionMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, TrasmissionTwoSidedMaterial);
@@ -826,26 +840,26 @@ void FglTFRuntimeParser::LoadAndFillBaseMaterials()
 	}
 
 	// KHR_materials_transmission
-	UMaterialInterface* ClearCoatMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeBase")));
+	UMaterialInterface* ClearCoatMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeBase")));
 	if (ClearCoatMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Opaque, ClearCoatMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTranslucent_Inst")));
+	UMaterialInterface* ClearCoatTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTranslucent_Inst")));
 	if (ClearCoatTranslucentMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Masked, ClearCoatTranslucentMaterial);
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::Translucent, ClearCoatTranslucentMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTwoSided_Inst")));
+	UMaterialInterface* ClearCoatTwoSidedMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTwoSided_Inst")));
 	if (ClearCoatTwoSidedMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSided, ClearCoatTwoSidedMaterial);
 	}
 
-	UMaterialInterface* ClearCoatTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/M_ClearCoat_glTFRuntimeTwoSidedTranslucent_Inst")));
+	UMaterialInterface* ClearCoatTwoSidedTranslucentMaterial = LoadObject<UMaterialInterface>(nullptr, *(RootPath + TEXT("/glTFRuntime/M_ClearCoat_glTFRuntimeTwoSidedTranslucent_Inst")));
 	if (ClearCoatTwoSidedTranslucentMaterial)
 	{
 		ClearCoatMaterialsMap.Add(EglTFRuntimeMaterialType::TwoSidedMasked, ClearCoatTwoSidedTranslucentMaterial);
@@ -1585,13 +1599,28 @@ bool FglTFRuntimeParser::LoadNode_Internal(int32 Index, TSharedRef<FJsonObject> 
 	}
 
 	Matrix.ScaleTranslation(FVector(SceneScale, SceneScale, SceneScale));
-	Node.Transform = FTransform(SceneBasis.Inverse() * Matrix * SceneBasis);
+
+	const FMatrix FinalMatrix = SceneBasis.Inverse() * Matrix * SceneBasis;
+	Node.Transform = FTransform(FinalMatrix);
 	// this is a hack for allowing very small scaling factors (common in quantized meshes)
 	// it is required as the FTransform ctor generates 0 scaling for small numbers
 	if (bMatrixScaleNeedsToBeReapplied)
 	{
 		Node.Transform.SetScale3D(MatrixScaleToReapply);
 	}
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION < 6
+	// workaround for double/float loss of precision in UE < 5.6
+	else
+	{
+		const FVector CurrentScale = Node.Transform.GetScale3D();
+		if (CurrentScale.X == 0.0 || CurrentScale.Y == 0.0 || CurrentScale.Z == 0.0)
+		{
+			FMatrix FinalMatrixCopy = FinalMatrix;
+			Node.Transform.SetScale3D(FinalMatrixCopy.ExtractScaling(0));
+			Node.Transform.SetRotation(FinalMatrixCopy.ToQuat());
+		}
+	}
+#endif
 
 	const TArray<TSharedPtr<FJsonValue>>* JsonChildren;
 	if (JsonNodeObject->TryGetArrayField(TEXT("children"), JsonChildren))
@@ -2577,6 +2606,32 @@ bool FglTFRuntimeParser::FillReferenceSkeletonFromNode(const FglTFRuntimeNode& R
 
 	// now traverse from the root and check if the node is in the "joints" list
 	return TraverseJoints(Modifier, RootNode.Index, INDEX_NONE, RootNode, {}, BoneMap, {}, SkeletonConfig);
+}
+
+bool FglTFRuntimeParser::RemapRuntimeLODBoneNames(FglTFRuntimeMeshLOD& RuntimeLOD, const FglTFRuntimeSkeletonConfig& SkeletonConfig)
+{
+	for (int32 BoneIndex = 0; BoneIndex < RuntimeLOD.Skeleton.Num(); BoneIndex++)
+	{
+		FglTFRuntimeBone& Bone = RuntimeLOD.Skeleton[BoneIndex];
+		if (SkeletonConfig.BoneRemapper.Remapper.IsBound())
+		{
+			Bone.BoneName = SkeletonConfig.BoneRemapper.Remapper.Execute(BoneIndex, Bone.BoneName, SkeletonConfig.BoneRemapper.Context);
+		}
+
+		if (SkeletonConfig.BonesNameMap.Contains(Bone.BoneName))
+		{
+			FString BoneNameMapValue = SkeletonConfig.BonesNameMap[Bone.BoneName];
+			if (BoneNameMapValue.IsEmpty())
+			{
+				AddError("RemapRuntimeLODBoneNames()", FString::Printf(TEXT("Invalid Bone Name Map for %s"), *Bone.BoneName));
+				return false;
+			}
+
+			Bone.BoneName = BoneNameMapValue;
+		}
+	}
+
+	return true;
 }
 
 bool FglTFRuntimeParser::TraverseJoints(FReferenceSkeletonModifier& Modifier, const int32 RootIndex, int32 Parent, const FglTFRuntimeNode& Node, const TArray<int32>& Joints, TMap<int32, FName>& BoneMap, const TMap<int32, FMatrix>& InverseBindMatricesMap, const FglTFRuntimeSkeletonConfig& SkeletonConfig)
@@ -4644,6 +4699,13 @@ bool FglTFRuntimeParser::GetAccessor(const int32 Index, int64& ComponentType, in
 		}
 		Blob.Data = AdditionalBufferView->Data;
 		Blob.Num = FinalSize;
+
+		// special case for bigger buffers
+		if (FinalSize < AdditionalBufferView->Num && (AdditionalBufferView->Num % (ElementSize * Elements)) == 0)
+		{
+			Count = AdditionalBufferView->Num / (ElementSize * Elements);
+		}
+
 		if (!bHasSparse)
 		{
 			Stride = ElementSize * Elements;
@@ -5107,7 +5169,7 @@ bool FglTFRuntimeParser::MeshHasMorphTargets(const int32 MeshIndex) const
 	return false;
 }
 
-bool FglTFRuntimeParser::GetMorphTargetNames(const int32 MeshIndex, TArray<FName>& MorphTargetNames)
+bool FglTFRuntimeParser::GetMorphTargetNames(const int32 MeshIndex, TArray<FString>& MorphTargetNames)
 {
 	TSharedPtr<FJsonObject> JsonMeshObject = GetJsonObjectFromRootIndex("meshes", MeshIndex);
 	if (!JsonMeshObject)
@@ -5152,7 +5214,7 @@ bool FglTFRuntimeParser::GetMorphTargetNames(const int32 MeshIndex, TArray<FName
 
 		for (int32 MorphIndex = 0; MorphIndex < JsonTargetsArray->Num(); MorphIndex++)
 		{
-			FName MorphTargetName = FName(FString::Printf(TEXT("MorphTarget_%d"), MorphTargetIndex++));
+			const FString MorphTargetName = FString::Printf(TEXT("MorphTarget_%d"), MorphTargetIndex++);
 			MorphTargetNames.Add(MorphTargetName);
 		}
 
@@ -5170,7 +5232,7 @@ bool FglTFRuntimeParser::GetMorphTargetNames(const int32 MeshIndex, TArray<FName
 			{
 				if (MorphTargetNames.IsValidIndex(TargetNameIndex))
 				{
-					MorphTargetNames[TargetNameIndex] = FName((*JsonTargetNamesArray)[TargetNameIndex]->AsString());
+					MorphTargetNames[TargetNameIndex] = (*JsonTargetNamesArray)[TargetNameIndex]->AsString();
 				}
 			}
 		}
@@ -5248,10 +5310,17 @@ bool FglTFRuntimeArchiveZip::FromData(const uint8* DataPtr, const int64 DataNum)
 			return false;
 		}
 
+		uint32 GlobalCompressedSize = 0;
+		uint32 GlobalUncompressedSize = 0;
 		uint16 FilenameLen = 0;
 		uint16 ExtraFieldLen = 0;
 		uint16 EntryCommentLen = 0;
 		uint32 EntryOffset = 0;
+
+		// seek to CompressedSize
+		Data.Seek(CentralDirectoryOffset + 20);
+		Data << GlobalCompressedSize;
+		Data << GlobalUncompressedSize;
 
 		// seek to FilenameLen
 		Data.Seek(CentralDirectoryOffset + 28);
@@ -5274,6 +5343,7 @@ bool FglTFRuntimeArchiveZip::FromData(const uint8* DataPtr, const int64 DataNum)
 		FString Filename = FString(UTF8_TO_TCHAR(FilenameBytes.GetData()));
 
 		OffsetsMap.Add(Filename, EntryOffset);
+		GlobalSizeMap.Add(Filename, TPair<uint32, uint32>(GlobalCompressedSize, GlobalUncompressedSize));
 
 		CentralDirectoryOffset += CentralDirectoryMinSize + FilenameLen + ExtraFieldLen + EntryCommentLen;
 	}
@@ -5321,46 +5391,194 @@ bool FglTFRuntimeArchiveZip::GetFileContent(const FString& Filename, TArray64<ui
 
 	const uint8* CompressedData = Data.GetData() + *Offset + LocalEntryMinSize + FilenameLen + ExtraFieldLen;
 
-	// encrypted ?
-	TArray64<uint8> DecryptedData;
-	if (Flags & 1 && Password.Num() > 0)
+	// for streamed zips
+
+	if (CompressedSize == 0 && GlobalSizeMap.Contains(Filename))
 	{
-		if (*Offset + LocalEntryMinSize + FilenameLen + ExtraFieldLen + CompressedSize + 12 > Data.Num())
+		CompressedSize = GlobalSizeMap[Filename].Key;
+	}
+
+	if (UncompressedSize == 0 && GlobalSizeMap.Contains(Filename))
+	{
+		UncompressedSize = GlobalSizeMap[Filename].Value;
+	}
+
+	// encrypted ?
+
+	// first check for password prompt
+	bool bClearPassword = false;
+	if (Flags & 1 && Password.Num() <= 0 && PromptHook.IsBound())
+	{
+		if (IsInGameThread())
 		{
+			if (PromptHook.Prompt.IsBound())
+			{
+				SetPassword(PromptHook.Prompt.Execute(Filename, PromptHook.Context));
+			}
+			else if (PromptHook.NativePrompt.IsBound())
+			{
+				SetPassword(PromptHook.NativePrompt.Execute(Filename, PromptHook.Context));
+			}
+		}
+		else
+		{
+			FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady([&]()
+				{
+					if (PromptHook.Prompt.IsBound())
+					{
+						SetPassword(PromptHook.Prompt.Execute(Filename, PromptHook.Context));
+					}
+					else if (PromptHook.NativePrompt.IsBound())
+					{
+						SetPassword(PromptHook.NativePrompt.Execute(Filename, PromptHook.Context));
+					}
+				}, TStatId(), nullptr, ENamedThreads::GameThread);
+			FTaskGraphInterface::Get().WaitUntilTaskCompletes(Task);
+		}
+
+		bClearPassword = !PromptHook.bReusePassword;
+	}
+
+	TArray64<uint8> DecryptedData;
+	if (Flags & 1)
+	{
+		if (Password.Num() <= 0)
+		{
+			UE_LOG(LogGLTFRuntime, Error, TEXT("No ZIP Decryption key provided"));
 			return false;
 		}
-		DecryptedData.AddUninitialized(CompressedSize + 12);
 
-		uint32 Key0 = 305419896;
-		uint32 Key1 = 591751049;
-		uint32 Key2 = 878082192;
-
-		auto Crc32 = [](const uint8 Byte, const uint32 Crc) -> uint32
-			{
-				return (Crc >> 8) ^ FCrc::CRCTablesSB8[0][(Crc ^ Byte) & 0xFF];
-			};
-
-		auto UpdateKeys = [&Key0, &Key1, &Key2, &Crc32](const uint8 Byte)
-			{
-				Key0 = Crc32(Byte, Key0);
-				Key1 = Key1 + (Key0 & 0xFF);
-				Key1 = Key1 * 134775813 + 1;
-				Key2 = Crc32(Key1 >> 24, Key2);
-			};
-
-		for (const uint8& Byte : Password)
+		if (Compression == 99) // AES?
 		{
-			UpdateKeys(Byte);
-		}
+			if (!AESDecrypterHook.IsBound())
+			{
+				return false;
+			}
 
-		for (int64 EncryptedIndex = 0; EncryptedIndex < CompressedSize + 12; EncryptedIndex++)
+			// TODO, probably I should generalize it to allow custom fields to be managed by the user
+			TArray64<uint8> ExtraField;
+			ExtraField.Append(Data.GetData() + *Offset + LocalEntryMinSize + FilenameLen, ExtraFieldLen);
+			uint32 ExtraFieldsOffset = 0;
+			// 0 is not a valid AES strength so it acts as a marker
+			uint8 AESEncryptionStrength = 0;
+
+			while (ExtraFieldsOffset < ExtraFieldLen)
+			{
+				if ((ExtraFieldsOffset + sizeof(uint16) + sizeof(uint16)) > ExtraFieldLen)
+				{
+					return false;
+				}
+
+				const uint16* ExtraFieldType = reinterpret_cast<const uint16*>(ExtraField.GetData() + ExtraFieldsOffset);
+				const uint16* ExtraFieldSize = reinterpret_cast<const uint16*>(ExtraField.GetData() + ExtraFieldsOffset + sizeof(uint16));
+
+				ExtraFieldsOffset += sizeof(uint16) + sizeof(uint16);
+				if ((ExtraFieldsOffset + *ExtraFieldSize) > ExtraFieldLen)
+				{
+					return false;
+				}
+
+				if (*ExtraFieldType == 0x9901)
+				{
+					// AES
+					if (*ExtraFieldSize < 7)
+					{
+						return false;
+					}
+
+					const uint16* AESZipVersion = reinterpret_cast<const uint16*>(ExtraField.GetData() + ExtraFieldsOffset);
+					const uint16* AESZipVendor = reinterpret_cast<const uint16*>(ExtraField.GetData() + ExtraFieldsOffset + sizeof(uint16));
+					AESEncryptionStrength = *(ExtraField.GetData() + ExtraFieldsOffset + sizeof(uint16) + sizeof(uint16));
+					Compression = *(reinterpret_cast<const uint16*>(ExtraField.GetData() + ExtraFieldsOffset + sizeof(uint16) + sizeof(uint16) + sizeof(uint8)));
+					break;
+				}
+
+				ExtraFieldsOffset += *ExtraFieldSize;
+			}
+
+			if (AESEncryptionStrength == 0)
+			{
+				return false;
+			}
+
+			TArray<uint8> EnryptedData;
+			EnryptedData.Append(CompressedData, CompressedSize);
+
+			if (IsInGameThread())
+			{
+				if (AESDecrypterHook.AESDecrypter.IsBound())
+				{
+					DecryptedData = AESDecrypterHook.AESDecrypter.Execute(AESEncryptionStrength, EnryptedData, Password, AESDecrypterHook.Context);
+				}
+				else if (AESDecrypterHook.NativeAESDecrypter.IsBound())
+				{
+					DecryptedData = AESDecrypterHook.NativeAESDecrypter.Execute(AESEncryptionStrength, EnryptedData, Password, AESDecrypterHook.Context);
+				}
+			}
+			else
+			{
+				FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady([&]()
+					{
+						if (AESDecrypterHook.AESDecrypter.IsBound())
+						{
+							DecryptedData = AESDecrypterHook.AESDecrypter.Execute(AESEncryptionStrength, EnryptedData, Password, AESDecrypterHook.Context);
+						}
+						else if (AESDecrypterHook.NativeAESDecrypter.IsBound())
+						{
+							DecryptedData = AESDecrypterHook.NativeAESDecrypter.Execute(AESEncryptionStrength, EnryptedData, Password, AESDecrypterHook.Context);
+						}
+					}, TStatId(), nullptr, ENamedThreads::GameThread);
+				FTaskGraphInterface::Get().WaitUntilTaskCompletes(Task);
+			}
+
+			CompressedData = DecryptedData.GetData();
+			CompressedSize = DecryptedData.Num();
+		}
+		else // ZipCrypto?
 		{
-			const uint16 Temp = Key2 | 2;
-			DecryptedData[EncryptedIndex] = CompressedData[EncryptedIndex] ^ ((Temp * (Temp ^ 1)) >> 8);
-			UpdateKeys(DecryptedData[EncryptedIndex]);
-		}
+			if (*Offset + LocalEntryMinSize + FilenameLen + ExtraFieldLen + CompressedSize + 12 > Data.Num())
+			{
+				return false;
+			}
+			DecryptedData.AddUninitialized(CompressedSize + 12);
 
-		CompressedData = DecryptedData.GetData() + 12;
+			uint32 Key0 = 305419896;
+			uint32 Key1 = 591751049;
+			uint32 Key2 = 878082192;
+
+			auto Crc32 = [](const uint8 Byte, const uint32 Crc) -> uint32
+				{
+					return (Crc >> 8) ^ FCrc::CRCTablesSB8[0][(Crc ^ Byte) & 0xFF];
+				};
+
+			auto UpdateKeys = [&Key0, &Key1, &Key2, &Crc32](const uint8 Byte)
+				{
+					Key0 = Crc32(Byte, Key0);
+					Key1 = Key1 + (Key0 & 0xFF);
+					Key1 = Key1 * 134775813 + 1;
+					Key2 = Crc32(Key1 >> 24, Key2);
+				};
+
+			for (const uint8& Byte : Password)
+			{
+				UpdateKeys(Byte);
+			}
+
+			for (int64 EncryptedIndex = 0; EncryptedIndex < CompressedSize + 12; EncryptedIndex++)
+			{
+				const uint16 Temp = Key2 | 2;
+				DecryptedData[EncryptedIndex] = CompressedData[EncryptedIndex] ^ ((Temp * (Temp ^ 1)) >> 8);
+				UpdateKeys(DecryptedData[EncryptedIndex]);
+			}
+
+			CompressedData = DecryptedData.GetData() + 12;
+			CompressedSize = DecryptedData.Num() - 12;
+		}
+	}
+
+	if (bClearPassword)
+	{
+		SetPassword(TEXT(""));
 	}
 
 	if (Compression == 8)
@@ -5377,6 +5595,7 @@ bool FglTFRuntimeArchiveZip::GetFileContent(const FString& Filename, TArray64<ui
 	}
 	else
 	{
+		UE_LOG(LogGLTFRuntime, Error, TEXT("Unknown ZIP Compression format"));
 		return false;
 	}
 
@@ -5524,6 +5743,26 @@ TArray<TSharedRef<FJsonObject>> FglTFRuntimeParser::GetMeshPrimitives(TSharedRef
 	}
 
 	return Primitives;
+}
+
+TArray<TSharedRef<FJsonObject>> FglTFRuntimeParser::GetMaterials() const
+{
+	TArray<TSharedRef<FJsonObject>> Materials;
+
+	const TArray<TSharedPtr<FJsonValue>>* JsonArray;
+	if (Root->TryGetArrayField(TEXT("materials"), JsonArray))
+	{
+		for (TSharedPtr<FJsonValue> JsonValue : *JsonArray)
+		{
+			const TSharedPtr<FJsonObject>* JsonObject;
+			if (JsonValue->TryGetObject(JsonObject))
+			{
+				Materials.Add(JsonObject->ToSharedRef());
+			}
+		}
+	}
+
+	return Materials;
 }
 
 TSharedPtr<FJsonObject> FglTFRuntimeParser::GetJsonObjectExtras(TSharedRef<FJsonObject> JsonObject) const
@@ -6465,9 +6704,12 @@ TArray<FString> FglTFRuntimeParser::GetAnimationsNames(const bool bIncludeUnname
 	{
 		const TSharedRef<FJsonObject>& Animation = Animations[AnimationIndex];
 		FString Name;
-		if (bIncludeUnnameds && (!Animation->TryGetStringField(TEXT("name"), Name) || Name.IsEmpty()))
+		if (!Animation->TryGetStringField(TEXT("name"), Name) || Name.IsEmpty())
 		{
-			Name = FString::Printf(TEXT("Animation_%d"), AnimationIndex);
+			if (bIncludeUnnameds)
+			{
+				Name = FString::Printf(TEXT("Animation_%d"), AnimationIndex);
+			}
 		}
 
 		if (!Name.IsEmpty())
@@ -6502,4 +6744,33 @@ bool FglTFRuntimeArchiveMap::GetFileContent(const FString& Filename, TArray64<ui
 	OutData = MapItems[OffsetsMap[Filename]];
 
 	return true;
+}
+
+void FglTFRuntimeParser::FillAssetUserData(const int32 Index, IInterface_AssetUserData* InObject)
+{
+	for (TSubclassOf<UglTFRuntimeAssetUserData> AssetUserDataClass : AssetUserDataClasses)
+	{
+		if (AssetUserDataClass)
+		{
+			UglTFRuntimeAssetUserData* AssetUserData = NewObject<UglTFRuntimeAssetUserData>(InObject->_getUObject(), AssetUserDataClass, NAME_None, RF_Public);
+			AssetUserData->SetParser(AsShared());
+			AssetUserData->ReceiveFillAssetUserData(Index);
+			InObject->AddAssetUserData(AssetUserData);
+		}
+	}
+}
+
+void FglTFRuntimeParser::UpdateSceneBasis(const FMatrix& InSceneBasis)
+{
+	SceneBasis = InSceneBasis;
+}
+
+void FglTFRuntimeParser::UpdateSceneScale(const float& InSceneScale)
+{
+	SceneScale = InSceneScale;
+}
+
+float FglTFRuntimeParser::GetSceneScale() const
+{
+	return SceneScale;
 }
