@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [3.5.0] 2024-11-27
+## [3.5.0] 2025-07-18
 
-- updated to run in UE 5.5 
+- updated to run in UE 5.5 & 5.6
 
 ## [3.4.0] 2024-11-27
 
