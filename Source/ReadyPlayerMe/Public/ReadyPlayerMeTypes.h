@@ -16,6 +16,7 @@ enum class EAvatarBodyType : uint8
 {
 	Undefined UMETA(DisplayName = "Undefined Body Type"),
 	FullBody UMETA(DisplayName = "Full Body Type"),
+	FullBodyXR UMETA(DisplayName = "Full Body XR Type", JsonName = "fullbody-xr"),
 	HalfBody UMETA(DisplayName = "Half Body Type")
 };
 
